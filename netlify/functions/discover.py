@@ -23,6 +23,18 @@ def handler(event, context):
     Netlify Function to discover restaurants using AI
     """
     try:
+        # Handle CORS preflight
+        if event['httpMethod'] == 'OPTIONS':
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+                },
+                'body': ''
+            }
+        
         # Parse the request
         if event['httpMethod'] != 'POST':
             return {
@@ -34,18 +46,6 @@ def handler(event, context):
                     'Access-Control-Allow-Methods': 'POST, OPTIONS'
                 },
                 'body': json.dumps({'success': False, 'error': 'Method not allowed'})
-            }
-        
-        # Handle CORS preflight
-        if event['httpMethod'] == 'OPTIONS':
-            return {
-                'statusCode': 200,
-                'headers': {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Methods': 'POST, OPTIONS'
-                },
-                'body': ''
             }
         
         # Parse request body
