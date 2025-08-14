@@ -16,7 +16,7 @@
 [[redirects]]
   # Serve the main HTML file for the root path
   from = "/"
-  to = "/restaurant_finder_90s.html"
+  to = "/index.html"
   status = 200
 
 [functions]
