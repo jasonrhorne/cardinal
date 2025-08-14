@@ -1,118 +1,116 @@
-# Cardinal
+# Explooore
 
-An AI-powered restaurant discovery system that uses Claude AI to find exceptional dining experiences across US cities, validated with real-time Google Places data.
+A modern restaurant discovery web application that helps you find the restaurants worth finding.
+
+## Live Demo
+
+🌐 **[restaurantindex.netlify.app](https://restaurantindex.netlify.app)**
 
 ## Overview
 
-Cardinal leverages artificial intelligence to discover outstanding restaurants in any US city. The system uses Claude AI to identify restaurants based on prestigious awards, innovation, chef pedigree, and cultural relevance, then validates each recommendation with Google Places API for current business status, hours, and ratings.
+Explooore is a clean, modern web application for discovering exceptional restaurants in any US city. The app features a minimalist design with an intuitive interface that makes finding great dining experiences simple and enjoyable.
 
 ## Features
 
-- **🤖 AI-Powered Discovery**: Claude AI finds 25+ exceptional restaurants per city based on culinary awards, innovation, and cultural significance
-- **📍 Google Places Validation**: Real-time verification of business status, hours, ratings, and location data
-- **🌐 90s Web Interface**: Authentic retro web interface with period-appropriate design and animations
-- **💰 Cost-Effective**: ~$0.50 per comprehensive restaurant search
-- **🔄 Multi-City Support**: Easy configuration for any US city and state
-- **📊 Structured Data Export**: CSV output with detailed restaurant information and validation metrics
-
-## How It Works
-
-1. **AI Discovery**: Claude AI analyzes the culinary landscape of your target city to identify exceptional restaurants based on:
-   - James Beard Awards and nominations
-   - NY Times restaurant features
-   - Michelin Guide recognition
-   - Food & Wine accolades
-   - Local press coverage and innovation
-
-2. **Google Places Validation**: Each AI-discovered restaurant is verified through Google Places API for:
-   - Current business status (open/closed permanently)
-   - Operating hours and contact information
-   - Customer ratings and review counts
-   - Accurate location data
-
-3. **90s Web Interface**: Results are displayed through an authentic 1990s-style web interface featuring:
-   - HTML 3.2 table-based layouts
-   - BLINK tags and retro animations
-   - Period-appropriate color schemes and fonts
-   - Animated loading screens with spinning GIFs
-
-## Usage
-
-### Quick Start (Web Interface)
-
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Set API Keys**:
-   ```bash
-   export ANTHROPIC_API_KEY="your_anthropic_key"
-   export GOOGLE_PLACES_API_KEY="your_google_places_key"
-   ```
-
-3. **Start Web Server**:
-   ```bash
-   python3 restaurant_web_server.py
-   ```
-
-4. **Access Interface**: Visit http://localhost:8000 and enjoy the 90s web experience!
-
-### Command Line Usage
-
-```bash
-# Direct API discovery
-ANTHROPIC_API_KEY="your_key" GOOGLE_PLACES_API_KEY="your_key" python3 ai_restaurant_finder.py
-```
-
-## API Keys Setup
-
-### Anthropic API Key (Required for AI Discovery)
-1. Visit https://console.anthropic.com/
-2. Create account and generate API key
-3. Set environment variable: `ANTHROPIC_API_KEY="your_key"`
-
-### Google Places API Key (Optional but Recommended)
-1. Visit Google Cloud Console
-2. Enable Places API
-3. Generate API key
-4. Set environment variable: `GOOGLE_PLACES_API_KEY="your_key"`
-
-## Cost Breakdown
-
-**Per 25-restaurant search:**
-- Claude API: ~$0.075
-- Google Places API: ~$0.43
-- **Total: ~$0.50**
-
-## Example Results
-
-For Pittsburgh, PA, the system discovered exceptional restaurants including:
-- **Fet-Fisk**: Nordic-Appalachian fusion, NY Times 50 Best 2024, James Beard semifinalist
-- **Apteka**: Vegan Eastern European, James Beard nominations 2022-2024
-- **Stuntpig**: Pop-up turned permanent, everything made in-house
-- **Chengdu Gourmet**: Authentic Sichuan, 2025 James Beard semifinalist
+- **🎨 Modern UI**: Clean, responsive design with smooth animations
+- **📍 City & State Search**: Find restaurants in any US city
+- **🍽️ Curated Results**: Discover exceptional restaurants with detailed information
+- **⚡ Fast & Reliable**: Deployed on Netlify with serverless functions
+- **📱 Mobile Friendly**: Fully responsive design that works on all devices
 
 ## Technology Stack
 
-- **AI Engine**: Claude 3.5 Sonnet via Anthropic API
-- **Validation**: Google Places API
-- **Backend**: Flask web server
-- **Frontend**: Authentic HTML 3.2 with JavaScript
-- **Data Processing**: Python with structured JSON/CSV output
+- **Frontend**: Modern HTML5, CSS3, and vanilla JavaScript
+- **Backend**: Netlify Functions (Node.js serverless)
+- **Hosting**: Netlify with automatic deployments from GitHub
+- **Design**: Custom CSS with flexbox layout and smooth transitions
 
-## Customization
+## Local Development
 
-The AI discovery prompt is easily customizable for different focus areas:
-- Specific cuisines (Italian, Asian, etc.)
-- Price ranges (budget-friendly, fine dining)
-- Neighborhoods or districts
-- Award types (James Beard, Michelin, etc.)
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/jasonrhorne/cardinal.git
+   cd cardinal
+   ```
 
-## Files
+2. **Install Netlify CLI** (optional, for local testing):
+   ```bash
+   npm install -g netlify-cli
+   ```
 
-- `restaurant_web_server.py`: Flask web server connecting frontend to AI backend
-- `ai_restaurant_finder.py`: Core AI discovery and validation logic
-- `restaurant_finder_90s.html`: Authentic 90s web interface
-- `requirements.txt`: Python dependencies
-- `SETUP_AUTOMATED.md`: Detailed setup instructions
+3. **Run locally with Netlify Dev**:
+   ```bash
+   netlify dev
+   ```
+   This will start the app at http://localhost:8888
+
+4. **Or use Python's built-in server** for basic testing:
+   ```bash
+   python3 -m http.server 8000
+   ```
+   Visit http://localhost:8000
+
+   Note: The Python server won't run the serverless functions, so API calls won't work.
+
+## Project Structure
+
+```
+cardinal/
+├── index.html                 # Main application (modern UI)
+├── restaurant_finder_90s.html # Legacy 90s-style interface (archived)
+├── netlify.toml              # Netlify configuration
+└── netlify/
+    └── functions/
+        ├── discover.js       # Restaurant discovery API endpoint
+        └── hello.js         # Test endpoint
+```
+
+## API Endpoints
+
+- **POST `/api/discover`**: Discovers restaurants for a given city and state
+  - Request: `{ "city": "Pittsburgh", "state": "PA" }`
+  - Response: Array of restaurant objects with name, cuisine, neighborhood, price, rating, and description
+
+- **GET `/.netlify/functions/hello`**: Test endpoint to verify functions are working
+
+## Deployment
+
+The app automatically deploys to Netlify when changes are pushed to the main branch on GitHub.
+
+### Manual Deployment
+
+1. Push changes to GitHub:
+   ```bash
+   git add .
+   git commit -m "Your commit message"
+   git push
+   ```
+
+2. Netlify automatically builds and deploys within 1-2 minutes
+
+## Sample Restaurant Data
+
+Currently, the app returns curated restaurant data for Pittsburgh, PA including:
+- **Fet-Fisk**: Nordic-Appalachian fusion (NY Times 50 Best 2024)
+- **Apteka**: Vegan Eastern European (James Beard nominations)
+- **Stuntpig**: American, everything made in-house
+- **Soju**: Modern Korean with creative cocktails
+- **Umami**: Upscale Japanese with extensive sake menu
+
+For other cities, generic placeholder data is returned.
+
+## Future Enhancements
+
+- Integration with restaurant APIs for real-time data
+- User authentication and saved searches
+- Restaurant filtering by cuisine type and price
+- Map integration for location visualization
+- User reviews and ratings
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+MIT
