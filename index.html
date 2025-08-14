@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>explooore - Find the restaurants worth finding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            background-color: #FFE066;
+            height: 20px;
+            width: 120%;
+            bottom: 8px;
+            left: -10%;
+            z-index: -1;
+            transform: rotate(-1deg);
+        }
+
+        .tagline {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6B46C1;
+        }
+
+        input.city-input {
+            flex: 2;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: 600;
+            background: #6B46C1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #553C9A;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 70, 193, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #6B46C1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .restaurant-card {
+            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #6B46C1;
+        }
+
+        .restaurant-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-details {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            margin-top: 20px;
+            padding: 15px;
+            background: #fee;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">explooore</h1>
+        <p class="tagline">Find the restaurants worth finding</p>
+        
+        <form id="searchForm">
+            <div class="form-group">
+                <input type="text" 
+                       id="city" 
+                       class="city-input" 
+                       placeholder="City" 
+                       value="Pittsburgh"
+                       required>
+                <select id="state" required>
+                    <option value="">State</option>
+                    <option value="AL">AL</option>
+                    <option value="AK">AK</option>
+                    <option value="AZ">AZ</option>
+                    <option value="AR">AR</option>
+                    <option value="CA">CA</option>
+                    <option value="CO">CO</option>
+                    <option value="CT">CT</option>
+                    <option value="DE">DE</option>
+                    <option value="FL">FL</option>
+                    <option value="GA">GA</option>
+                    <option value="HI">HI</option>
+                    <option value="ID">ID</option>
+                    <option value="IL">IL</option>
+                    <option value="IN">IN</option>
+                    <option value="IA">IA</option>
+                    <option value="KS">KS</option>
+                    <option value="KY">KY</option>
+                    <option value="LA">LA</option>
+                    <option value="ME">ME</option>
+                    <option value="MD">MD</option>
+                    <option value="MA">MA</option>
+                    <option value="MI">MI</option>
+                    <option value="MN">MN</option>
+                    <option value="MS">MS</option>
+                    <option value="MO">MO</option>
+                    <option value="MT">MT</option>
+                    <option value="NE">NE</option>
+                    <option value="NV">NV</option>
+                    <option value="NH">NH</option>
+                    <option value="NJ">NJ</option>
+                    <option value="NM">NM</option>
+                    <option value="NY">NY</option>
+                    <option value="NC">NC</option>
+                    <option value="ND">ND</option>
+                    <option value="OH">OH</option>
+                    <option value="OK">OK</option>
+                    <option value="OR">OR</option>
+                    <option value="PA" selected>PA</option>
+                    <option value="RI">RI</option>
+                    <option value="SC">SC</option>
+                    <option value="SD">SD</option>
+                    <option value="TN">TN</option>
+                    <option value="TX">TX</option>
+                    <option value="UT">UT</option>
+                    <option value="VT">VT</option>
+                    <option value="VA">VA</option>
+                    <option value="WA">WA</option>
+                    <option value="WV">WV</option>
+                    <option value="WI">WI</option>
+                    <option value="WY">WY</option>
+                </select>
+            </div>
+            <button type="submit">Find 'em!</button>
+        </form>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Searching for the best restaurants...</p>
+        </div>
+
+        <div id="error" class="error-message"></div>
+
+        <div id="results" class="results"></div>
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            
+            if (!city || !state) {
+                showError('Please enter both city and state');
+                return;
+            }
+            
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('error').classList.remove('active');
+            
+            try {
+                const response = await fetch('/api/discover', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ city, state })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.restaurants) {
+                    showResults(data.restaurants);
+                } else {
+                    showError(data.error || 'Failed to fetch restaurants');
+                }
+            } catch (error) {
+                showError('Network error. Please try again.');
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+            }
+        });
+        
+        function showResults(restaurants) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            if (restaurants.length === 0) {
+                resultsDiv.innerHTML = '<p>No restaurants found for this location.</p>';
+            } else {
+                restaurants.forEach(restaurant => {
+                    const card = document.createElement('div');
+                    card.className = 'restaurant-card';
+                    card.innerHTML = `
+                        <div class="restaurant-name">${restaurant.name}</div>
+                        <div class="restaurant-details">
+                            <strong>Cuisine:</strong> ${restaurant.cuisine}<br>
+                            <strong>Neighborhood:</strong> ${restaurant.neighborhood}<br>
+                            <strong>Price:</strong> ${restaurant.price}<br>
+                            <strong>Rating:</strong> ${restaurant.rating}<br>
+                            <strong>Why:</strong> ${restaurant.description}
+                        </div>
+                    `;
+                    resultsDiv.appendChild(card);
+                });
+            }
+            
+            resultsDiv.classList.add('active');
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('active');
+        }
+    </script>
+</body>
+</html>
