@@ -31,8 +31,6 @@ exports.handler = async (event, context) => {
     
     // Check for API key
     const apiKey = process.env.OPENAI_API_KEY;
-    console.log('API Key check:', apiKey ? 'Found (length: ' + apiKey.length + ')' : 'Not found');
-    console.log('Environment variables available:', Object.keys(process.env).filter(k => k.includes('OPENAI') || k.includes('API')));
     
     if (!apiKey) {
       console.log('No OpenAI API key found, using mock data fallback');
@@ -132,7 +130,7 @@ Focus on lesser-known gems alongside popular destinations. Consider seasonality 
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-4-turbo-preview',
+        model: 'gpt-4-turbo',
         messages: [
           {
             role: 'system',
@@ -207,7 +205,7 @@ async function generateItinerary(apiKey, destination, origin, adults, children, 
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: 'gpt-4-turbo-preview',
+            model: 'gpt-4-turbo',
             messages: [
               {
                 role: 'system',
