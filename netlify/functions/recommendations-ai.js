@@ -31,8 +31,11 @@ exports.handler = async (event, context) => {
     
     // Check for API key
     const apiKey = process.env.OPENAI_API_KEY;
+    console.log('API Key check:', apiKey ? 'Found (length: ' + apiKey.length + ')' : 'Not found');
+    console.log('Environment variables available:', Object.keys(process.env).filter(k => k.includes('OPENAI') || k.includes('API')));
+    
     if (!apiKey) {
-      console.log('No OpenAI API key found, using mock data');
+      console.log('No OpenAI API key found, using mock data fallback');
       // Fall back to mock data if no API key
       return require('./recommendations').handler(event, context);
     }
