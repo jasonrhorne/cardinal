@@ -122,30 +122,59 @@ Return as JSON array with this structure:
 
 Focus on lesser-known gems alongside popular destinations. Consider seasonality (current month is ${new Date().toLocaleString('default', { month: 'long' })}).`;
 
+  // Try multiple models in order of preference
+  const models = ['gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo'];
+  let response;
+  let lastError;
+  
+  for (const model of models) {
+    try {
+      console.log(`Trying model: ${model}`);
+      response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a travel expert. Return only valid JSON without markdown formatting.'
+            },
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 2000,
+          ...(model !== 'gpt-3.5-turbo' ? { response_format: { type: "json_object" } } : {})
+        })
+      });
+      
+      if (response.ok) {
+        console.log(`Successfully using model: ${model}`);
+        break;
+      } else {
+        const errorData = await response.json();
+        lastError = errorData.error;
+        console.log(`Model ${model} failed:`, lastError.message);
+        continue;
+      }
+    } catch (error) {
+      lastError = error;
+      console.log(`Model ${model} error:`, error.message);
+      continue;
+    }
+  }
+  
+  if (!response || !response.ok) {
+    throw new Error(lastError?.message || 'All models failed');
+  }
+
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'gpt-4-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a travel expert. Return only valid JSON without markdown formatting.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 2000,
-        response_format: { type: "json_object" }
-      })
-    });
 
     const data = await response.json();
     
@@ -198,33 +227,51 @@ async function generateItinerary(apiKey, destination, origin, adults, children, 
     // Execute prompts in parallel for speed
     const responses = await Promise.all(
       prompts.map(async (p) => {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'gpt-4-turbo',
-            messages: [
-              {
-                role: 'system',
-                content: 'You are a travel expert creating personalized itineraries. Be specific with names and places.'
-              },
-              {
-                role: 'user',
-                content: p.prompt
-              }
-            ],
-            temperature: 0.7,
-            max_tokens: 800
-          })
-        });
+        // Try models in order of preference
+        const models = ['gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo'];
         
-        const data = await response.json();
+        for (const model of models) {
+          try {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                model: model,
+                messages: [
+                  {
+                    role: 'system',
+                    content: 'You are a travel expert creating personalized itineraries. Be specific with names and places.'
+                  },
+                  {
+                    role: 'user',
+                    content: p.prompt
+                  }
+                ],
+                temperature: 0.7,
+                max_tokens: 800
+              })
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              return {
+                name: p.name,
+                content: data.choices[0].message.content
+              };
+            }
+          } catch (error) {
+            console.log(`Model ${model} failed for ${p.name}:`, error.message);
+            continue;
+          }
+        }
+        
+        // If all models fail, return error content
         return {
           name: p.name,
-          content: data.choices[0].message.content
+          content: `Unable to generate ${p.name} recommendations at this time.`
         };
       })
     );
