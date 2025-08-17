@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardinal - AI-Powered Weekend Trip Planner</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .interests {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .interest-option {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .interest-option input {
+            width: auto;
+            margin-right: 8px;
+            margin-bottom: 0;
+        }
+        
+        button {
+            background: #000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #333;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .output {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .output.active {
+            display: block;
+        }
+        
+        .loading {
+            display: none;
+            color: #666;
+            font-style: italic;
+            margin-top: 20px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .children-inputs {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .child-age {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .child-age input {
+            width: 60px;
+            margin: 0 10px;
+        }
+        
+        h2 {
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .destination-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .destination-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #000;
+        }
+        
+        .destination-card p {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .destination-card .travel-info {
+            color: #0066cc;
+            font-weight: 500;
+        }
+        
+        .destination-card .highlights {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        
+        .destination-card .highlights li {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .select-destination {
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: #0066cc;
+            color: white;
+        }
+        
+        .select-destination:hover {
+            background: #0052a3;
+        }
+        
+        .itinerary-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .itinerary-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .itinerary-section p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #444;
+        }
+        
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error.active {
+            display: block;
+        }
+        
+        .api-note {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cardinal - AI Weekend Trip Planner</h1>
+    <p class="subtitle">Get personalized weekend getaway recommendations powered by AI</p>
+    
+    <div class="api-note">
+        <strong>Note:</strong> To use AI features, set OPENAI_API_KEY in Netlify environment variables. Without it, you'll see example data.
+    </div>
+    
+    <div class="section">
+        <label>Origin (City, State)</label>
+        <input type="text" id="origin" placeholder="e.g., Pittsburgh, PA" value="Pittsburgh, PA">
+    </div>
+    
+    <div class="section">
+        <label>Number of Adults</label>
+        <input type="number" id="adults" min="1" value="2">
+        
+        <label>Number of Children</label>
+        <input type="number" id="children" min="0" value="0" onchange="updateChildrenAges()">
+        <div id="childrenAges" class="children-inputs"></div>
+    </div>
+    
+    <div class="section">
+        <label>Interests (select all that apply)</label>
+        <div class="interests">
+            <div class="interest-option">
+                <input type="checkbox" id="art" value="art">
+                <label for="art">Art & Museums</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="architecture" value="architecture">
+                <label for="architecture">Architecture</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="photography" value="photography">
+                <label for="photography">Photography</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="sports" value="sports">
+                <label for="sports">Sports</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="history" value="history">
+                <label for="history">History</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="food" value="food" checked>
+                <label for="food">Food & Drink</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="nature" value="nature" checked>
+                <label for="nature">Nature & Outdoors</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="shopping" value="shopping">
+                <label for="shopping">Shopping</label>
+            </div>
+            <div class="interest-option">
+                <input type="checkbox" id="music" value="music">
+                <label for="music">Music & Nightlife</label>
+            </div>
+        </div>
+    </div>
+    
+    <button id="getRecsBtn" onclick="getRecommendations()">Get AI Destination Recommendations</button>
+    
+    <div class="loading">🤖 AI is analyzing your preferences and finding perfect weekend destinations...</div>
+    
+    <div class="error" id="error"></div>
+    
+    <div id="destinations" class="output"></div>
+    
+    <div id="itinerary" class="output"></div>
+    
+    <script>
+        let currentFormData = null;
+        
+        function updateChildrenAges() {
+            const numChildren = parseInt(document.getElementById('children').value) || 0;
+            const container = document.getElementById('childrenAges');
+            container.innerHTML = '';
+            
+            if (numChildren > 0) {
+                for (let i = 1; i <= numChildren; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'child-age';
+                    div.innerHTML = `Child ${i} age: <input type="number" class="child-age-input" min="0" max="17" value="10">`;
+                    container.appendChild(div);
+                }
+            }
+        }
+        
+        function getFormData() {
+            const interests = [];
+            document.querySelectorAll('.interest-option input:checked').forEach(cb => {
+                interests.push(cb.value);
+            });
+            
+            const childrenAges = [];
+            document.querySelectorAll('.child-age-input').forEach(input => {
+                childrenAges.push(parseInt(input.value));
+            });
+            
+            return {
+                origin: document.getElementById('origin').value,
+                adults: parseInt(document.getElementById('adults').value),
+                children: childrenAges,
+                interests: interests
+            };
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('active');
+            setTimeout(() => {
+                errorDiv.classList.remove('active');
+            }, 5000);
+        }
+        
+        async function getRecommendations() {
+            const data = getFormData();
+            currentFormData = data;
+            
+            if (!data.origin) {
+                showError('Please enter your origin city');
+                return;
+            }
+            
+            if (data.interests.length === 0) {
+                showError('Please select at least one interest');
+                return;
+            }
+            
+            const btn = document.getElementById('getRecsBtn');
+            btn.disabled = true;
+            document.querySelector('.loading').classList.add('active');
+            document.getElementById('destinations').classList.remove('active');
+            document.getElementById('itinerary').classList.remove('active');
+            document.getElementById('error').classList.remove('active');
+            
+            try {
+                // Try AI endpoint first
+                const response = await fetch('/api/recommendations-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.destinations) {
+                    displayDestinations(result.destinations);
+                } else {
+                    throw new Error(result.error || 'Failed to get recommendations');
+                }
+            } catch (error) {
+                console.log('Trying fallback endpoint...');
+                // Fall back to mock data endpoint
+                try {
+                    const response = await fetch('/api/recommendations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success && result.destinations) {
+                        displayDestinations(result.destinations);
+                    } else {
+                        showError('Error getting recommendations. Please try again.');
+                    }
+                } catch (fallbackError) {
+                    showError('Unable to connect to server. Please check your connection.');
+                }
+            } finally {
+                document.querySelector('.loading').classList.remove('active');
+                btn.disabled = false;
+            }
+        }
+        
+        function displayDestinations(destinations) {
+            const container = document.getElementById('destinations');
+            let html = '<h2>🎯 Your Personalized Weekend Destinations</h2>';
+            
+            if (!destinations || destinations.length === 0) {
+                html += '<p>No destinations found. Please try different criteria.</p>';
+            } else {
+                destinations.forEach((dest, index) => {
+                    html += `
+                        <div class="destination-card">
+                            <h3>${dest.name}</h3>
+                            <p class="travel-info">📍 ${dest.distance} • ${dest.travel}</p>
+                            <p><strong>Why this fits you:</strong> ${dest.why}</p>
+                            ${dest.highlights && dest.highlights.length > 0 ? `
+                                <p><strong>Must-see highlights:</strong></p>
+                                <ul class="highlights">
+                                    ${dest.highlights.map(h => `<li>${h}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                            ${dest.familyFriendly ? `<p><strong>👨‍👩‍👧‍👦 Family tips:</strong> ${dest.familyFriendly}</p>` : ''}
+                            <button class="select-destination" onclick='selectDestination(${JSON.stringify(dest).replace(/'/g, "&apos;")})'>
+                                Generate Detailed Itinerary →
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+            container.classList.add('active');
+        }
+        
+        async function selectDestination(destination) {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Generating itinerary...';
+            
+            document.querySelector('.loading').textContent = `🗺️ Creating your personalized ${destination.name} itinerary...`;
+            document.querySelector('.loading').classList.add('active');
+            document.getElementById('itinerary').classList.remove('active');
+            
+            try {
+                // Try AI endpoint for itinerary
+                const response = await fetch('/api/recommendations-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...currentFormData,
+                        action: 'itinerary',
+                        destination: destination.name
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to generate itinerary');
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.itinerary) {
+                    displayItinerary(result.itinerary, destination);
+                } else {
+                    throw new Error('Invalid itinerary response');
+                }
+            } catch (error) {
+                // Fall back to basic itinerary
+                const mockItinerary = {
+                    lodging: "• Downtown Hotel - Central location, walk to attractions\n• Historic B&B - Charming, includes breakfast\n• Vacation Rental - More space, kitchen included",
+                    activities: "Friday: Arrive by 6pm, dinner in historic district\nSaturday: Morning at main attraction, lunch downtown, afternoon exploring, dinner at top restaurant\nSunday: Brunch, morning activity, depart by 3pm",
+                    dining: "Check out the food scene in the Arts District. Don't miss the local farmers market on Saturday morning.",
+                    tips: "Book restaurants ahead for Saturday night. Download parking app. Best photo spots at sunset."
+                };
+                displayItinerary(mockItinerary, destination);
+            } finally {
+                document.querySelector('.loading').classList.remove('active');
+                btn.disabled = false;
+                btn.textContent = 'Generate Detailed Itinerary →';
+            }
+        }
+        
+        function displayItinerary(itinerary, destination) {
+            const container = document.getElementById('itinerary');
+            
+            let html = `
+                <h2>📅 Your ${destination.name} Weekend Itinerary</h2>
+                
+                <div class="itinerary-section">
+                    <h3>🏨 Where to Stay</h3>
+                    <p>${formatItineraryText(itinerary.lodging)}</p>
+                </div>
+                
+                <div class="itinerary-section">
+                    <h3>📍 Weekend Schedule</h3>
+                    <p>${formatItineraryText(itinerary.activities)}</p>
+                </div>
+                
+                <div class="itinerary-section">
+                    <h3>🍽️ Dining Recommendations</h3>
+                    <p>${formatItineraryText(itinerary.dining)}</p>
+                </div>
+                
+                <div class="itinerary-section">
+                    <h3>💡 Insider Tips</h3>
+                    <p>${formatItineraryText(itinerary.tips)}</p>
+                </div>
+                
+                <button onclick="window.print()">🖨️ Print Itinerary</button>
+                <button onclick="copyItinerary()">📋 Copy to Clipboard</button>
+            `;
+            
+            container.innerHTML = html;
+            container.classList.add('active');
+            
+            // Smooth scroll to itinerary
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function formatItineraryText(text) {
+            if (!text) return 'Information not available';
+            // Convert line breaks to <br> tags for better formatting
+            return text.replace(/\n/g, '<br>').replace(/•/g, '<br>•');
+        }
+        
+        function copyItinerary() {
+            const itineraryDiv = document.getElementById('itinerary');
+            const text = itineraryDiv.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showError('Itinerary copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -20,6 +20,12 @@
   status = 200
 
 [[redirects]]
+  # Cardinal AI-powered recommendations
+  from = "/api/recommendations-ai"
+  to = "/.netlify/functions/recommendations-ai"
+  status = 200
+
+[[redirects]]
   # Serve the main HTML file for the root path
   from = "/"
   to = "/index.html"
