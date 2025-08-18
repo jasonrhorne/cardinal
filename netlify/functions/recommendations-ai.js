@@ -149,7 +149,8 @@ Focus on lesser-known gems alongside popular destinations. Consider seasonality 
             }
           ],
           temperature: 0.7,
-          max_tokens: 2000,
+          // GPT-5 models use max_completion_tokens, others use max_tokens
+          ...(model.startsWith('gpt-5') ? { max_completion_tokens: 2000 } : { max_tokens: 2000 }),
           response_format: { type: "json_object" }
         })
       });
@@ -251,7 +252,8 @@ async function generateItinerary(apiKey, destination, origin, adults, children, 
                   }
                 ],
                 temperature: 0.7,
-                max_tokens: 800
+                // GPT-5 models use max_completion_tokens, others use max_tokens
+                ...(model.startsWith('gpt-5') ? { max_completion_tokens: 800 } : { max_tokens: 800 })
               })
             });
             
