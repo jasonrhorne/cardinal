@@ -230,82 +230,134 @@ async function generateItinerary(apiKey, destination, origin, adults, children, 
   const hasKids = children && children.length > 0;
   const kidsAges = children || [];
   
-  // Create a single combined prompt to avoid timeouts
-  const combinedPrompt = `Create a detailed weekend itinerary for ${destination} for ${adults} adults${hasKids ? ` and ${children.length} children (ages ${kidsAges.join(', ')})` : ''} traveling from ${origin}. Their interests: ${interests.join(', ')}.
+  // Split into 2 prompts for better detail while avoiding timeout
+  const prompts = [
+    {
+      name: 'lodging_dining',
+      prompt: `Create a comprehensive lodging and dining guide for a weekend trip to ${destination} for ${adults} adults${hasKids ? ` and ${children.length} children (ages ${kidsAges.join(', ')})` : ''}.
 
-Please provide:
+LODGING SECTION - Provide 3 detailed recommendations:
+For each hotel/accommodation include:
+- Full name and neighborhood
+- Why it's perfect for this group (considering ${interests.join(', ')} interests)
+- Key amenities ${hasKids ? '(especially family features)' : ''}
+- Price range and booking tips
 
-1. LODGING (3 options):
-List 3 specific hotels/accommodations with brief descriptions of why they fit this group.
+DINING SECTION - Provide 8-10 restaurant recommendations:
+Organize by meal (2-3 breakfast, 3-4 lunch, 3-4 dinner) including:
+- Restaurant name and exact neighborhood/address area
+- Cuisine type and signature dishes
+- Why it matches their interests (${interests.includes('food') ? 'especially unique local flavors' : 'quality and convenience'})
+- ${hasKids ? 'Kid-friendliness rating and kids menu options' : 'Atmosphere and reservation needs'}
+- Price range per person
 
-2. DINING:
-List 6-8 specific restaurants for the weekend, including neighborhood and cuisine type.
+Be specific with actual establishment names, not generic suggestions.`
+    },
+    {
+      name: 'activities_tips',
+      prompt: `Create a detailed hour-by-hour itinerary and insider tips for a weekend in ${destination} for ${adults} adults${hasKids ? ` and ${children.length} children (ages ${kidsAges.join(', ')})` : ''} traveling from ${origin}. Their interests: ${interests.join(', ')}.
 
-3. ACTIVITIES:
-Create a schedule from Friday evening arrival through Sunday afternoon departure. Include specific attractions and timing.
+DETAILED SCHEDULE:
+FRIDAY:
+- 6:00 PM: Arrival and check-in logistics
+- 7:30 PM: Dinner recommendation with specific restaurant
+- 9:00 PM: Evening activity
 
-4. TIPS:
-5 practical tips for this trip including parking, tickets to book ahead, and ${hasKids ? 'kid-friendly' : 'local'} recommendations.
+SATURDAY:
+- Morning (9 AM - 12 PM): Specific attraction based on ${interests[0]} interest
+- Lunch (12:30 PM): Where and why
+- Afternoon (2 PM - 5 PM): Main activity for ${interests.join(' and ')}
+- Evening (6 PM - 10 PM): Dinner and evening experience
 
-Format as clear sections with headers.`;
+SUNDAY:
+- Morning (10 AM): Brunch spot
+- Midday (11:30 AM - 2 PM): Final activity before departure
+- 3:00 PM: Departure logistics
+
+INSIDER TIPS (5-7 specific tips):
+- Best parking: Specific lots/apps
+- Tickets to book ahead: Which attractions and how
+- ${hasKids ? 'Kid energy management: Best playground/break spots' : 'Hidden gems: Local favorites tourists miss'}
+- Photo spots: Exact locations and best times
+- Weather prep for ${new Date().toLocaleString('default', { month: 'long' })}
+- Money savers: Discounts, happy hours, free activities
+- Local transport: Best ways to get around`
+    }
+  ];
   
   try {
-    // Use a single API call instead of parallel ones to avoid timeout
+    // Run 2 parallel prompts for balance between detail and speed
     const models = ['gpt-5-mini', 'gpt-4.1', 'gpt-5-nano'];
-    let response;
-    let content;
     
-    for (const model of models) {
-      try {
-        console.log(`Generating itinerary with model: ${model}`);
-        response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: model,
-            messages: [
-              {
-                role: 'system',
-                content: 'You are a travel expert creating personalized itineraries. Be specific with names and places.'
+    const responses = await Promise.all(
+      prompts.map(async (p) => {
+        for (const model of models) {
+          try {
+            console.log(`Generating ${p.name} with model: ${model}`);
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
               },
-              {
-                role: 'user',
-                content: combinedPrompt
-              }
-            ],
-            // GPT-5 models only support temperature: 1, others can use 0.7
-            ...(model.startsWith('gpt-5') ? {} : { temperature: 0.7 }),
-            // GPT-5 models use max_completion_tokens, others use max_tokens
-            ...(model.startsWith('gpt-5') ? { max_completion_tokens: 3000 } : { max_tokens: 3000 })
-          })
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          content = data.choices[0].message.content;
-          console.log(`Successfully generated itinerary with ${model}`);
-          break;
+              body: JSON.stringify({
+                model: model,
+                messages: [
+                  {
+                    role: 'system',
+                    content: 'You are a travel expert creating detailed, personalized itineraries. Be specific with actual place names, addresses, and recommendations.'
+                  },
+                  {
+                    role: 'user',
+                    content: p.prompt
+                  }
+                ],
+                // GPT-5 models only support temperature: 1, others can use 0.7
+                ...(model.startsWith('gpt-5') ? {} : { temperature: 0.7 }),
+                // GPT-5 models use max_completion_tokens, others use max_tokens
+                ...(model.startsWith('gpt-5') ? { max_completion_tokens: 2000 } : { max_tokens: 2000 })
+              })
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              console.log(`Successfully generated ${p.name} with ${model}`);
+              return {
+                name: p.name,
+                content: data.choices[0].message.content
+              };
+            }
+          } catch (error) {
+            console.log(`Model ${model} failed for ${p.name}:`, error.message);
+            continue;
+          }
         }
-      } catch (error) {
-        console.log(`Model ${model} failed:`, error.message);
-        continue;
-      }
-    }
+        
+        // If all models fail, return error content
+        return {
+          name: p.name,
+          content: `Unable to generate ${p.name} recommendations at this time.`
+        };
+      })
+    );
     
-    if (!content) {
-      throw new Error('Failed to generate itinerary with all models');
-    }
+    // Extract content from responses
+    const lodgingDining = responses.find(r => r.name === 'lodging_dining')?.content || '';
+    const activitiesTips = responses.find(r => r.name === 'activities_tips')?.content || '';
     
-    // Parse the content into sections
-    const sections = content.split(/\n(?=[A-Z0-9]+[\.\)]\s+[A-Z]+)/);
+    // Parse lodging and dining from first response
+    const lodgingMatch = lodgingDining.match(/LODGING[^]*?(?=DINING|$)/i);
+    const diningMatch = lodgingDining.match(/DINING[^]*$/i);
     
-    const lodging = sections.find(s => s.match(/LODGING/i)) || 'Lodging recommendations not available';
-    const dining = sections.find(s => s.match(/DINING/i)) || 'Dining recommendations not available';
-    const activities = sections.find(s => s.match(/ACTIVITIES|SCHEDULE/i)) || 'Activity schedule not available';
-    const tips = sections.find(s => s.match(/TIPS/i)) || 'Travel tips not available';
+    const lodging = lodgingMatch ? lodgingMatch[0] : 'Lodging recommendations not available';
+    const dining = diningMatch ? diningMatch[0] : 'Dining recommendations not available';
+    
+    // Parse activities and tips from second response
+    const scheduleMatch = activitiesTips.match(/DETAILED SCHEDULE[^]*?(?=INSIDER TIPS|$)/i);
+    const tipsMatch = activitiesTips.match(/INSIDER TIPS[^]*$/i);
+    
+    const activities = scheduleMatch ? scheduleMatch[0] : activitiesTips.split('INSIDER TIPS')[0] || 'Activity schedule not available';
+    const tips = tipsMatch ? tipsMatch[0] : activitiesTips.split('INSIDER TIPS')[1] || 'Travel tips not available';
     
     return {
       destination: destination,
