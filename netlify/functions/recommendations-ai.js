@@ -152,7 +152,8 @@ Focus on lesser-known gems alongside popular destinations. Consider seasonality 
           ...(model.startsWith('gpt-5') ? {} : { temperature: 0.7 }),
           // GPT-5 models use max_completion_tokens, others use max_tokens
           ...(model.startsWith('gpt-5') ? { max_completion_tokens: 2000 } : { max_tokens: 2000 }),
-          response_format: { type: "json_object" }
+          // Only use JSON format for GPT-4 models
+          ...(model.startsWith('gpt-4') ? { response_format: { type: "json_object" } } : {})
         })
       });
       
@@ -185,8 +186,32 @@ Focus on lesser-known gems alongside popular destinations. Consider seasonality 
     }
     
     // Parse the response
-    const content = data.choices[0].message.content;
-    const parsed = JSON.parse(content);
+    let content = data.choices[0].message.content;
+    console.log('Raw AI response length:', content.length);
+    
+    // Clean the response - remove markdown formatting if present
+    content = content.replace(/```json\n?/gi, '').replace(/```\n?/gi, '').trim();
+    
+    // Try to extract JSON from the response
+    let parsed;
+    try {
+      // First try direct parsing
+      parsed = JSON.parse(content);
+    } catch (e) {
+      // If that fails, try to find JSON array in the content
+      const jsonMatch = content.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch (e2) {
+          console.error('Failed to parse JSON from response:', content.substring(0, 500));
+          throw new Error('Invalid JSON response from AI');
+        }
+      } else {
+        console.error('No JSON array found in response:', content.substring(0, 500));
+        throw new Error('No valid JSON in AI response');
+      }
+    }
     
     // Handle different response structures
     const destinations = parsed.destinations || parsed.recommendations || parsed;
