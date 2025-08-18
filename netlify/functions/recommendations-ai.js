@@ -148,7 +148,8 @@ Focus on lesser-known gems alongside popular destinations. Consider seasonality 
               content: prompt
             }
           ],
-          temperature: 0.7,
+          // GPT-5 models only support temperature: 1, others can use 0.7
+          ...(model.startsWith('gpt-5') ? {} : { temperature: 0.7 }),
           // GPT-5 models use max_completion_tokens, others use max_tokens
           ...(model.startsWith('gpt-5') ? { max_completion_tokens: 2000 } : { max_tokens: 2000 }),
           response_format: { type: "json_object" }
@@ -251,7 +252,8 @@ async function generateItinerary(apiKey, destination, origin, adults, children, 
                     content: p.prompt
                   }
                 ],
-                temperature: 0.7,
+                // GPT-5 models only support temperature: 1, others can use 0.7
+                ...(model.startsWith('gpt-5') ? {} : { temperature: 0.7 }),
                 // GPT-5 models use max_completion_tokens, others use max_tokens
                 ...(model.startsWith('gpt-5') ? { max_completion_tokens: 800 } : { max_tokens: 800 })
               })
