@@ -122,8 +122,8 @@ Return as JSON array with this structure:
 
 Focus on lesser-known gems alongside popular destinations. Consider seasonality (current month is ${new Date().toLocaleString('default', { month: 'long' })}).`;
 
-  // Try multiple models in order of preference
-  const models = ['gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo'];
+  // Try multiple models in order of preference - updated to current OpenAI models
+  const models = ['gpt-5-mini', 'gpt-4.1', 'gpt-5-nano'];
   let response;
   let lastError;
   
@@ -150,7 +150,7 @@ Focus on lesser-known gems alongside popular destinations. Consider seasonality 
           ],
           temperature: 0.7,
           max_tokens: 2000,
-          ...(model !== 'gpt-3.5-turbo' ? { response_format: { type: "json_object" } } : {})
+          response_format: { type: "json_object" }
         })
       });
       
@@ -227,8 +227,8 @@ async function generateItinerary(apiKey, destination, origin, adults, children, 
     // Execute prompts in parallel for speed
     const responses = await Promise.all(
       prompts.map(async (p) => {
-        // Try models in order of preference
-        const models = ['gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo'];
+        // Try models in order of preference - updated to current OpenAI models
+        const models = ['gpt-5-mini', 'gpt-4.1', 'gpt-5-nano'];
         
         for (const model of models) {
           try {
