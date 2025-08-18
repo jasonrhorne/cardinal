@@ -230,86 +230,82 @@ async function generateItinerary(apiKey, destination, origin, adults, children, 
   const hasKids = children && children.length > 0;
   const kidsAges = children || [];
   
-  // Create parallel prompts for different aspects of the itinerary
-  const prompts = [
-    {
-      name: 'lodging',
-      prompt: `Recommend 3 lodging options in ${destination} for ${adults} adults${hasKids ? ` and ${children.length} children (ages ${kidsAges.join(', ')})` : ''}. Consider: location convenience, ${interests.join(', ')} interests, weekend availability. Format: Name - Brief description including why it fits their needs.`
-    },
-    {
-      name: 'dining',
-      prompt: `Create a dining guide for a weekend in ${destination} for ${adults} adults${hasKids ? ` and ${children.length} children` : ''}. They're interested in ${interests.includes('food') ? 'food exploration' : 'convenient, quality meals'}. Include 6-8 specific restaurant recommendations across different meals and neighborhoods. Format as: Restaurant Name (Neighborhood) - cuisine type and why to go there.`
-    },
-    {
-      name: 'activities',
-      prompt: `Design a detailed Friday evening through Sunday afternoon itinerary in ${destination} for ${adults} adults${hasKids ? ` and ${children.length} children (ages ${kidsAges.join(', ')})` : ''}. Interests: ${interests.join(', ')}. Include specific times, places, and logistics. Consider travel time from ${origin} for Friday arrival.`
-    },
-    {
-      name: 'tips',
-      prompt: `Provide 5 insider tips for visiting ${destination} on a weekend trip from ${origin}. Consider: ${interests.join(', ')} interests${hasKids ? `, traveling with kids ages ${kidsAges.join(', ')}` : ''}, best photo spots, parking, tickets to book ahead, weather considerations for ${new Date().toLocaleString('default', { month: 'long' })}.`
-    }
-  ];
+  // Create a single combined prompt to avoid timeouts
+  const combinedPrompt = `Create a detailed weekend itinerary for ${destination} for ${adults} adults${hasKids ? ` and ${children.length} children (ages ${kidsAges.join(', ')})` : ''} traveling from ${origin}. Their interests: ${interests.join(', ')}.
+
+Please provide:
+
+1. LODGING (3 options):
+List 3 specific hotels/accommodations with brief descriptions of why they fit this group.
+
+2. DINING:
+List 6-8 specific restaurants for the weekend, including neighborhood and cuisine type.
+
+3. ACTIVITIES:
+Create a schedule from Friday evening arrival through Sunday afternoon departure. Include specific attractions and timing.
+
+4. TIPS:
+5 practical tips for this trip including parking, tickets to book ahead, and ${hasKids ? 'kid-friendly' : 'local'} recommendations.
+
+Format as clear sections with headers.`;
   
   try {
-    // Execute prompts in parallel for speed
-    const responses = await Promise.all(
-      prompts.map(async (p) => {
-        // Try models in order of preference - updated to current OpenAI models
-        const models = ['gpt-5-mini', 'gpt-4.1', 'gpt-5-nano'];
-        
-        for (const model of models) {
-          try {
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                model: model,
-                messages: [
-                  {
-                    role: 'system',
-                    content: 'You are a travel expert creating personalized itineraries. Be specific with names and places.'
-                  },
-                  {
-                    role: 'user',
-                    content: p.prompt
-                  }
-                ],
-                // GPT-5 models only support temperature: 1, others can use 0.7
-                ...(model.startsWith('gpt-5') ? {} : { temperature: 0.7 }),
-                // GPT-5 models use max_completion_tokens, others use max_tokens
-                ...(model.startsWith('gpt-5') ? { max_completion_tokens: 800 } : { max_tokens: 800 })
-              })
-            });
-            
-            if (response.ok) {
-              const data = await response.json();
-              return {
-                name: p.name,
-                content: data.choices[0].message.content
-              };
-            }
-          } catch (error) {
-            console.log(`Model ${model} failed for ${p.name}:`, error.message);
-            continue;
-          }
-        }
-        
-        // If all models fail, return error content
-        return {
-          name: p.name,
-          content: `Unable to generate ${p.name} recommendations at this time.`
-        };
-      })
-    );
+    // Use a single API call instead of parallel ones to avoid timeout
+    const models = ['gpt-5-mini', 'gpt-4.1', 'gpt-5-nano'];
+    let response;
+    let content;
     
-    // Combine responses into structured itinerary
-    const lodging = responses.find(r => r.name === 'lodging').content;
-    const dining = responses.find(r => r.name === 'dining').content;
-    const activities = responses.find(r => r.name === 'activities').content;
-    const tips = responses.find(r => r.name === 'tips').content;
+    for (const model of models) {
+      try {
+        console.log(`Generating itinerary with model: ${model}`);
+        response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a travel expert creating personalized itineraries. Be specific with names and places.'
+              },
+              {
+                role: 'user',
+                content: combinedPrompt
+              }
+            ],
+            // GPT-5 models only support temperature: 1, others can use 0.7
+            ...(model.startsWith('gpt-5') ? {} : { temperature: 0.7 }),
+            // GPT-5 models use max_completion_tokens, others use max_tokens
+            ...(model.startsWith('gpt-5') ? { max_completion_tokens: 3000 } : { max_tokens: 3000 })
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          content = data.choices[0].message.content;
+          console.log(`Successfully generated itinerary with ${model}`);
+          break;
+        }
+      } catch (error) {
+        console.log(`Model ${model} failed:`, error.message);
+        continue;
+      }
+    }
+    
+    if (!content) {
+      throw new Error('Failed to generate itinerary with all models');
+    }
+    
+    // Parse the content into sections
+    const sections = content.split(/\n(?=[A-Z0-9]+[\.\)]\s+[A-Z]+)/);
+    
+    const lodging = sections.find(s => s.match(/LODGING/i)) || 'Lodging recommendations not available';
+    const dining = sections.find(s => s.match(/DINING/i)) || 'Dining recommendations not available';
+    const activities = sections.find(s => s.match(/ACTIVITIES|SCHEDULE/i)) || 'Activity schedule not available';
+    const tips = sections.find(s => s.match(/TIPS/i)) || 'Travel tips not available';
     
     return {
       destination: destination,
