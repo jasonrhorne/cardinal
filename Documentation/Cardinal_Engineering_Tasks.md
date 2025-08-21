@@ -19,7 +19,7 @@
 | ✓ | F002 | Netlify Project Configuration | DevOps | P0 | 3 | F001 | DONE | - | 2025-08-21 |
 | ✓ | F003 | Next.js Project Scaffolding | Frontend | P0 | 5 | F001 | DONE | - | 2025-08-21 |
 | ✓ | F004 | Tailwind CSS Configuration | Frontend | P0 | 2 | F003 | DONE | - | 2025-08-21 |
-| ☐ | F005 | TypeScript Configuration | Frontend | P0 | 2 | F003 | TODO | - | - |
+| ✓ | F005 | TypeScript Configuration | Frontend | P0 | 2 | F003 | DONE | - | 2025-08-21 |
 | ☐ | F006 | ESLint & Prettier Setup | Frontend | P0 | 2 | F003 | TODO | - | - |
 | ☐ | F007 | Testing Framework Setup (Jest + Testing Library) | Testing | P0 | 4 | F003 | TODO | - | - |
 | ☐ | F008 | CI/CD Pipeline Setup | DevOps | P0 | 3 | F002, F007 | TODO | - | - |

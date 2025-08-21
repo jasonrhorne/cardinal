@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui'
+// import { Button } from '@/components/ui' // TODO: Add when implementing interactive elements
 
 export default function HomePage() {
   return (
