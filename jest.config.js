@@ -10,16 +10,16 @@ const createJestConfig = nextJest({
 const config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
-  
+
   // Add more setup options before each test is run
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  
+
   // Test file patterns
   testMatch: [
     '<rootDir>/**/__tests__/**/*.{js,jsx,ts,tsx}',
-    '<rootDir>/**/*.(test|spec).{js,jsx,ts,tsx}'
+    '<rootDir>/**/*.(test|spec).{js,jsx,ts,tsx}',
   ],
-  
+
   // Coverage configuration
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
@@ -31,15 +31,15 @@ const config = {
     '!jest.setup.js',
     '!next.config.js',
     '!tailwind.config.js',
-    '!postcss.config.js'
+    '!postcss.config.js',
   ],
-  
+
   // Ignore patterns
   testPathIgnorePatterns: [
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
     '<rootDir>/coverage/',
-    '<rootDir>/out/'
+    '<rootDir>/out/',
   ],
 }
 

@@ -61,6 +61,9 @@
     "build",
     "dist",
     "coverage",
-    "*.config.js"
+    "*.config.js",
+    "**/__tests__/**/*",
+    "**/*.test.*",
+    "**/*.spec.*"
   ]
 }
