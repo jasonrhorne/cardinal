@@ -22,6 +22,7 @@
     "validate": "npm run code-quality && npm run security-audit && npm run build",
     "setup-env": "node scripts/setup-env.js",
     "env:validate": "npx tsx -e \"import { getClientEnv } from './lib/config/env'; getClientEnv(); console.log('✅ Environment configuration is valid')\"",
+    "env:validate:ci": "node scripts/validate-env-ci.js",
     "env:check": "npx tsx -e \"import { isDevelopment, isProduction } from './lib/config/env'; console.log('Environment:', isDevelopment ? 'development' : isProduction ? 'production' : 'staging')\""
   },
   "dependencies": {

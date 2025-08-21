@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Validate environment configuration
-        run: npm run env:validate
+        run: npm run env:validate:ci
         env:
           # Provide minimal environment for validation
           NEXT_PUBLIC_APP_ENV: development
