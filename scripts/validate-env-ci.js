@@ -2,7 +2,7 @@
 
 /**
  * CI Environment Validation Script
- * 
+ *
  * This script validates only the essential environment variables
  * needed for CI/CD without requiring full application configuration.
  */
@@ -14,7 +14,7 @@ const requiredPublicVars = [
   'NEXT_PUBLIC_APP_ENV',
   'NEXT_PUBLIC_APP_VERSION',
   'NEXT_PUBLIC_APP_URL',
-  'NEXT_PUBLIC_API_URL'
+  'NEXT_PUBLIC_API_URL',
 ]
 
 let hasErrors = false
@@ -47,7 +47,9 @@ urlVars.forEach(varName => {
 const appEnv = process.env.NEXT_PUBLIC_APP_ENV
 const nodeEnv = process.env.NODE_ENV
 
-console.log(`📊 Environment: NODE_ENV=${nodeEnv}, NEXT_PUBLIC_APP_ENV=${appEnv}`)
+console.log(
+  `📊 Environment: NODE_ENV=${nodeEnv}, NEXT_PUBLIC_APP_ENV=${appEnv}`
+)
 
 if (hasErrors) {
   console.error('\n❌ Environment validation failed!')

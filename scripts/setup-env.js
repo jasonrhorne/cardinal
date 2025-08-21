@@ -2,7 +2,7 @@
 
 /**
  * Environment Setup Script
- * 
+ *
  * This script helps developers set up their local environment
  * by copying example files and validating configuration.
  */
@@ -13,7 +13,7 @@ const readline = require('readline')
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 })
 
 function ask(question) {
@@ -31,7 +31,9 @@ async function setupEnvironment() {
   const envLocalExists = fs.existsSync(envLocalPath)
 
   if (envLocalExists) {
-    const overwrite = await ask('❓ .env.local already exists. Overwrite? (y/N): ')
+    const overwrite = await ask(
+      '❓ .env.local already exists. Overwrite? (y/N): '
+    )
     if (overwrite.toLowerCase() !== 'y') {
       console.log('✅ Keeping existing .env.local file')
       rl.close()
@@ -41,7 +43,7 @@ async function setupEnvironment() {
 
   // Copy the example file
   const examplePath = path.join(process.cwd(), '.env.local.example')
-  
+
   if (!fs.existsSync(examplePath)) {
     console.error('❌ .env.local.example not found!')
     rl.close()
@@ -63,16 +65,16 @@ async function setupEnvironment() {
   console.log('2. Check the .env.example file for all available variables')
   console.log('3. Run `npm run validate` to test your configuration')
   console.log('4. Start development with `npm run dev`')
-  
+
   console.log('\n🔐 Security Reminders:')
   console.log('======================')
-  console.log('• Never commit .env.local to git (it\'s already in .gitignore)')
-  console.log('• Keep your API keys secure and don\'t share them')
+  console.log("• Never commit .env.local to git (it's already in .gitignore)")
+  console.log("• Keep your API keys secure and don't share them")
   console.log('• Use different keys for development vs production')
   console.log('• Rotate keys regularly for security')
-  
+
   console.log('\n🚀 Happy coding!')
-  
+
   rl.close()
 }
 
