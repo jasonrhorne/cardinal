@@ -203,6 +203,7 @@ data: { type: 'chunk' | 'complete', content: string, itinerary?: TItinerary }
 5. **Streaming UX**: Use Server-Sent Events for long AI operations
 6. **Accessibility**: Semantic HTML, WCAG AA compliance, keyboard navigation
 7. **Performance**: Lazy load components, optimize bundle size
+8. **Decision logging**: Document architectural/technical decisions in DECISIONS.md with rationale
 
 ## Key Architectural Decisions
 - **Supabase** over Auth0/Clerk (simpler integration, includes database)
@@ -253,9 +254,10 @@ NEXT_TELEMETRY_DISABLED=1
 ## Development Workflow
 1. **Tasks tracked** in Documentation/Cardinal_Engineering_Tasks.md
 2. **Mark tasks complete** with ✓ and date when finished
-3. **Mobile-first development** - test on mobile breakpoints first
-4. **TypeScript strict** - resolve all type errors before committing
-5. **Test AI integrations** thoroughly - LLMs can be unpredictable
+3. **Decision logging** - Update DECISIONS.md for any architectural, technical, or product decisions
+4. **Mobile-first development** - test on mobile breakpoints first
+5. **TypeScript strict** - resolve all type errors before committing
+6. **Test AI integrations** thoroughly - LLMs can be unpredictable
 
 ## Current Status
 - ✅ F001: Project Repository Setup

@@ -17,7 +17,7 @@
 |---|-----|-----------|--------|----------|-------------|--------------|--------|----------|----------|
 | ✓ | F001 | Project Repository Setup | DevOps | P0 | 2 | None | DONE | - | 2025-08-21 |
 | ✓ | F002 | Netlify Project Configuration | DevOps | P0 | 3 | F001 | DONE | - | 2025-08-21 |
-| ☐ | F003 | Next.js Project Scaffolding | Frontend | P0 | 5 | F001 | TODO | - | - |
+| ✓ | F003 | Next.js Project Scaffolding | Frontend | P0 | 5 | F001 | DONE | - | 2025-08-21 |
 | ☐ | F004 | Tailwind CSS Configuration | Frontend | P0 | 2 | F003 | TODO | - | - |
 | ☐ | F005 | TypeScript Configuration | Frontend | P0 | 2 | F003 | TODO | - | - |
 | ☐ | F006 | ESLint & Prettier Setup | Frontend | P0 | 2 | F003 | TODO | - | - |

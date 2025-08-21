@@ -13,14 +13,14 @@ Cardinal is a web application that helps people find and select travel destinati
 ---
 
 ## 2) Background and Context
-Advances in AI make this an opportune time to create a mini-application that goes beyond web scraping and location APIs into something with more soul. Through a combination of AI agents, LLM intelligence, and validation/expansion from external APIs, we can craft a unique experience that helps people find the right travel situation for them.
+AI advances enable creating travel recommendations with more soul than generic web scraping. Combining AI agents, LLM intelligence, and external API validation creates a unique experience for finding the right travel situation.
 
 ---
 
-## 3) Product Vision and Perspective
-- **Perspective**: To see a place from different perspectives is to see it differently altogether. The inspiration comes from an in-person tourism concept where different personalities share their perspectives on the same neighborhood (e.g., an ecologist’s tour vs. a historian’s vs. a photographer’s). While neighborhood-level execution may be challenging for an LLM, this can be effectively applied to itineraries for a city or region.
-- **Example**: If a user is visiting Pittsburgh and is interested in photography, what would the r/photography subreddit recommend to them?
-- **Vision**: Cardinal curates itineraries through persona-driven lenses (e.g., Photographer’s Weekend, Architecture Buff, Food-Forward, Family Explorer), blending human-like taste with data-backed validation.
+## 3) Product Vision
+Cardinal curates itineraries through persona-driven lenses (Photographer's Weekend, Architecture Buff, Food-Forward, Family Explorer), blending human-like taste with data-backed validation. 
+
+**Core Concept**: Different perspectives reveal different experiences. A photographer visiting Pittsburgh gets recommendations that would resonate with r/photography, not generic tourist lists.
 
 ---
 
@@ -55,27 +55,14 @@ Advances in AI make this an opportune time to create a mini-application that goe
 
 ---
 
-## 6) User Journeys
-1) **Onboard**
-- User lands on marketing/home page → continues with email → receives magic link → authenticated session.
-
-2) **Provide Requirements**
-- Inputs: origin city/airport, travel-time appetite (by air/drive), dates or weekend length, lodging type preference and budget, travelers (adults/kids, ages), interests (food, arts, photography, outdoors, architecture, nightlife), pace (relaxed vs packed), accessibility needs, mobility constraints.
-
-3) **See Destination Suggestions**
-- System shows 3–7 destinations with: short rationale (“why fit”), seasonality note, 2–3 highlights, indicative travel times by air, rail, or driving.
-
-4) **Select a Destination**
-- User chooses one; optionally adjusts constraints (e.g., neighborhood interests, hotel pick).
-
-5) **Generate Itinerary**
-- System produces a mobile-friendly itinerary: day-by-day blocks, map neighborhoods, meals, POIs, reservation suggestions, backup options.
-
-6) **Refine**
-- User asks for changes (“more coffee shops,” “avoid long lines,” “we booked X hotel”). System updates and preserves version history.
-
-7) **Save/Share/History**
-- Export to PDF/print. Share link for collaborators. Access previous itineraries.
+## 6) User Journey
+1. **Onboard**: Email → magic link → authenticated session
+2. **Requirements**: Origin, travel time appetite, travelers, interests, pace, constraints
+3. **Destinations**: 3–7 suggestions with rationale, highlights, travel times
+4. **Select**: Choose destination, adjust constraints (hotel, neighborhoods)
+5. **Generate**: Day-by-day itinerary with meals, activities, reservations, backups
+6. **Refine**: Chat-based changes ("more coffee shops," "we booked X hotel")
+7. **Save/Share**: PDF export, share links, history access
 
 ---
 
@@ -165,16 +152,8 @@ Secondary diagnostics (internal):
 
 ---
 
-## 16) Open Questions
-- Should we support exact dates vs generic weekend soon? How to handle seasonality and events?
-- Which personas ship with MVP (top 3–4)?
-- Do we store user preferences for future trips (and how long)?
-- What share permissions are needed (comment vs view-only)?
-- How do we measure and optimize AI model performance across different city types and user personas?
 
----
-
-## 17) Acceptance Criteria (MVP)
+## 16) Acceptance Criteria (MVP)
 - User can sign in with magic link and access their trip workspace.
 - User can enter requirements and receive 3–7 destination suggestions with rationale and highlights.
 - User can select a destination and receive a complete, mobile-friendly itinerary that references their constraints.
@@ -184,6 +163,6 @@ Secondary diagnostics (internal):
 
 ---
 
-## 18) Appendix
+## 17) Appendix
 - **Glossary**: POI (point of interest), RAG (retrieval-augmented generation), Persona Lens (curation perspective), Adjacency (geographic/temporal proximity to reduce backtracking).
 - **Legal/Disclaimer (MVP)**: Recommendations are best-effort; verify hours, availability, and safety; respect local laws and private property; drive safely.

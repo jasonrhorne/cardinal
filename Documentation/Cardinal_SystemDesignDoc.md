@@ -17,12 +17,9 @@ The application employs a hybrid Jamstack architecture, combining the speed of a
 
 The frontend is built for a rich, interactive user experience with a focus on fast iteration.
 
-* **Framework:** **Next.js** (React)
-    * **Reasoning:** Provides a robust framework for building dynamic, data-driven applications. It supports hybrid rendering (SSG and SSR) to optimize performance where needed.
-* **Styling:** **Tailwind CSS**
-    * **Reasoning:** A utility-first CSS framework that enables rapid UI development and prototyping without writing custom CSS. It's ideal for quickly building complex, responsive UIs like the chat interface and itinerary display.
-* **Real-time Communication:** Native **Server-Sent Events (SSE)** via `EventSource` API or a lightweight wrapper library.
-    * **Reasoning:** For the chat interface, the frontend will consume the streaming response from the backend function. This provides a real-time, ChatGPT-like experience where the user sees the itinerary "typing" as it's generated.
+* **Framework:** **Next.js** (React) - Hybrid rendering (SSG/SSR) for optimal performance
+* **Styling:** **Tailwind CSS** - Utility-first CSS for rapid UI development
+* **Real-time Communication:** **Server-Sent Events (SSE)** - Streaming AI responses for real-time "typing" experience
 
 ---
 
@@ -30,14 +27,10 @@ The frontend is built for a rich, interactive user experience with a focus on fa
 
 The backend is a decoupled, serverless microservice architecture designed for a complex agentic workflow.
 
-* **Platform:** **Netlify Functions** (Edge and Background)
-    * **Reasoning:** Provides a scalable, cost-effective serverless environment. It natively handles authentication, routing, and deployment.
-* **Main Function (Concierge Agent):** **Netlify Edge Function**
-    * **Reasoning:** Edge Functions are preferred for the main orchestration agent due to their higher execution time limits and support for response streaming, which is critical for the real-time user experience. This function acts as the central hub for the user request.
-* **Specialized Functions (Research/Support Agents):** **Netlify Functions** (Standard or Background)
-    * **Reasoning:** The main concierge function invokes other smaller, single-purpose functions to handle specific tasks (e.g., researching lodging, food, or validating a response). This modularity simplifies development and maintenance. For long-running, non-time-sensitive tasks, these could be implemented as **Netlify Background Functions** to bypass the standard 10-second timeout.
-* **Agent Orchestration Layer:** **LangChain**
-    * **Reasoning:** Instead of building the entire agentic logic from scratch, these frameworks provide a powerful abstraction layer. They handle the complex inter-agent communication, tool management, and workflow execution. This reduces development time and code complexity. The Netlify function would serve as a lightweight container that runs the logic defined by the orchestration framework.
+* **Platform:** **Netlify Functions** - Scalable, cost-effective serverless environment
+* **Main Function:** **Netlify Edge Function** - Concierge agent with 10min timeout and streaming support
+* **Specialized Functions:** **Standard/Background Functions** - Research, validation, and support agents
+* **Orchestration:** **LangChain** - Agent communication, tool management, workflow execution
 
 ---
 
@@ -45,12 +38,9 @@ The backend is a decoupled, serverless microservice architecture designed for a 
 
 The application will be a "thin" backend, relying on external services for data and AI models.
 
-* **AI Model:** Claude API (various models)
-    * **Reasoning:** The core intelligence of the application is a large language model. All functions will interact with the LLM API to generate the itinerary and perform research.
-* **Authentication & User Data:** A service like **Auth0**, **Clerk**, or **Supabase Auth**.
-    * **Reasoning:** A dedicated authentication service offloads the complexity of user management, including sign-up, login, and secure session handling.
-* **Database:** A serverless database like **Supabase**, **Neon (PostgreSQL)**, or a simple key-value store like **Upstash (Redis)**.
-    * **Reasoning:** Used to store persistent user data, such as saved itineraries, past chat history, and user preferences. A serverless database is ideal as it scales with function usage and is cost-effective.
+* **AI Model:** **Claude API** - Core intelligence for itinerary generation and research
+* **Authentication:** **Supabase Auth** - User management with magic link support  
+* **Database:** **Supabase PostgreSQL** - User data, itineraries, preferences
 
 ---
 
@@ -58,6 +48,6 @@ The application will be a "thin" backend, relying on external services for data 
 
 The entire system is managed via a Git-based workflow on Netlify.
 
-* **Version Control:** **GitHub**
-* **Continuous Deployment (CD):** A push to the main branch automatically triggers a new build and deployment on Netlify.
-* **Build Process:** Netlify builds the Next.js app, compiles the serverless functions, and deploys the entire application to its global CDN.
+* **Version Control:** **GitHub**  
+* **Continuous Deployment:** Main branch push → automatic Netlify build and deployment
+* **Build Process:** Next.js compilation, function bundling, CDN deployment

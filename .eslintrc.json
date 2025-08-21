@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    // React best practices
+    "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-key": "error",
+    
+    // General code quality
+    "prefer-const": "error",
+    "no-var": "error"
+  }
+}
