@@ -1,22 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable static export for Netlify deployment
-  output: 'export',
-  
-  // Disable image optimization for static export
-  images: {
-    unoptimized: true
-  },
-  
-  // Trailing slash for consistent routing
-  trailingSlash: true,
-  
   // Strict mode for better development experience
   reactStrictMode: true,
   
   // Experimental features
   experimental: {
     typedRoutes: true
+  },
+  
+  // Image optimization (enabled for Netlify)
+  images: {
+    domains: [],
+    formats: ['image/webp', 'image/avif'],
   },
   
   // Environment variables

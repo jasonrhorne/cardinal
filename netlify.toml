@@ -1,9 +1,6 @@
 [build]
-  # Build command for Next.js
+  # Build command for Next.js (handled by plugin)
   command = "npm run build"
-  
-  # Output directory for Next.js static export
-  publish = "out"
   
   # Functions directory for Netlify Functions
   functions = "netlify/functions"
@@ -14,19 +11,6 @@
   
   # Enable Next.js telemetry (optional)
   NEXT_TELEMETRY_DISABLED = "1"
-
-# Redirects for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["visitor"]}
-
-# API routes redirect to Netlify Functions
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
 
 # Security headers
 [[headers]]
@@ -58,7 +42,7 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Edge functions configuration (for the main concierge agent)
+# Edge functions configuration (for the main concierge agent)  
 [[edge_functions]]
   function = "concierge"
   path = "/api/concierge"

@@ -7,19 +7,14 @@ This project is configured for deployment on Netlify using the Jamstack architec
 
 ### netlify.toml
 - Main Netlify configuration file
-- Defines build settings, redirects, headers, and function configurations
-- Configured for Next.js with static export (`out` directory)
+- Defines build settings, headers, and function configurations  
+- Configured for Next.js with official plugin integration
 - Includes security headers and caching policies
 
-### _headers
-- Additional HTTP headers for security and performance
-- Static asset caching configuration
-- Security headers (CSRF, XSS protection, etc.)
-
-### _redirects
-- URL routing configuration
-- API routes redirect to Netlify Functions
-- SPA fallback routing
+### Plugin Integration
+- Uses `@netlify/plugin-nextjs` for seamless Next.js deployment
+- Handles SSR, API routes, and static optimization automatically
+- No need for manual redirects or headers (handled by plugin)
 
 ## Directory Structure
 
@@ -50,14 +45,15 @@ Copy `.env.example` to `.env.local` and configure:
 
 ### 1. Initial Setup
 1. Connect repository to Netlify
-2. Configure environment variables in Netlify dashboard
-3. Set build command: `npm run build`
-4. Set publish directory: `out`
+2. Configure environment variables in Netlify dashboard  
+3. Netlify will automatically detect Next.js and use the plugin
+4. Build and deploy will be handled automatically
 
 ### 2. Build Configuration
-- Build framework: Next.js
+- Build framework: Next.js with official Netlify plugin
 - Node.js version: 18
-- Package manager: npm (or yarn/pnpm as needed)
+- Package manager: npm
+- Build command: `npm run build` (handled automatically by plugin)
 
 ### 3. Function Configuration
 - Functions directory: `netlify/functions`
