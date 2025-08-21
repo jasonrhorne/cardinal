@@ -1,14 +1,45 @@
 {
-  "extends": [
-    "next/core-web-vitals"
-  ],
+  "extends": ["next/core-web-vitals", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
+    // Prettier integration
+    "prettier/prettier": "error",
+
     // React best practices
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-key": "error",
-    
+    "react/self-closing-comp": "error",
+    "react/jsx-curly-brace-presence": [
+      "error",
+      { "props": "never", "children": "never" }
+    ],
+
+    // TypeScript specific (using built-in Next.js TS support)
+    // Note: TypeScript compiler handles most TS-specific linting via tsconfig.json
+
     // General code quality
     "prefer-const": "error",
-    "no-var": "error"
+    "no-var": "error",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-debugger": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+
+    // Import organization
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc", "caseInsensitive": true }
+      }
+    ]
   }
 }

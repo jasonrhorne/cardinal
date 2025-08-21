@@ -7,7 +7,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className = '', hover = false, children, ...props }, ref) => {
     const classes = hover ? `card-hover ${className}` : `card ${className}`
-    
+
     return (
       <div ref={ref} className={classes} {...props}>
         {children}

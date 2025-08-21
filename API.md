@@ -11,7 +11,7 @@ All API responses follow this structure:
   data: T
 }
 
-// Error  
+// Error
 {
   status: 'error',
   error: string,
@@ -29,6 +29,7 @@ data: {
 ## Authentication
 
 ### Magic Link Flow
+
 ```
 POST /api/auth/request-magic-link
 {
@@ -41,6 +42,7 @@ GET /auth/callback?token=...
 ```
 
 ### Session Validation
+
 ```
 GET /api/auth/session
 Headers: { Cookie: 'sb-access-token=...' }
@@ -55,7 +57,7 @@ Headers: { Cookie: 'sb-access-token=...' }
 POST /api/destinations/suggest
 {
   origin: string,           // "San Francisco, CA"
-  travelTime: {            
+  travelTime: {
     max: number,            // Max hours willing to travel
     modes: ['air', 'drive'] // Preferred travel modes
   },
@@ -108,8 +110,8 @@ POST /api/itinerary/generate
 → Streaming Response (SSE)
 data: { type: 'chunk', content: 'Researching restaurants in...' }
 data: { type: 'chunk', content: 'Found 12 kid-friendly activities...' }
-data: { 
-  type: 'complete', 
+data: {
+  type: 'complete',
   content: 'Itinerary complete!',
   data: {
     itinerary: TItinerary,
@@ -160,103 +162,104 @@ GET /api/itinerary/{id}/pdf
 
 ```typescript
 type TRequirements = {
-  origin: string;
-  destination?: string;
+  origin: string
+  destination?: string
   travelTime: {
-    max: number;
-    modes: ('air' | 'drive' | 'rail')[];
-  };
-  duration: number;
+    max: number
+    modes: ('air' | 'drive' | 'rail')[]
+  }
+  duration: number
   travelers: {
-    adults: number;
-    children: number;
-    childAges?: number[];
-  };
-  interests: string[];
-  budget: 'low' | 'medium' | 'high';
-  pace: 'relaxed' | 'moderate' | 'packed';
-  dietary?: string[];
-  accessibility?: string[];
-};
+    adults: number
+    children: number
+    childAges?: number[]
+  }
+  interests: string[]
+  budget: 'low' | 'medium' | 'high'
+  pace: 'relaxed' | 'moderate' | 'packed'
+  dietary?: string[]
+  accessibility?: string[]
+}
 
 type TItinerary = {
-  id: string;
-  destination: string;
-  duration: number;
-  createdAt: string;
-  updatedAt: string;
-  days: TDay[];
+  id: string
+  destination: string
+  duration: number
+  createdAt: string
+  updatedAt: string
+  days: TDay[]
   overview: {
-    summary: string;
-    transportation: string;
-    neighborhoods: string[];
-    totalEstimatedCost?: string;
-  };
+    summary: string
+    transportation: string
+    neighborhoods: string[]
+    totalEstimatedCost?: string
+  }
   metadata: {
-    persona: string;
-    confidence: number;
-    lastRefinement?: string;
-  };
-};
+    persona: string
+    confidence: number
+    lastRefinement?: string
+  }
+}
 
 type TDay = {
-  day: number;
-  date?: string;
-  theme: string;           // "Historic Downtown Exploration"
-  activities: TActivity[];
-  meals: TMeal[];
-  transportation: string;
-  walkingDistance?: string;
-  estimatedCost?: string;
-};
+  day: number
+  date?: string
+  theme: string // "Historic Downtown Exploration"
+  activities: TActivity[]
+  meals: TMeal[]
+  transportation: string
+  walkingDistance?: string
+  estimatedCost?: string
+}
 
 type TActivity = {
-  id: string;
-  name: string;
-  type: 'attraction' | 'experience' | 'shopping' | 'nature';
-  description: string;
-  duration: string;        // "1-2 hours"
-  timeSlot: string;        // "morning" | "afternoon" | "evening"
+  id: string
+  name: string
+  type: 'attraction' | 'experience' | 'shopping' | 'nature'
+  description: string
+  duration: string // "1-2 hours"
+  timeSlot: string // "morning" | "afternoon" | "evening"
   location: {
-    address: string;
-    coordinates?: [number, number];
-    neighborhood: string;
-  };
+    address: string
+    coordinates?: [number, number]
+    neighborhood: string
+  }
   pricing: {
-    range: string;         // "Free" | "$10-20" | "$$"
-    notes?: string;
-  };
-  tags: string[];          // ["kid-friendly", "wheelchair-accessible"]
-  tips?: string[];         // Insider recommendations
-  alternatives?: string[]; // Backup options
-};
+    range: string // "Free" | "$10-20" | "$$"
+    notes?: string
+  }
+  tags: string[] // ["kid-friendly", "wheelchair-accessible"]
+  tips?: string[] // Insider recommendations
+  alternatives?: string[] // Backup options
+}
 
 type TMeal = {
-  id: string;
-  name: string;
-  type: 'breakfast' | 'lunch' | 'dinner' | 'snack';
-  cuisine: string;
-  description: string;
+  id: string
+  name: string
+  type: 'breakfast' | 'lunch' | 'dinner' | 'snack'
+  cuisine: string
+  description: string
   location: {
-    address: string;
-    neighborhood: string;
-  };
+    address: string
+    neighborhood: string
+  }
   pricing: {
-    range: string;
-    averageCost?: string;
-  };
+    range: string
+    averageCost?: string
+  }
   reservations: {
-    required: boolean;
-    notes?: string;
-  };
-  dietary: string[];       // ["vegetarian", "gluten-free"]
-  alternatives?: string[];
-};
+    required: boolean
+    notes?: string
+  }
+  dietary: string[] // ["vegetarian", "gluten-free"]
+  alternatives?: string[]
+}
 ```
 
 ## External API Integrations
 
 ### Google Places API
+
 ```
 // Internal proxy endpoint
 GET /api/places/search?query={query}&location={lat,lng}
@@ -268,6 +271,7 @@ GET /api/places/{placeId}
 ```
 
 ### Google Maps API
+
 ```
 // Travel time calculation
 POST /api/maps/travel-time
@@ -276,68 +280,75 @@ POST /api/maps/travel-time
   destination: string,
   mode: 'driving' | 'walking' | 'transit'
 }
-→ { 
-  status: 'success', 
-  data: { 
-    duration: string, 
+→ {
+  status: 'success',
+  data: {
+    duration: string,
     distance: string,
     route?: TRoute
-  } 
+  }
 }
 ```
 
 ## Streaming Events (Server-Sent Events)
 
 ### Event Types
+
 ```typescript
-type StreamEvent = {
-  // Progress updates
-  type: 'progress';
-  content: string;          // Human-readable progress
-  step: string;             // Machine-readable step ID
-  progress: number;         // 0-100 percentage
-} | {
-  // Partial results
-  type: 'partial';
-  content: string;
-  data: Partial<TItinerary>;
-} | {
-  // Final result
-  type: 'complete';
-  content: string;
-  data: TItinerary;
-} | {
-  // Error occurred
-  type: 'error';
-  content: string;
-  error: string;
-};
+type StreamEvent =
+  | {
+      // Progress updates
+      type: 'progress'
+      content: string // Human-readable progress
+      step: string // Machine-readable step ID
+      progress: number // 0-100 percentage
+    }
+  | {
+      // Partial results
+      type: 'partial'
+      content: string
+      data: Partial<TItinerary>
+    }
+  | {
+      // Final result
+      type: 'complete'
+      content: string
+      data: TItinerary
+    }
+  | {
+      // Error occurred
+      type: 'error'
+      content: string
+      error: string
+    }
 ```
 
 ### Client-Side Consumption
+
 ```javascript
-const eventSource = new EventSource('/api/itinerary/generate');
-eventSource.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  switch(data.type) {
+const eventSource = new EventSource('/api/itinerary/generate')
+eventSource.onmessage = event => {
+  const data = JSON.parse(event.data)
+  switch (data.type) {
     case 'progress':
-      updateProgress(data.progress, data.content);
-      break;
+      updateProgress(data.progress, data.content)
+      break
     case 'complete':
-      displayItinerary(data.data);
-      eventSource.close();
-      break;
+      displayItinerary(data.data)
+      eventSource.close()
+      break
     case 'error':
-      showError(data.error);
-      eventSource.close();
-      break;
+      showError(data.error)
+      eventSource.close()
+      break
   }
-};
+}
 ```
 
 ## Error Codes
 
 ### Client Errors (4xx)
+
 - `400` - Invalid request format (Zod validation failure)
 - `401` - Unauthorized (no valid session)
 - `403` - Forbidden (valid session, insufficient permissions)
@@ -346,12 +357,14 @@ eventSource.onmessage = (event) => {
 - `429` - Rate limited
 
 ### Server Errors (5xx)
+
 - `500` - Internal server error
 - `502` - External API failure (Google, Anthropic)
 - `503` - Service temporarily unavailable
 - `504` - Request timeout (AI processing)
 
 ### Error Response Format
+
 ```typescript
 {
   status: 'error',
@@ -368,16 +381,19 @@ eventSource.onmessage = (event) => {
 ## Rate Limits
 
 ### Public Endpoints
+
 - Magic link requests: 5 per email per hour
 - Destination suggestions: 10 per IP per hour (unauthenticated)
 
 ### Authenticated Endpoints
+
 - Destination suggestions: 50 per user per day
 - Itinerary generation: 10 per user per day
 - Refinements: 20 per itinerary
 - PDF exports: 100 per user per day
 
 ### Headers
+
 ```
 X-RateLimit-Limit: 50
 X-RateLimit-Remaining: 49
@@ -387,6 +403,7 @@ X-RateLimit-Reset: 1640995200
 ## Webhooks (Future)
 
 ### Itinerary Updates
+
 ```
 POST {webhook_url}
 {

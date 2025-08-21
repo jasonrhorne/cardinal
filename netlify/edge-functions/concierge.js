@@ -9,9 +9,9 @@ export default async (request, context) => {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
-      }
-    });
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      },
+    })
   }
 
   try {
@@ -22,31 +22,34 @@ export default async (request, context) => {
       timestamp: new Date().toISOString(),
       capabilities: [
         'destination_suggestions',
-        'itinerary_generation', 
-        'refinement_processing'
-      ]
-    };
+        'itinerary_generation',
+        'refinement_processing',
+      ],
+    }
 
     return new Response(JSON.stringify(response), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'no-cache'
-      }
-    });
+        'Cache-Control': 'no-cache',
+      },
+    })
   } catch (error) {
-    console.error('Concierge agent error:', error);
-    
-    return new Response(JSON.stringify({
-      error: 'Internal server error',
-      message: 'The concierge agent encountered an error'
-    }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+    console.error('Concierge agent error:', error)
+
+    return new Response(
+      JSON.stringify({
+        error: 'Internal server error',
+        message: 'The concierge agent encountered an error',
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    )
   }
-};
+}

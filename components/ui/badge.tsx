@@ -11,11 +11,11 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       warning: 'badge-warning',
       error: 'badge-error',
       info: 'badge-info',
-      gray: 'badge-gray'
+      gray: 'badge-gray',
     }
-    
+
     const classes = `badge ${variants[variant]} ${className}`
-    
+
     return (
       <span ref={ref} className={classes} {...props}>
         {children}

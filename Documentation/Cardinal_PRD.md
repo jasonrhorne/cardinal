@@ -1,6 +1,7 @@
 ## Cardinal Product Requirements Document (PRD)
 
 ### Document Info
+
 - **Owner**: Cardinal
 - **Doc Status**: Draft v0.1 (MVP)
 - **Last Updated**: 2025-08-20
@@ -8,28 +9,33 @@
 ---
 
 ## 1) Purpose
+
 Cardinal is a web application that helps people find and select travel destinations for short, long-weekend type trips and, once selected, receive bespoke recommendations and beautiful itineraries (mobile-friendly webpages). It helps people discover points of interest, stories, and restaurants that fit their tastes and interests. Think of it as a cross between the best hotel concierge you've ever had and your friend who knows all of the hot restaurants and places around town. At the end of the day, we want to evoke excitement and anticipation.
 
 ---
 
 ## 2) Background and Context
+
 AI advances enable creating travel recommendations with more soul than generic web scraping. Combining AI agents, LLM intelligence, and external API validation creates a unique experience for finding the right travel situation.
 
 ---
 
 ## 3) Product Vision
-Cardinal curates itineraries through persona-driven lenses (Photographer's Weekend, Architecture Buff, Food-Forward, Family Explorer), blending human-like taste with data-backed validation. 
+
+Cardinal curates itineraries through persona-driven lenses (Photographer's Weekend, Architecture Buff, Food-Forward, Family Explorer), blending human-like taste with data-backed validation.
 
 **Core Concept**: Different perspectives reveal different experiences. A photographer visiting Pittsburgh gets recommendations that would resonate with r/photography, not generic tourist lists.
 
 ---
 
 ## 4) Target Users and Personas
+
 - **Audience**: People in their 20s, 30s, and 40s who are culturally in tune. Think recommendations akin to NYT Travel, Food & Wine, Lonely Planet, and Thrillist.
 - **Willingness to Pay**: Comfortable spending a bit more to feel confident in the experience.
 - **Need State**: Aging out of pure word-of-mouth; seeking unique (not necessarily prestigious or fancy) places to travel; have concrete travel requirements.
 
 ### Proto-Personas
+
 - **The Tasteful Weekender (Early 30s, couple or duo)**: Wants a high-signal list of neighborhoods, 2–3 great meals, a couple can’t-miss activities, and walkable sequences.
 - **The Culture Chaser (Late 20s, friends group)**: Prioritizes vibe, nightlife, and local stories over museums. Wants a flexible plan and shareable format.
 - **The Food-Led Family (Late 30s/40s, kids)**: Needs kid-aware plans (nap windows, stroller-friendly), reservations, back-up options, and travel time realism.
@@ -37,7 +43,9 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ---
 
 ## 5) Product Scope
+
 ### In-Scope (MVP)
+
 - **Magic link authentication**
 - **Requirements intake**: origin location; appetite for travel time (air and driving); lodging preferences; number of travelers; number and ages of children; interests when traveling
 - **Destination suggestions**: List of candidate destinations with rationale and 2–3 key highlights each
@@ -48,6 +56,7 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 - **History**: View past itineraries
 
 ### Out of Scope (MVP)
+
 - Account profiles beyond email magic link (e.g., social login)
 - Direct booking (flights/hotels/restaurants)
 - Real-time availability, live traffic updates, or dynamic pricing
@@ -56,6 +65,7 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ---
 
 ## 6) User Journey
+
 1. **Onboard**: Email → magic link → authenticated session
 2. **Requirements**: Origin, travel time appetite, travelers, interests, pace, constraints
 3. **Destinations**: 3–7 suggestions with rationale, highlights, travel times
@@ -67,6 +77,7 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ---
 
 ## 7) Functional Requirements
+
 - **FR1 Authentication**: Email-based magic link sign-in; sessions persist; minimal PII stored.
 - **FR2 Requirements Intake**: Structured form with validation; prefilled defaults (derived from origin); save partial progress.
 - **FR3 Destination Generation**: Generate 3–7 candidates with clear rationale and highlights; show estimated drive/flight time bands.
@@ -80,6 +91,7 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ---
 
 ## 8) Content, Tone, and Presentation
+
 - **Tone**: Knowledgeable, friendly, specific, and confident—no generic filler. Include brief context for why each choice is great.
 - **Format**: Mobile-first cards and day timelines; sections for neighborhoods; concise map callouts; reservation tips and time windows.
 - **Inclusion**: Dietary tags (vegan/vegetarian/gluten-free), accessibility notes, kid-friendly indicators.
@@ -87,6 +99,7 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ---
 
 ## 9) AI, Data, and Validation Approach
+
 - **Core LLM**: Use an LLM to ideate destinations and itineraries using persona prompts and structured output schemas.
 - **Validation & Enrichment**: Cross-check and enrich with APIs where feasible.
   - Google Places / Maps: place details, hours, ratings, coordinates.
@@ -100,12 +113,14 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ---
 
 ## 10) Ranking and Personalization
+
 - **Ranking signals**: Fit to interests and constraints, neighborhood adjacency, diversity of experiences, temporal feasibility, crowd avoidance where possible.
 - **Personalization**: Use prior refinements and history to bias future recs; simple scoring before advanced models.
 
 ---
 
 ## 11) Non-Functional Requirements
+
 - **Performance**: Destination suggestions < 10s; initial itinerary < 20s; refinement iteration < 10s (targets on warm cache).
 - **Reliability**: Graceful fallbacks if APIs fail; show transparent loading and retry guidance.
 - **Security & Privacy**: Store minimal PII (email only); encrypt at rest and in transit; clear data retention policy.
@@ -115,13 +130,16 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ---
 
 ## 12) Success Metrics (MVP)
+
 At first, success focuses on itinerary quality and basic engagement.
+
 - **Unique visits**
 - **Visits → itinerary conversion** (generated at least one itinerary)
 - **Itinerary saved or shared** (PDF export or share link copy)
 - **Voluntary support** via a "Buy me a coffee" link (count and $)
 
 Secondary diagnostics (internal):
+
 - Iteration count per itinerary (lower may indicate higher initial fit; very high may indicate confusion)
 - Time to first usable itinerary
 - Refinement satisfaction quick-poll (thumbs up/down)
@@ -129,6 +147,7 @@ Secondary diagnostics (internal):
 ---
 
 ## 13) Release Plan
+
 - **Phase 0 (Internal Prototype)**: Focus on AI model performance across diverse city types; manual validations; basic share link.
 - **Phase 1 (MVP Public)**: AI-first approach with any city input; magic link auth; requirements form; destination shortlist; itinerary with PDF/share; Buy-me-a-coffee.
 - **Phase 2**: RAG memories per city; stronger validation; collaborator comments; improved ranking.
@@ -137,6 +156,7 @@ Secondary diagnostics (internal):
 ---
 
 ## 14) Dependencies and Integrations
+
 - Email auth provider (magic link)
 - LLM provider
 - Google Maps/Places (and billing)
@@ -145,6 +165,7 @@ Secondary diagnostics (internal):
 ---
 
 ## 15) Risks and Mitigations
+
 - **Hallucinations/closures**: Validate with Places API; add user report/flag; keep freshness metadata.
 - **Latency costs**: Cache by city/persona; reuse partial results; multi-step agent with short prompts.
 - **Content trust**: Provide rationale and source snippets; show last-validated timestamps when possible.
@@ -152,8 +173,8 @@ Secondary diagnostics (internal):
 
 ---
 
-
 ## 16) Acceptance Criteria (MVP)
+
 - User can sign in with magic link and access their trip workspace.
 - User can enter requirements and receive 3–7 destination suggestions with rationale and highlights.
 - User can select a destination and receive a complete, mobile-friendly itinerary that references their constraints.
@@ -164,5 +185,6 @@ Secondary diagnostics (internal):
 ---
 
 ## 17) Appendix
+
 - **Glossary**: POI (point of interest), RAG (retrieval-augmented generation), Persona Lens (curation perspective), Adjacency (geographic/temporal proximity to reduce backtracking).
 - **Legal/Disclaimer (MVP)**: Recommendations are best-effort; verify hours, availability, and safety; respect local laws and private property; drive safely.

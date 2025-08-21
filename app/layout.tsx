@@ -3,7 +3,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Cardinal - AI Travel Itineraries',
-  description: 'Discover unique travel destinations and get personalized itineraries crafted by AI',
+  description:
+    'Discover unique travel destinations and get personalized itineraries crafted by AI',
   keywords: 'travel, itinerary, AI, destinations, travel planning',
 }
 

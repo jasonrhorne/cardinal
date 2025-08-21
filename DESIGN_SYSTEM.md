@@ -1,16 +1,19 @@
 # Cardinal Design System
 
 ## Overview
+
 Cardinal uses a comprehensive Tailwind CSS-based design system with custom components for consistent UI patterns across the application.
 
 ## Colors
 
 ### Brand Colors
+
 - **Primary**: `brand-600` (#2563eb) - Main CTAs, primary actions
 - **Primary Hover**: `brand-700` (#1d4ed8) - Hover states
 - **Primary Light**: `brand-100` (#dbeafe) - Light backgrounds, badges
 
 ### Semantic Colors
+
 - **Success**: `success-600` (#16a34a) - Success states, positive actions
 - **Warning**: `warning-600` (#ca8a04) - Warning states, attention needed
 - **Error**: `error-600` (#dc2626) - Error states, destructive actions
@@ -19,18 +22,21 @@ Cardinal uses a comprehensive Tailwind CSS-based design system with custom compo
 ## Typography
 
 ### Headings
+
 - **`.heading-1`**: Hero headings (4xl/5xl/6xl responsive)
 - **`.heading-2`**: Page titles (3xl/4xl responsive)
 - **`.heading-3`**: Section headings (2xl/3xl responsive)
 - **`.heading-4`**: Subsection headings (xl/2xl responsive)
 
 ### Text Colors
+
 - **`.text-muted`**: Secondary text (gray-600)
 - **`.text-subtle`**: Tertiary text (gray-500)
 
 ## Components
 
 ### Buttons
+
 ```tsx
 import { Button } from '@/components/ui'
 
@@ -52,10 +58,12 @@ import { Button } from '@/components/ui'
 ```
 
 ### Cards
+
 ```tsx
 import { Card, CardHeader, CardBody, CardFooter } from '@/components/ui'
-
-<Card hover> {/* hover prop adds hover effect */}
+;<Card hover>
+  {' '}
+  {/* hover prop adds hover effect */}
   <CardHeader>
     <h3>Card Title</h3>
   </CardHeader>
@@ -69,10 +77,10 @@ import { Card, CardHeader, CardBody, CardFooter } from '@/components/ui'
 ```
 
 ### Form Inputs
+
 ```tsx
 import { Input } from '@/components/ui'
-
-<Input
+;<Input
   label="Email Address"
   placeholder="Enter your email"
   help="We'll never share your email"
@@ -81,6 +89,7 @@ import { Input } from '@/components/ui'
 ```
 
 ### Badges
+
 ```tsx
 import { Badge } from '@/components/ui'
 
@@ -92,6 +101,7 @@ import { Badge } from '@/components/ui'
 ```
 
 ### Spinners
+
 ```tsx
 import { Spinner } from '@/components/ui'
 
@@ -103,6 +113,7 @@ import { Spinner } from '@/components/ui'
 ## CSS Component Classes
 
 ### Button Classes
+
 - **`.btn`**: Base button styles
 - **`.btn-primary`**: Primary button variant
 - **`.btn-secondary`**: Secondary button variant
@@ -110,12 +121,14 @@ import { Spinner } from '@/components/ui'
 - **`.btn-sm/.btn-md/.btn-lg`**: Size variants
 
 ### Card Classes
+
 - **`.card`**: Base card styles
 - **`.card-hover`**: Card with hover effects
 - **`.card-body`**: Card content padding
 - **`.card-header/.card-footer`**: Card sections with borders
 
 ### Form Classes
+
 - **`.form-input`**: Base input field styles
 - **`.form-textarea`**: Textarea styles
 - **`.form-select`**: Select dropdown styles
@@ -124,6 +137,7 @@ import { Spinner } from '@/components/ui'
 - **`.form-error/.form-help`**: Form feedback styles
 
 ### Layout Classes
+
 - **`.container-custom`**: Responsive container with max-width and padding
 - **`.section-padding`**: Standard section padding (py-16 md:py-24)
 - **`.grid-auto-fit/.grid-auto-fill`**: CSS Grid auto-sizing
@@ -131,12 +145,14 @@ import { Spinner } from '@/components/ui'
 ## Animations
 
 ### Custom Animations
+
 - **`.animate-fade-in`**: Fade in animation (0.5s ease-in-out)
 - **`.animate-slide-in`**: Slide in from top (0.3s ease-out)
 - **`.animate-bounce-subtle`**: Subtle bounce effect (0.6s ease-in-out)
 - **`.animate-pulse-subtle`**: Subtle pulse effect (2s infinite)
 
 ### Animation Delays
+
 - **`.animation-delay-75`**: 75ms delay
 - **`.animation-delay-150`**: 150ms delay
 - **`.animation-delay-300`**: 300ms delay
@@ -145,14 +161,17 @@ import { Spinner } from '@/components/ui'
 ## Utility Classes
 
 ### Scrollbars
+
 - **`.scrollbar-thin`**: Thin custom scrollbars (cross-browser)
 
 ### Safe Areas (iOS)
+
 - **`.safe-top/.safe-bottom/.safe-left/.safe-right`**: iOS safe area padding
 
 ## Best Practices
 
 ### Do's ✅
+
 - Use semantic color variants (`success`, `warning`, `error`)
 - Prefer component classes (`.btn-primary`) over utility classes for common patterns
 - Use consistent spacing scale (4, 8, 16, 24, 32px)
@@ -160,6 +179,7 @@ import { Spinner } from '@/components/ui'
 - Use loading states for async operations
 
 ### Don'ts ❌
+
 - Don't mix component classes with conflicting utility classes
 - Don't use hardcoded colors outside the design system
 - Don't create custom components without following the existing patterns
@@ -168,6 +188,7 @@ import { Spinner } from '@/components/ui'
 ## Mobile-First Approach
 
 All components are designed mobile-first with responsive breakpoints:
+
 - **Default**: Mobile (< 640px)
 - **sm**: 640px+
 - **md**: 768px+
@@ -186,12 +207,11 @@ All components are designed mobile-first with responsive breakpoints:
 ## Usage Examples
 
 ### Landing Page Section
+
 ```tsx
 <div className="container-custom section-padding">
   <h1 className="heading-1 text-center">Welcome to Cardinal</h1>
-  <p className="mt-6 text-center text-muted">
-    AI-powered travel planning
-  </p>
+  <p className="mt-6 text-center text-muted">AI-powered travel planning</p>
   <div className="mt-10 text-center">
     <Button size="lg">Get Started</Button>
   </div>
@@ -199,17 +219,14 @@ All components are designed mobile-first with responsive breakpoints:
 ```
 
 ### Form Layout
+
 ```tsx
 <Card>
   <CardHeader>
     <h2 className="heading-4">Sign In</h2>
   </CardHeader>
   <CardBody className="space-y-4">
-    <Input
-      label="Email"
-      type="email"
-      required
-    />
+    <Input label="Email" type="email" required />
     <Button className="w-full" isLoading={loading}>
       Sign In
     </Button>
@@ -218,6 +235,7 @@ All components are designed mobile-first with responsive breakpoints:
 ```
 
 ### Dashboard Grid
+
 ```tsx
 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
   {trips.map(trip => (

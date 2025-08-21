@@ -7,24 +7,34 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = '', variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
+  (
+    {
+      className = '',
+      variant = 'primary',
+      size = 'md',
+      isLoading,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const variants = {
       primary: 'btn-primary',
-      secondary: 'btn-secondary', 
+      secondary: 'btn-secondary',
       ghost: 'btn-ghost',
       success: 'btn-success',
       warning: 'btn-warning',
-      error: 'btn-error'
+      error: 'btn-error',
     }
-    
+
     const sizes = {
       sm: 'btn-sm',
       md: 'btn-md',
-      lg: 'btn-lg'
+      lg: 'btn-lg',
     }
-    
+
     const classes = `btn ${variants[variant]} ${sizes[size]} ${className}`
-    
+
     return (
       <button
         ref={ref}
@@ -32,9 +42,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {isLoading && (
-          <span className="spinner-sm mr-2" />
-        )}
+        {isLoading && <span className="spinner-sm mr-2" />}
         {children}
       </button>
     )

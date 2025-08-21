@@ -9,14 +9,14 @@ const Spinner = forwardRef<HTMLSpanElement, SpinnerProps>(
     const sizes = {
       sm: 'spinner-sm',
       md: 'spinner-md',
-      lg: 'spinner-lg'
+      lg: 'spinner-lg',
     }
-    
+
     const classes = `spinner ${sizes[size]} ${className}`
-    
+
     return (
-      <span 
-        ref={ref} 
+      <span
+        ref={ref}
         className={classes}
         role="status"
         aria-label="Loading"

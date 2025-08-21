@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+
 import { Button, Input } from '@/components/ui'
 
 export default function SignInPage() {
@@ -33,13 +34,15 @@ export default function SignInPage() {
         autoComplete="email"
         required
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
         placeholder="Enter your email address"
         label="Email address"
       />
 
       {message && (
-        <div className={`text-sm ${message.includes('sent') ? 'text-success-600' : 'text-error-600'}`}>
+        <div
+          className={`text-sm ${message.includes('sent') ? 'text-success-600' : 'text-error-600'}`}
+        >
           {message}
         </div>
       )}
@@ -55,9 +58,7 @@ export default function SignInPage() {
       </Button>
 
       <div className="text-center text-sm text-subtle">
-        <p>
-          We&apos;ll send you a secure link to sign in without a password.
-        </p>
+        <p>We&apos;ll send you a secure link to sign in without a password.</p>
       </div>
     </form>
   )
