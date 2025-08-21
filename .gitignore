@@ -11,9 +11,12 @@ out/
 .next-static/
 .next/cache/
 
-# Env files
+# Environment files
 .env*
 !.env.example
+!.env.local.example  
+!.env.staging.example
+!.env.production.example
 
 # MacOS
 .DS_Store

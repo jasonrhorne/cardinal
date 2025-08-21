@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate environment configuration
+        run: npm run env:validate
+
       - name: Run TypeScript type checking
         run: npm run typecheck
 

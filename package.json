@@ -19,7 +19,10 @@
     "code-quality": "npm run typecheck && npm run lint && npm run format:check && npm run test:ci",
     "pre-commit": "npm run code-quality",
     "security-audit": "npm audit --audit-level high",
-    "validate": "npm run code-quality && npm run security-audit && npm run build"
+    "validate": "npm run code-quality && npm run security-audit && npm run build",
+    "setup-env": "node scripts/setup-env.js",
+    "env:validate": "npx tsx -e \"import { getClientEnv } from './lib/config/env'; getClientEnv(); console.log('✅ Environment configuration is valid')\"",
+    "env:check": "npx tsx -e \"import { isDevelopment, isProduction } from './lib/config/env'; console.log('Environment:', isDevelopment ? 'development' : isProduction ? 'production' : 'staging')\""
   },
   "dependencies": {
     "@types/node": "^20.16.5",
@@ -28,7 +31,8 @@
     "next": "^14.2.32",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.7.2",
@@ -46,7 +50,8 @@
     "jest-environment-jsdom": "^30.0.5",
     "postcss": "^8.4.45",
     "prettier": "^3.6.2",
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.10",
+    "tsx": "^4.20.4"
   },
   "engines": {
     "node": ">=18.0.0"
