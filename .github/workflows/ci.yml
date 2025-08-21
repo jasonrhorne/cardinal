@@ -9,7 +9,6 @@ on:
 
 env:
   NODE_VERSION: '18'
-  PNPM_VERSION: '8'
 
 jobs:
   # Code Quality and Testing Job
@@ -87,15 +86,6 @@ jobs:
           NEXT_PUBLIC_APP_VERSION: 0.1.0
           NEXT_PUBLIC_APP_URL: https://cardinal.app
           NEXT_PUBLIC_API_URL: https://cardinal.app/api
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: |
-            .next/
-            !.next/cache/
-          retention-days: 1
 
   # Security Audit Job
   security:
