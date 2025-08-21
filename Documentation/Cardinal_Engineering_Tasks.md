@@ -23,7 +23,7 @@
 | ✓   | F005 | TypeScript Configuration                         | Frontend | P0       | 2           | F003         | DONE   | -        | 2025-08-21 |
 | ✓   | F006 | ESLint & Prettier Setup                          | Frontend | P0       | 2           | F003         | DONE   | -        | 2025-08-21 |
 | ✓   | F007 | Testing Framework Setup (Jest + Testing Library) | Testing  | P0       | 4           | F003         | DONE   | -        | 2025-08-21 |
-| ☐   | F008 | CI/CD Pipeline Setup                             | DevOps   | P0       | 3           | F002, F007   | TODO   | -        | -          |
+| ✓   | F008 | CI/CD Pipeline Setup                             | DevOps   | P0       | 3           | F002, F007   | DONE   | -        | 2025-08-21 |
 | ☐   | F009 | Environment Configuration Management             | DevOps   | P0       | 2           | F002         | TODO   | -        | -          |
 | ☐   | F010 | Database Schema Design                           | Database | P0       | 5           | None         | TODO   | -        | -          |
 | ☐   | F011 | Supabase/Neon Database Setup                     | Database | P0       | 3           | F010         | TODO   | -        | -          |

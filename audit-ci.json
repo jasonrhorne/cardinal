@@ -1,0 +1,16 @@
+{
+  "low": true,
+  "moderate": true,
+  "high": false,
+  "critical": false,
+  "allowlist": [],
+  "advisories": [],
+  "whitelist": [],
+  "report-type": "important",
+  "package-manager": "npm",
+  "path": "./",
+  "show-found": true,
+  "show-not-found": false,
+  "skip-dev": false,
+  "output-format": "text"
+}
