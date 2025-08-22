@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+
 import './globals.css'
+import { AuthProvider, SessionPersistence } from '@/lib/auth'
 
 export const metadata: Metadata = {
   title: 'Cardinal - AI Travel Itineraries',
@@ -16,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-gray-50 font-sans antialiased">
-        {children}
+        <AuthProvider>
+          <SessionPersistence>{children}</SessionPersistence>
+        </AuthProvider>
       </body>
     </html>
   )

@@ -10,43 +10,51 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-import { getClientEnv, getServerEnv } from '@/lib/config/env'
 import type { Database } from '@/types/database'
 
 // =============================================================================
 // CLIENT-SIDE SUPABASE CLIENT
 // =============================================================================
 
+// Singleton client instance
+let supabaseClient: ReturnType<typeof createClient<Database>> | null = null
+
 /**
  * Client-side Supabase client for browser operations
  * Uses anon key and respects RLS policies
  */
 export const createSupabaseClient = () => {
-  const env = getClientEnv()
+  // Return existing client if already created
+  if (supabaseClient) {
+    return supabaseClient
+  }
 
-  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  // Get environment variables directly from process.env for client-side
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
     throw new Error('Missing Supabase environment variables for client')
   }
 
-  return createClient<Database>(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
+  // Create and cache the client
+  supabaseClient = createClient<Database>(supabaseUrl, supabaseKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
       },
-      realtime: {
-        params: {
-          eventsPerSecond: 10,
-        },
-      },
-      db: {
-        schema: 'public',
-      },
-    }
-  )
+    },
+    db: {
+      schema: 'public',
+    },
+  })
+
+  return supabaseClient
 }
 
 // =============================================================================
@@ -58,29 +66,22 @@ export const createSupabaseClient = () => {
  * Uses service role key and bypasses RLS
  */
 export const createSupabaseServerClient = () => {
-  const clientEnv = getClientEnv()
-  const serverEnv = getServerEnv()
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (
-    !clientEnv.NEXT_PUBLIC_SUPABASE_URL ||
-    !serverEnv.SUPABASE_SERVICE_ROLE_KEY
-  ) {
+  if (!supabaseUrl || !serviceRoleKey) {
     throw new Error('Missing Supabase environment variables for server')
   }
 
-  return createClient<Database>(
-    clientEnv.NEXT_PUBLIC_SUPABASE_URL,
-    serverEnv.SUPABASE_SERVICE_ROLE_KEY,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-      db: {
-        schema: 'public',
-      },
-    }
-  )
+  return createClient<Database>(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+    db: {
+      schema: 'public',
+    },
+  })
 }
 
 // =============================================================================

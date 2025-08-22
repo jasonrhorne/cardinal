@@ -1,27 +1,39 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 import { Button, Input } from '@/components/ui'
+import { useMagicLink, useAuth } from '@/lib/auth'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState('')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirectTo') || '/dashboard'
+
+  const { sendMagicLink, isLoading, message, error, reset } = useMagicLink()
+  const { isAuthenticated } = useAuth()
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(redirectTo)
+    }
+  }, [isAuthenticated, router, redirectTo])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    setMessage('')
+    reset()
 
-    try {
-      // TODO: Implement magic link authentication with Supabase
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      setMessage('Magic link sent! Check your email.')
-    } catch (error) {
-      setMessage('Something went wrong. Please try again.')
-    } finally {
-      setIsLoading(false)
+    const result = await sendMagicLink(
+      email,
+      `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+    )
+
+    if (result.success) {
+      // Optionally redirect to a confirmation page
+      // router.push('/auth/check-email')
     }
   }
 
@@ -39,11 +51,11 @@ export default function SignInPage() {
         label="Email address"
       />
 
-      {message && (
+      {(message || error) && (
         <div
-          className={`text-sm ${message.includes('sent') ? 'text-success-600' : 'text-error-600'}`}
+          className={`text-sm ${message ? 'text-green-600' : 'text-red-600'}`}
         >
-          {message}
+          {message || error}
         </div>
       )}
 

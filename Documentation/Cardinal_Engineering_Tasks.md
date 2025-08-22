@@ -5,8 +5,8 @@
 - **Owner**: Cardinal Engineering Team
 - **Document Status**: Draft v0.1
 - **Last Updated**: 2025-08-21
-- **Total Tasks**: 89
-- **Estimated Total Effort**: 1,245 story points (~6-8 months for 2-3 engineers)
+- **Total Tasks**: 93
+- **Estimated Total Effort**: 1,254 story points (~6-8 months for 2-3 engineers)
 
 ---
 
@@ -27,7 +27,7 @@
 | ✓   | F009 | Environment Configuration Management             | DevOps   | P0       | 2           | F002         | DONE   | -        | 2025-08-21 |
 | ✓   | F010 | Database Schema Design                           | Database | P0       | 5           | None         | DONE   | -        | 2025-08-22 |
 | ✓   | F011 | Supabase/Neon Database Setup                     | Database | P0       | 3           | F010         | DONE   | -        | 2025-08-22 |
-| ☐   | F012 | Supabase Authentication Setup (Magic Links)      | Backend  | P0       | 3           | F011         | TODO   | -        | -          |
+| ✓   | F012 | Supabase Authentication Setup (Magic Links)      | Backend  | P0       | 3           | F011         | DONE   | -        | 2025-08-22 |
 | ☐   | F013 | Google Maps API Setup & Billing                  | API      | P0       | 3           | None         | TODO   | -        | -          |
 | ☐   | F014 | LLM Provider Setup (Gemini/OpenAI)               | Backend  | P0       | 3           | None         | TODO   | -        | -          |
 | ☐   | F015 | LangChain Integration Setup                      | Backend  | P0       | 4           | F014         | TODO   | -        | -          |
@@ -36,6 +36,10 @@
 | ☐   | F018 | Security Headers & CSP Configuration             | DevOps   | P0       | 2           | F002         | TODO   | -        | -          |
 | ☐   | F019 | Performance Monitoring Setup                     | DevOps   | P0       | 3           | F002         | TODO   | -        | -          |
 | ☐   | F020 | Accessibility Foundation (WCAG AA)               | Frontend | P0       | 4           | F003         | TODO   | -        | -          |
+| ☐   | F021 | Authentication Middleware Enhancement            | Backend  | P1       | 2           | F012         | TODO   | -        | -          |
+| ☐   | F022 | Supabase Email Template Customization            | Backend  | P2       | 1           | F012         | TODO   | -        | -          |
+| ☐   | F023 | User Profile Management System                   | Backend  | P1       | 3           | F012         | TODO   | -        | -          |
+| ☐   | F024 | Authentication Unit Tests                        | Testing  | P1       | 3           | F012, F007   | TODO   | -        | -          |
 
 ### Core Features Phase
 
@@ -131,7 +135,7 @@
 
 ## Task Details by Phase
 
-### Foundation & Setup Phase (Tasks F001-F020)
+### Foundation & Setup Phase (Tasks F001-F024)
 
 **Objective**: Establish the technical foundation and development environment
 **Timeline**: 4-6 weeks
@@ -350,6 +354,46 @@
    - Polish and optimize
    - Security audit and testing
    - Production deployment
+
+---
+
+## New Authentication Enhancement Tasks (Added 2025-08-22)
+
+### **F021: Authentication Middleware Enhancement**
+
+- **Description**: Re-enable and improve server-side authentication middleware with proper Supabase session detection
+- **Deliverables**:
+  - Update middleware to detect Supabase sessions from localStorage/cookies
+  - Implement proper server-side session validation
+  - Restore route protection without interfering with client-side auth
+- **Priority**: P1 (after core features)
+
+### **F022: Supabase Email Template Customization**
+
+- **Description**: Customize magic link email templates in Supabase dashboard for better brand experience
+- **Deliverables**:
+  - Custom email templates with Cardinal branding
+  - Improved email content and styling
+  - Multi-language email support (future)
+- **Priority**: P2 (nice to have)
+
+### **F023: User Profile Management System**
+
+- **Description**: Implement complete user profile system beyond basic authentication
+- **Deliverables**:
+  - User profile creation and editing
+  - Profile data storage and validation
+  - Integration with UserProfileProvider (currently placeholder)
+- **Priority**: P1 (needed for personalization)
+
+### **F024: Authentication Unit Tests**
+
+- **Description**: Comprehensive testing suite for authentication system
+- **Deliverables**:
+  - Unit tests for auth utilities and hooks
+  - Integration tests for magic link flow
+  - E2E tests for complete authentication journey
+- **Priority**: P1 (critical for reliability)
 
 ---
 

@@ -1,8 +1,30 @@
+'use client'
+
+import { ProtectedRoute, useAuthContext } from '@/lib/auth'
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  return (
+    <ProtectedRoute>
+      <DashboardContent>{children}</DashboardContent>
+    </ProtectedRoute>
+  )
+}
+
+function DashboardContent({ children }: { children: React.ReactNode }) {
+  const { user, signOut } = useAuthContext()
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+    } catch (error) {
+      console.error('Sign out error:', error)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-sm">
@@ -18,9 +40,15 @@ export default function DashboardLayout({
               >
                 New Trip
               </a>
-              <button className="text-sm text-gray-700 hover:text-gray-900">
-                Sign out
-              </button>
+              <div className="flex items-center space-x-2 text-sm text-gray-700">
+                <span>{user?.email}</span>
+                <button
+                  onClick={handleSignOut}
+                  className="text-gray-700 hover:text-gray-900"
+                >
+                  Sign out
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -11,7 +11,8 @@ const { createClient } = require('@supabase/supabase-js')
 const fs = require('fs')
 const path = require('path')
 
-// Load environment variables
+// Load environment variables from .env.local first, then .env
+require('dotenv').config({ path: '.env.local' })
 require('dotenv').config()
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
