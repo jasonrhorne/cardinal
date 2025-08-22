@@ -7,6 +7,7 @@ This document outlines the development workflow, best practices, and quality gat
 Before starting any new feature or major changes:
 
 ### 1. Environment Setup Validation
+
 ```bash
 # Verify your development environment
 npm run env:validate
@@ -18,6 +19,7 @@ npm audit --audit-level high
 ```
 
 ### 2. Branch Strategy
+
 ```bash
 # Create feature branch from main
 git checkout main
@@ -35,20 +37,22 @@ git checkout -b db/f011-supabase-setup
 **When adding new environment variables:**
 
 1. **Update schema first** in `lib/config/env.ts`:
+
    ```typescript
    // Add to appropriate schema (client/server)
    const clientEnvSchema = z.object({
      // Add new client-side variables
      NEXT_PUBLIC_NEW_SERVICE_URL: z.string().url().optional(),
    })
-   
+
    const serverEnvSchema = z.object({
-     // Add new server-side variables  
+     // Add new server-side variables
      NEW_SERVICE_API_KEY: z.string().optional(),
    })
    ```
 
 2. **Update all environment files**:
+
    ```bash
    # Update all environment templates
    vim .env.example
@@ -58,6 +62,7 @@ git checkout -b db/f011-supabase-setup
    ```
 
 3. **Create validation function**:
+
    ```typescript
    export function validateNewServiceEnv(): void {
      validateFeatureEnv('NewService', [
@@ -89,6 +94,7 @@ npm run validate
 ```
 
 **Manual checks if `npm run validate` doesn't exist yet:**
+
 ```bash
 # Type checking
 npm run typecheck
@@ -109,18 +115,21 @@ npm run build
 **For database-related changes (like F011):**
 
 1. **Update schema types first**:
+
    ```bash
    # If adding new tables/columns, update types
    vim types/database.ts
    ```
 
 2. **Update database client code**:
+
    ```bash
    # Update Supabase client or database utilities
    vim lib/database/supabase.ts
    ```
 
 3. **Test database connectivity**:
+
    ```bash
    # Validate database setup works
    npm run db:test
@@ -151,7 +160,7 @@ Before every commit:
 
 - [ ] **Environment Variables**: If added new env vars, updated schema and all templates
 - [ ] **Type Safety**: `npm run typecheck` passes
-- [ ] **Code Quality**: `npm run lint` passes  
+- [ ] **Code Quality**: `npm run lint` passes
 - [ ] **Formatting**: `npm run format:check` passes
 - [ ] **Tests**: `npm run test:ci` passes
 - [ ] **Build**: `npm run build` succeeds
@@ -164,15 +173,17 @@ Before every commit:
 **Problem**: Adding environment variables without updating validation schema
 
 **Prevention**:
+
 ```bash
 # Always update schema when adding env vars
 # 1. Add to lib/config/env.ts schemas
-# 2. Test with npm run env:validate  
+# 2. Test with npm run env:validate
 # 3. Update all .env.* files
 # 4. Create validation function
 ```
 
 **Detection**:
+
 ```bash
 # This should catch env schema issues
 npm run build
@@ -183,6 +194,7 @@ npm run build
 **Problem**: TypeScript compilation fails due to missing imports or exports
 
 **Prevention**:
+
 ```bash
 # Always run typecheck before committing
 npm run typecheck
@@ -197,6 +209,7 @@ import { something } from '../../../lib/something'  # Avoid
 **Problem**: CI fails on formatting rules that could be auto-fixed
 
 **Prevention**:
+
 ```bash
 # Auto-fix before committing
 npm run lint:fix
@@ -211,6 +224,7 @@ npm run format:check
 **Problem**: Code works in development but fails in production build
 
 **Prevention**:
+
 ```bash
 # Always test production build locally
 npm run build
@@ -240,12 +254,13 @@ npm run start
 ### Making CI/CD More Robust
 
 **Enhanced Error Messages**: Our CI should provide clear guidance:
+
 ```yaml
 # Example improved CI output
-❌ ESLint Failure: 
-   File: lib/database/supabase.ts:27
-   Issue: Missing environment variable in schema
-   Fix: Add NEXT_PUBLIC_SUPABASE_URL to lib/config/env.ts clientEnvSchema
+❌ ESLint Failure:
+  File: lib/database/supabase.ts:27
+  Issue: Missing environment variable in schema
+  Fix: Add NEXT_PUBLIC_SUPABASE_URL to lib/config/env.ts clientEnvSchema
 ```
 
 ## Emergency Deployment Fix Process
@@ -253,6 +268,7 @@ npm run start
 When deployment fails in production:
 
 ### 1. Immediate Response
+
 ```bash
 # Create hotfix branch
 git checkout main
@@ -270,6 +286,7 @@ npm run build
 ```
 
 ### 2. Rapid Testing
+
 ```bash
 # Test key functionality still works
 npm run test:ci
@@ -281,6 +298,7 @@ npm run dev
 ```
 
 ### 3. Deploy Fix
+
 ```bash
 # Commit with clear message
 git add .
@@ -292,6 +310,7 @@ git push origin hotfix/deployment-fix
 ```
 
 ### 4. Post-Incident Review
+
 - Document what went wrong
 - Update this workflow to prevent similar issues
 - Consider additional automation
@@ -299,6 +318,7 @@ git push origin hotfix/deployment-fix
 ## Development Environment Setup
 
 ### Initial Setup
+
 ```bash
 # Clone and setup
 git clone https://github.com/your-org/cardinal.git
@@ -319,6 +339,7 @@ npm run db:setup
 ```
 
 ### Daily Development
+
 ```bash
 # Start of day
 git checkout main
@@ -392,7 +413,7 @@ npm run dev
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss", 
+    "bradlc.vscode-tailwindcss",
     "ms-vscode.vscode-typescript-next",
     "ms-playwright.playwright",
     "bradlc.vscode-tailwindcss"

@@ -27,7 +27,7 @@ Track key architectural, product, and technical decisions with rationale for fut
 **Alternatives**: Auth0 + separate database, Clerk + database, NextAuth + database
 **Rationale**: Single vendor, built-in magic links, includes database, simpler integration
 **Impact**: Vendor lock-in, but reduced complexity and faster development
-**Status**: Implemented (F011)
+**Status**: Database implemented (F011), Authentication pending (F012)
 
 ## 2025-08-22: Supabase over Neon for Database Infrastructure
 

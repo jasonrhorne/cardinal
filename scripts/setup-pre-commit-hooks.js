@@ -2,7 +2,7 @@
 
 /**
  * Pre-commit Hook Setup Script
- * 
+ *
  * This script sets up Git pre-commit hooks to catch common issues
  * before they reach CI/CD pipeline.
  */
@@ -48,10 +48,10 @@ function setupPreCommitHook() {
 
     // Write pre-commit hook
     fs.writeFileSync(preCommitPath, preCommitScript)
-    
+
     // Make it executable
     fs.chmodSync(preCommitPath, '755')
-    
+
     console.log('✅ Pre-commit hook installed successfully!')
     console.log('')
     console.log('🎯 The hook will now run these checks before each commit:')
@@ -59,8 +59,9 @@ function setupPreCommitHook() {
     console.log('   - Prettier formatting')
     console.log('   - TypeScript type checking')
     console.log('')
-    console.log('💡 To bypass the hook in emergencies, use: git commit --no-verify')
-    
+    console.log(
+      '💡 To bypass the hook in emergencies, use: git commit --no-verify'
+    )
   } catch (error) {
     console.error('❌ Failed to setup pre-commit hook:', error.message)
     process.exit(1)
@@ -102,6 +103,8 @@ switch (command) {
     }
     break
   default:
-    console.log('Usage: node scripts/setup-pre-commit-hooks.js [install|remove|status]')
+    console.log(
+      'Usage: node scripts/setup-pre-commit-hooks.js [install|remove|status]'
+    )
     process.exit(1)
 }

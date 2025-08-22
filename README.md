@@ -33,16 +33,19 @@ npm run dev
 ### Development Workflow
 
 **Before every commit:**
+
 ```bash
 npm run pre-commit  # Auto-fix formatting and check types
 ```
 
 **Before deployment:**
+
 ```bash
 npm run deployment-ready  # Full validation + environment check
 ```
 
 **For database work:**
+
 ```bash
 npm run db:setup    # Deploy schema + test connectivity
 npm run db:test     # Validate database connection
@@ -53,7 +56,7 @@ See [Development Workflow](./docs/DEVELOPMENT_WORKFLOW.md) for detailed guidelin
 ### Key Scripts
 
 - `npm run dev` - Start development server
-- `npm run build` - Build for production  
+- `npm run build` - Build for production
 - `npm run test` - Run test suite
 - `npm run validate` - Complete quality check
 - `npm run pre-commit` - Pre-commit validation

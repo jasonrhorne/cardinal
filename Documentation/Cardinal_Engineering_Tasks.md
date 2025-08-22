@@ -27,7 +27,7 @@
 | ✓   | F009 | Environment Configuration Management             | DevOps   | P0       | 2           | F002         | DONE   | -        | 2025-08-21 |
 | ✓   | F010 | Database Schema Design                           | Database | P0       | 5           | None         | DONE   | -        | 2025-08-22 |
 | ✓   | F011 | Supabase/Neon Database Setup                     | Database | P0       | 3           | F010         | DONE   | -        | 2025-08-22 |
-| ☐   | F012 | Authentication Service Setup (Auth0/Clerk)       | Backend  | P0       | 5           | F011         | TODO   | -        | -          |
+| ☐   | F012 | Supabase Authentication Setup (Magic Links)      | Backend  | P0       | 3           | F011         | TODO   | -        | -          |
 | ☐   | F013 | Google Maps API Setup & Billing                  | API      | P0       | 3           | None         | TODO   | -        | -          |
 | ☐   | F014 | LLM Provider Setup (Gemini/OpenAI)               | Backend  | P0       | 3           | None         | TODO   | -        | -          |
 | ☐   | F015 | LangChain Integration Setup                      | Backend  | P0       | 4           | F014         | TODO   | -        | -          |
