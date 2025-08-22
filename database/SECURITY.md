@@ -7,7 +7,7 @@ This document outlines the security configuration for Cardinal's PostgreSQL data
 Cardinal implements a multi-layered security approach:
 
 1. **Row Level Security (RLS)** - Database-level access control
-2. **API Key Management** - Supabase service vs anon key separation  
+2. **API Key Management** - Supabase service vs anon key separation
 3. **Environment Isolation** - Separate databases for dev/staging/prod
 4. **Audit Logging** - Track database operations and access
 5. **Encryption** - Data encryption at rest and in transit
@@ -23,7 +23,7 @@ All user-related tables implement strict RLS policies:
 CREATE POLICY "Users can view own profile" ON users
   FOR SELECT USING (auth.uid() = id);
 
--- Users can only update their own profile  
+-- Users can only update their own profile
 CREATE POLICY "Users can update own profile" ON users
   FOR UPDATE USING (auth.uid() = id);
 ```
@@ -79,9 +79,10 @@ CREATE POLICY "Places are publicly readable" ON places
 **Purpose**: Administrative operations, migrations, and backend services
 **Access**: Full database access, bypasses RLS
 **Storage**: Server environment variables only
-**Usage**: 
+**Usage**:
+
 - Database migrations
-- Admin operations  
+- Admin operations
 - Backend services
 - Analytics and reporting
 
@@ -90,7 +91,7 @@ CREATE POLICY "Places are publicly readable" ON places
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY // NEVER expose this
-);
+)
 ```
 
 ### Anon Key (PUBLIC)
@@ -99,6 +100,7 @@ const supabase = createClient(
 **Access**: RLS-protected database access
 **Storage**: Client-side code, environment variables
 **Usage**:
+
 - User authentication
 - Client-side data operations
 - Public data access
@@ -108,7 +110,7 @@ const supabase = createClient(
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY // Safe to expose
-);
+)
 ```
 
 ## Environment-Specific Security
@@ -118,6 +120,7 @@ const supabase = createClient(
 **Database**: `cardinal-dev`
 **Security Level**: Relaxed for development efficiency
 **Configuration**:
+
 - Enhanced logging enabled
 - Debug mode allowed
 - Sample data included
@@ -135,13 +138,14 @@ SUPABASE_SERVICE_ROLE_KEY=dev-service-key
 **Database**: `cardinal-staging`
 **Security Level**: Production-like with monitoring
 **Configuration**:
+
 - Full RLS enforcement
 - Audit logging enabled
 - Performance monitoring
 - Production-like data volume
 
 ```bash
-# .env.staging  
+# .env.staging
 NEXT_PUBLIC_SUPABASE_URL=https://staging-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=staging-anon-key
 SUPABASE_SERVICE_ROLE_KEY=staging-service-key
@@ -152,6 +156,7 @@ SUPABASE_SERVICE_ROLE_KEY=staging-service-key
 **Database**: `cardinal-prod`
 **Security Level**: Maximum security and monitoring
 **Configuration**:
+
 - Strict RLS enforcement
 - Full audit logging
 - Real-time monitoring
@@ -201,11 +206,13 @@ CREATE TABLE auth_sessions (
 ### Personal Identifiable Information (PII)
 
 **Minimal PII Approach**: Only store essential user data
+
 - Email address (required for authentication)
 - User preferences (JSON, non-sensitive)
 - No names, phone numbers, or addresses stored
 
 **Protection Measures**:
+
 - RLS enforcement on all user tables
 - Audit logging for PII access
 - Data minimization principles
@@ -215,6 +222,7 @@ CREATE TABLE auth_sessions (
 
 **Sensitivity**: Medium - user travel patterns and preferences
 **Protection**:
+
 - User-scoped access only
 - No cross-user data exposure
 - Anonymized analytics data
@@ -223,6 +231,7 @@ CREATE TABLE auth_sessions (
 
 **Sensitivity**: High - detailed user interactions
 **Protection**:
+
 - Strict user scoping
 - Conversation encryption at rest
 - Limited retention periods
@@ -262,6 +271,7 @@ $$ LANGUAGE plpgsql;
 ### Supabase Built-in Monitoring
 
 Leverage Supabase's monitoring features:
+
 - **Real-time dashboard** for database metrics
 - **Query performance** monitoring
 - **Connection pool** monitoring
@@ -280,9 +290,9 @@ const logSecurityEvent = async (event, userId, details) => {
     details: details,
     ip_address: req.ip,
     user_agent: req.headers['user-agent'],
-    timestamp: new Date()
-  });
-};
+    timestamp: new Date(),
+  })
+}
 ```
 
 ## Backup and Recovery Security
@@ -290,6 +300,7 @@ const logSecurityEvent = async (event, userId, details) => {
 ### Automated Backups
 
 Supabase provides:
+
 - **Daily automated backups** for all plans
 - **Point-in-time recovery** (Pro+ plans)
 - **Cross-region backup** replication
@@ -331,12 +342,12 @@ Cardinal is designed with GDPR principles:
 ```sql
 -- Automatic cleanup of old data
 -- Example: Delete old auth sessions
-DELETE FROM auth_sessions 
+DELETE FROM auth_sessions
 WHERE expires_at < NOW() - INTERVAL '30 days';
 
 -- Example: Archive old AI conversations
-INSERT INTO ai_conversations_archive 
-SELECT * FROM ai_conversation_messages 
+INSERT INTO ai_conversations_archive
+SELECT * FROM ai_conversation_messages
 WHERE created_at < NOW() - INTERVAL '1 year';
 ```
 
@@ -362,23 +373,20 @@ WHERE created_at < NOW() - INTERVAL '1 year';
 
 ```javascript
 // Good: Parameterized queries (Supabase handles this)
-const { data } = await supabase
-  .from('users')
-  .select('*')
-  .eq('id', userId); // Safe from SQL injection
+const { data } = await supabase.from('users').select('*').eq('id', userId) // Safe from SQL injection
 
 // Good: Input validation
-const validateEmail = (email) => {
-  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-  return emailRegex.test(email);
-};
+const validateEmail = email => {
+  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
+  return emailRegex.test(email)
+}
 
 // Good: Error handling without data exposure
 try {
   // Database operation
 } catch (error) {
-  console.error('Database error:', error); // Log details
-  return { error: 'Operation failed' }; // Generic user message
+  console.error('Database error:', error) // Log details
+  return { error: 'Operation failed' } // Generic user message
 }
 ```
 
@@ -387,16 +395,19 @@ try {
 ### Security Incident Classification
 
 **Level 1 - Critical**:
+
 - Data breach or unauthorized access
 - Service compromise
 - Authentication bypass
 
 **Level 2 - High**:
+
 - Privilege escalation
 - Data integrity issues
 - DDoS attacks
 
 **Level 3 - Medium**:
+
 - Suspicious activity patterns
 - Failed authentication attempts
 - Performance degradation

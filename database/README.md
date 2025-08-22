@@ -123,8 +123,9 @@ SELECT extname FROM pg_extension WHERE extname IN ('uuid-ossp', 'postgis', 'pg_t
 ```
 
 Expected output:
+
 ```
-   extname   
+   extname
 -----------
  uuid-ossp
  postgis
@@ -134,12 +135,13 @@ Expected output:
 ### 2. Verify Tables
 
 ```sql
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
 ORDER BY table_name;
 ```
 
 Expected tables:
+
 - activity_transitions
 - ai_conversation_messages
 - ai_generation_sessions
@@ -181,16 +183,19 @@ supabase.from('countries').select('count').single()
 Our database implements comprehensive RLS policies:
 
 ### User Data Protection
+
 - Users can only access their own profiles and data
 - Authentication sessions are user-scoped
 - Travel requirements and AI sessions are private
 
 ### Public Data Access
+
 - Countries and cities are publicly readable
 - Places are publicly readable
 - Public itineraries can be viewed by anyone
 
 ### Security Best Practices
+
 - All sensitive tables have RLS enabled
 - Service role key is used only for admin operations
 - Anon key is used for client-side operations
@@ -316,8 +321,8 @@ Enable detailed logging in development:
 const supabase = createClient(url, key, {
   db: { schema: 'public' },
   auth: { debug: true },
-  global: { debug: true }
-});
+  global: { debug: true },
+})
 ```
 
 ## Security Considerations

@@ -1,7 +1,7 @@
 /**
  * Database Type Definitions
  * Generated from F010 Database Schema Design
- * 
+ *
  * This file contains TypeScript types for all database tables
  * and their relationships based on the Cardinal schema.
  */
@@ -659,9 +659,12 @@ export type Database = {
 // HELPER TYPES
 // =============================================================================
 
-export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
-export type TablesInsert<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert']
-export type TablesUpdate<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update']
+export type Tables<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Row']
+export type TablesInsert<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Insert']
+export type TablesUpdate<T extends keyof Database['public']['Tables']> =
+  Database['public']['Tables'][T]['Update']
 
 // Common entity types
 export type User = Tables<'users'>
@@ -675,66 +678,63 @@ export type Itinerary = Tables<'itineraries'>
 export type ItineraryActivity = Tables<'itinerary_activities'>
 
 // Enum types based on schema constraints
-export type PlaceType = 
-  | 'restaurant' 
-  | 'cafe' 
-  | 'bar' 
-  | 'attraction' 
-  | 'museum' 
-  | 'park' 
+export type PlaceType =
+  | 'restaurant'
+  | 'cafe'
+  | 'bar'
+  | 'attraction'
+  | 'museum'
+  | 'park'
   | 'hotel'
-  | 'shop' 
-  | 'market' 
-  | 'viewpoint' 
-  | 'beach' 
-  | 'landmark' 
+  | 'shop'
+  | 'market'
+  | 'viewpoint'
+  | 'beach'
+  | 'landmark'
   | 'entertainment'
-  | 'transportation' 
-  | 'service' 
-  | 'religious' 
-  | 'educational' 
+  | 'transportation'
+  | 'service'
+  | 'religious'
+  | 'educational'
   | 'sports'
 
-export type ActivityType = 
-  | 'meal' 
-  | 'attraction' 
-  | 'activity' 
-  | 'lodging' 
-  | 'transportation' 
-  | 'rest' 
+export type ActivityType =
+  | 'meal'
+  | 'attraction'
+  | 'activity'
+  | 'lodging'
+  | 'transportation'
+  | 'rest'
   | 'shopping'
 
-export type SessionType = 
+export type SessionType =
   | 'destination_suggestions'
   | 'itinerary_generation'
   | 'itinerary_refinement'
   | 'question_answering'
   | 'place_validation'
 
-export type SessionStatus = 
-  | 'initialized' 
-  | 'in_progress' 
-  | 'completed' 
-  | 'failed' 
-  | 'cancelled' 
+export type SessionStatus =
+  | 'initialized'
+  | 'in_progress'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
   | 'timed_out'
 
-export type ItineraryStatus = 
-  | 'draft' 
-  | 'finalized' 
-  | 'archived'
+export type ItineraryStatus = 'draft' | 'finalized' | 'archived'
 
-export type ValidationStatus = 
-  | 'pending' 
-  | 'validated' 
-  | 'needs_update' 
-  | 'closed' 
+export type ValidationStatus =
+  | 'pending'
+  | 'validated'
+  | 'needs_update'
+  | 'closed'
   | 'invalid'
 
-export type PersonaLens = 
-  | 'photographer' 
-  | 'foodie' 
-  | 'family_explorer' 
+export type PersonaLens =
+  | 'photographer'
+  | 'foodie'
+  | 'family_explorer'
   | 'culture_chaser'
   | 'architecture_buff'
   | 'nature_lover'
@@ -742,12 +742,6 @@ export type PersonaLens =
   | 'history_buff'
   | 'art_enthusiast'
 
-export type PacePreference = 
-  | 'slow' 
-  | 'moderate' 
-  | 'fast'
+export type PacePreference = 'slow' | 'moderate' | 'fast'
 
-export type BudgetRange = 
-  | 'budget' 
-  | 'mid_range' 
-  | 'luxury'
+export type BudgetRange = 'budget' | 'mid_range' | 'luxury'

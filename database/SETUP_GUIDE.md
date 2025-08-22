@@ -74,7 +74,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 DATABASE_URL=postgresql://postgres:[password]@db.your-project-ref.supabase.co:5432/postgres
 
-# Application Configuration  
+# Application Configuration
 NODE_ENV=development
 NEXT_PUBLIC_APP_ENV=development
 ```
@@ -92,6 +92,7 @@ node database/deploy.js development
 ```
 
 The deployment script will:
+
 - ✅ Test database connectivity
 - ✅ Check for existing schema
 - ✅ Apply all migrations in order
@@ -107,6 +108,7 @@ npm run db:test
 ```
 
 This will verify:
+
 - ✅ Database connection
 - ✅ PostgreSQL extensions (PostGIS, UUID, trigram)
 - ✅ All required tables exist
@@ -148,8 +150,9 @@ npm run dev
 ```
 
 **Features**:
+
 - Enhanced logging enabled
-- Debug mode available  
+- Debug mode available
 - Sample data for testing
 - Relaxed security for development
 
@@ -166,6 +169,7 @@ npm run db:test
 ```
 
 **Features**:
+
 - Production-like configuration
 - Full security enforcement
 - Performance monitoring
@@ -186,6 +190,7 @@ npm run db:test
 ```
 
 **Features**:
+
 - Maximum security settings
 - Full audit logging
 - Real-time monitoring
@@ -197,15 +202,19 @@ npm run db:test
 Cardinal's database consists of three main migration layers:
 
 ### 001_foundation.sql
+
 **Core Infrastructure**
+
 - PostgreSQL extensions (UUID, PostGIS, trigram)
 - User authentication system
 - Geographic data (countries, cities, places)
 - Row Level Security policies
 - Basic indexes and triggers
 
-### 002_travel_requirements.sql  
+### 002_travel_requirements.sql
+
 **AI Generation System**
+
 - Travel requirements capture
 - AI generation sessions tracking
 - Conversation message storage
@@ -213,7 +222,9 @@ Cardinal's database consists of three main migration layers:
 - Token usage and cost tracking
 
 ### 003_itineraries.sql
+
 **Itinerary Management**
+
 - Complete itinerary structure
 - Daily schedules and activities
 - Activity transitions and logistics
@@ -225,16 +236,19 @@ Cardinal's database consists of three main migration layers:
 Cardinal implements comprehensive security measures:
 
 ### Row Level Security (RLS)
+
 - **User Data**: Users can only access their own data
 - **Public Data**: Countries, cities, places are publicly readable
 - **Itineraries**: Support both private and public sharing
 - **AI Data**: Strict user scoping for conversations and sessions
 
 ### API Key Management
+
 - **Service Role Key**: Server-side only, full access, bypasses RLS
 - **Anon Key**: Client-side safe, RLS enforced, public operations
 
 ### Environment Isolation
+
 - Separate databases for development, staging, production
 - Different security levels for each environment
 - Isolated data and configurations
@@ -246,18 +260,21 @@ For detailed security information, see [SECURITY.md](./SECURITY.md).
 Cardinal includes comprehensive monitoring:
 
 ### Built-in Monitoring
+
 - Supabase dashboard metrics
 - Performance monitoring
 - Connection pool tracking
 - Error rate monitoring
 
 ### Custom Monitoring
+
 - Application-level metrics
 - Business logic tracking
 - Security event monitoring
 - Custom alerting system
 
 ### Backup Strategy
+
 - Automated Supabase backups
 - Custom backup scripts
 - Point-in-time recovery
@@ -270,8 +287,10 @@ For detailed monitoring information, see [MONITORING.md](./MONITORING.md).
 ### Common Issues
 
 #### Connection Failed
+
 **Symptoms**: Database connection errors, timeout issues
 **Solutions**:
+
 1. Verify environment variables are set correctly
 2. Check Supabase project is active
 3. Validate network connectivity
@@ -283,8 +302,10 @@ node -e "const { createClient } = require('@supabase/supabase-js'); const supaba
 ```
 
 #### Migration Failures
+
 **Symptoms**: Deployment script errors, missing tables
 **Solutions**:
+
 1. Check migration file syntax
 2. Verify dependencies are installed
 3. Ensure migrations run in correct order
@@ -296,8 +317,10 @@ node database/deploy.js development
 ```
 
 #### RLS Policy Issues
+
 **Symptoms**: Access denied errors, unexpected data filtering
 **Solutions**:
+
 1. Verify authentication context
 2. Check RLS policy definitions
 3. Test with service role key
@@ -309,8 +332,10 @@ npm run db:test
 ```
 
 #### Performance Issues
+
 **Symptoms**: Slow queries, high response times
 **Solutions**:
+
 1. Review query execution plans
 2. Check index usage
 3. Monitor connection pool
@@ -336,7 +361,7 @@ Cardinal provides several npm scripts for database management:
 # Database deployment
 npm run db:deploy          # Deploy to default environment
 npm run db:deploy:dev       # Deploy to development
-npm run db:deploy:staging   # Deploy to staging  
+npm run db:deploy:staging   # Deploy to staging
 npm run db:deploy:prod      # Deploy to production (requires --confirm)
 
 # Testing and validation
@@ -351,21 +376,25 @@ npm run env:check          # Check current environment detection
 ## Maintenance Schedule
 
 ### Daily Tasks
+
 - Monitor Supabase dashboard for alerts
 - Review error logs and performance metrics
 - Check backup completion status
 
-### Weekly Tasks  
+### Weekly Tasks
+
 - Review security events and access patterns
 - Analyze query performance and optimization opportunities
 - Update environment configurations if needed
 
 ### Monthly Tasks
+
 - Full security audit and access review
 - Performance analysis and optimization
 - Review and update documentation
 
 ### Quarterly Tasks
+
 - Complete database schema review
 - Disaster recovery testing
 - Security penetration testing

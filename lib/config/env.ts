@@ -26,6 +26,9 @@ const serverEnvSchema = z.object({
   DATABASE_POOL_MAX: z.coerce.number().default(10),
   DATABASE_POOL_MIN: z.coerce.number().default(2),
 
+  // Supabase (server-side keys)
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+
   // Authentication
   AUTH0_SECRET: z.string().optional(),
   AUTH0_ISSUER_BASE_URL: z.string().url().optional(),
@@ -83,6 +86,10 @@ const clientEnvSchema = z.object({
 
   // Public keys only (never secrets)
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().optional(),
+
+  // Supabase (client-side keys)
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
 
   // Feature flags
   NEXT_PUBLIC_ENABLE_ANALYTICS: z.coerce.boolean().default(false),
@@ -265,6 +272,17 @@ export function validateAuth0Env(): void {
  */
 export function validateDatabaseEnv(): void {
   validateFeatureEnv('Database', ['DATABASE_URL'])
+}
+
+/**
+ * Validates Supabase configuration
+ */
+export function validateSupabaseEnv(): void {
+  validateFeatureEnv('Supabase', [
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    'SUPABASE_SERVICE_ROLE_KEY',
+  ])
 }
 
 // =============================================================================
