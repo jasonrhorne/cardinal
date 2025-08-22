@@ -16,21 +16,30 @@ const preCommitPath = path.join(gitHooksDir, 'pre-commit')
 const preCommitScript = `#!/bin/sh
 #
 # Cardinal Pre-commit Hook
-# Automatically runs code quality checks before each commit
+# Automatically runs code quality checks and formatting before each commit
 #
 
 echo "🔍 Running pre-commit checks..."
 
-# Run code quality checks
-npm run pre-commit
+# FIRST: Auto-format files to prevent formatting failures
+echo "🎨 Auto-formatting staged files..."
+npm run format
+
+# Stage the formatted files
+git add .
+
+# THEN: Run validation checks
+echo "🔍 Running validation checks..."
+npm run typecheck
+npm run lint
 
 if [ $? -ne 0 ]; then
   echo "❌ Pre-commit checks failed. Please fix the issues above before committing."
   echo ""
   echo "💡 Quick fixes:"
-  echo "   - Format code: npm run format"  
   echo "   - Fix linting: npm run lint:fix"
   echo "   - Check types: npm run typecheck"
+  echo "   - Build test: npm run build"
   echo ""
   exit 1
 fi

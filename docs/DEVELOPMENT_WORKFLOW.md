@@ -2,6 +2,49 @@
 
 This document outlines the development workflow, best practices, and quality gates to prevent deployment failures and maintain code quality.
 
+## 🚨 CRITICAL: Prevent the #1 Deployment Failure
+
+**THE MOST COMMON CI FAILURE**: Committing unformatted files that fail Prettier checks
+
+> **This exact issue has caused multiple deployment failures.** The automated formatting check in CI/CD will fail if files aren't properly formatted before commit.
+
+## ⚠️ CRITICAL: Formatting Before Commit
+
+**THE #1 CAUSE OF CI FAILURES**: Committing unformatted files
+
+### Automatic Protection (Recommended)
+
+```bash
+# Install pre-commit hooks that auto-format
+npm run setup:hooks
+
+# This will automatically format files before every commit
+```
+
+### Manual Protection (If no hooks)
+
+**ALWAYS run before committing:**
+
+```bash
+# Format files and stage them
+npm run format:staged
+
+# OR manually
+npm run format
+git add .
+```
+
+### Emergency Check
+
+```bash
+# Before any commit, verify formatting will pass CI
+npm run format:check
+```
+
+**Why this matters**: Unformatted files are the #1 cause of CI failures. Prettier formatting rules are enforced in CI/CD and will fail the build if not followed.
+
+---
+
 ## Pre-Development Checklist
 
 Before starting any new feature or major changes:
