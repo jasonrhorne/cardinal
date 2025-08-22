@@ -27,7 +27,27 @@ Track key architectural, product, and technical decisions with rationale for fut
 **Alternatives**: Auth0 + separate database, Clerk + database, NextAuth + database
 **Rationale**: Single vendor, built-in magic links, includes database, simpler integration
 **Impact**: Vendor lock-in, but reduced complexity and faster development
-**Status**: Planned (F011, F012)
+**Status**: Implemented (F011)
+
+## 2025-08-22: Supabase over Neon for Database Infrastructure
+
+**Context**: Need PostgreSQL database with PostGIS for geospatial queries, scalable architecture, and integrated BaaS features
+**Decision**: Use Supabase as primary database provider over Neon
+**Alternatives**: Neon (PostgreSQL specialist), PlanetScale (MySQL), AWS RDS, self-hosted PostgreSQL
+**Rationale**: 
+- Integrated authentication eliminates vendor sprawl
+- Built-in PostGIS support for location-based features
+- Real-time subscriptions for collaborative itinerary editing
+- Row Level Security for multi-tenant data isolation
+- Comprehensive monitoring and backup automation
+- Edge functions for serverless compute co-location
+- Better pricing model for Cardinal's usage patterns
+**Impact**: 
+- Single vendor dependency but reduced integration complexity
+- Excellent developer experience and faster iteration
+- Built-in security and monitoring vs custom implementation
+- Automatic scaling without infrastructure management
+**Status**: Implemented (F011)
 
 ## 2025-08-21: Netlify Edge Functions for AI Orchestration
 

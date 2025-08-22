@@ -25,8 +25,8 @@
 | ✓   | F007 | Testing Framework Setup (Jest + Testing Library) | Testing  | P0       | 4           | F003         | DONE   | -        | 2025-08-21 |
 | ✓   | F008 | CI/CD Pipeline Setup                             | DevOps   | P0       | 3           | F002, F007   | DONE   | -        | 2025-08-21 |
 | ✓   | F009 | Environment Configuration Management             | DevOps   | P0       | 2           | F002         | DONE   | -        | 2025-08-21 |
-| ☐   | F010 | Database Schema Design                           | Database | P0       | 5           | None         | TODO   | -        | -          |
-| ☐   | F011 | Supabase/Neon Database Setup                     | Database | P0       | 3           | F010         | TODO   | -        | -          |
+| ✓   | F010 | Database Schema Design                           | Database | P0       | 5           | None         | DONE   | -        | 2025-08-22 |
+| ✓   | F011 | Supabase/Neon Database Setup                     | Database | P0       | 3           | F010         | DONE   | -        | 2025-08-22 |
 | ☐   | F012 | Authentication Service Setup (Auth0/Clerk)       | Backend  | P0       | 5           | F011         | TODO   | -        | -          |
 | ☐   | F013 | Google Maps API Setup & Billing                  | API      | P0       | 3           | None         | TODO   | -        | -          |
 | ☐   | F014 | LLM Provider Setup (Gemini/OpenAI)               | Backend  | P0       | 3           | None         | TODO   | -        | -          |

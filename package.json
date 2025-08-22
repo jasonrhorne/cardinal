@@ -23,12 +23,20 @@
     "setup-env": "node scripts/setup-env.js",
     "env:validate": "npx tsx -e \"import { getClientEnv } from './lib/config/env'; getClientEnv(); console.log('✅ Environment configuration is valid')\"",
     "env:validate:ci": "node scripts/validate-env-ci.js",
-    "env:check": "npx tsx -e \"import { isDevelopment, isProduction } from './lib/config/env'; console.log('Environment:', isDevelopment ? 'development' : isProduction ? 'production' : 'staging')\""
+    "env:check": "npx tsx -e \"import { isDevelopment, isProduction } from './lib/config/env'; console.log('Environment:', isDevelopment ? 'development' : isProduction ? 'production' : 'staging')\"",
+    "db:deploy": "node database/deploy.js",
+    "db:deploy:dev": "node database/deploy.js development",
+    "db:deploy:staging": "node database/deploy.js staging",
+    "db:deploy:prod": "node database/deploy.js production --confirm",
+    "db:test": "node database/test-connection.js",
+    "db:setup": "npm run db:deploy && npm run db:test"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.56.0",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "dotenv": "^17.2.1",
     "next": "^14.2.32",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
