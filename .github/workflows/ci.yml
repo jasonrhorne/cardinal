@@ -39,13 +39,42 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:3000/api
 
       - name: Run TypeScript type checking
-        run: npm run typecheck
+        run: |
+          echo "🔍 Running TypeScript type checking..."
+          npm run typecheck || {
+            echo "❌ TypeScript errors found!"
+            echo ""
+            echo "💡 Common fixes:"
+            echo "   - Check for missing environment variables in lib/config/env.ts"
+            echo "   - Verify all imports have proper type definitions"
+            echo "   - Run 'npm run typecheck' locally to see detailed errors"
+            exit 1
+          }
 
       - name: Run ESLint
-        run: npm run lint
+        run: |
+          echo "🔍 Running ESLint..."
+          npm run lint || {
+            echo "❌ ESLint errors found!"
+            echo ""
+            echo "💡 Quick fixes:"
+            echo "   - Run 'npm run lint:fix' to auto-fix many issues"
+            echo "   - Check for unused variables and imports"
+            echo "   - Verify import ordering (external → internal → types)"
+            exit 1
+          }
 
       - name: Check Prettier formatting
-        run: npm run format:check
+        run: |
+          echo "🔍 Checking code formatting..."
+          npm run format:check || {
+            echo "❌ Code formatting issues found!"
+            echo ""
+            echo "💡 Quick fix:"
+            echo "   - Run 'npm run format' to auto-format all files"
+            echo "   - Ensure your editor has Prettier integration enabled"
+            exit 1
+          }
 
       - name: Run tests with coverage
         run: npm run test:ci
@@ -78,7 +107,24 @@ jobs:
         run: npm ci
 
       - name: Build application
-        run: npm run build
+        run: |
+          echo "🏗️ Building application for production..."
+          npm run build || {
+            echo "❌ Build failed!"
+            echo ""
+            echo "💡 Common build issues:"
+            echo "   - Environment variables missing from lib/config/env.ts"
+            echo "   - TypeScript errors not caught in previous step"
+            echo "   - Import/export issues or circular dependencies"
+            echo "   - Missing dependencies or version conflicts"
+            echo ""
+            echo "🔧 Debugging steps:"
+            echo "   1. Run 'npm run build' locally to reproduce"
+            echo "   2. Check 'npm run typecheck' for type errors"
+            echo "   3. Verify all environment variables are defined"
+            echo "   4. Test in production mode: 'NODE_ENV=production npm run build'"
+            exit 1
+          }
         env:
           # Build-time environment variables
           NODE_ENV: production
