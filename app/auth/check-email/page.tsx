@@ -1,11 +1,11 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 
 import { useAuth } from '@/lib/auth'
 
-export default function CheckEmailPage() {
+function CheckEmailContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { isAuthenticated } = useAuth()
@@ -93,5 +93,27 @@ export default function CheckEmailPage() {
         </ul>
       </div>
     </div>
+  )
+}
+
+export default function CheckEmailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Loading...
+            </h2>
+            <p className="text-gray-600">
+              Please wait while we prepare your confirmation page.
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <CheckEmailContent />
+    </Suspense>
   )
 }

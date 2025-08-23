@@ -1,12 +1,12 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 
 import { Button, Input } from '@/components/ui'
 import { useMagicLink, useAuth } from '@/lib/auth'
 
-export default function SignInPage() {
+function SignInContent() {
   const [email, setEmail] = useState('')
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -73,5 +73,27 @@ export default function SignInPage() {
         <p>We&apos;ll send you a secure link to sign in without a password.</p>
       </div>
     </form>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Loading...
+            </h2>
+            <p className="text-gray-600">
+              Please wait while we prepare the sign-in page.
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <SignInContent />
+    </Suspense>
   )
 }
