@@ -1,6 +1,6 @@
 # Cardinal
 
-Clean repository baseline for the Cardinal project.
+AI-powered travel itinerary app for unique weekend getaways.
 
 - Product Requirements: Documentation/Cardinal_PRD.md
 - System Design: Documentation/Cardinal_SystemDesignDoc.md
