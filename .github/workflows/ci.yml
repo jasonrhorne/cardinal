@@ -8,7 +8,7 @@ on:
   workflow_dispatch: # Allow manual trigger
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
 
 jobs:
   # Code Quality and Testing Job
@@ -132,6 +132,10 @@ jobs:
           NEXT_PUBLIC_APP_VERSION: 0.1.0
           NEXT_PUBLIC_APP_URL: https://cardinal.app
           NEXT_PUBLIC_API_URL: https://cardinal.app/api
+          # Supabase environment variables (required for build)
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   # Security Audit Job
   security:
