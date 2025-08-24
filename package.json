@@ -35,7 +35,10 @@
     "db:setup": "npm run db:deploy && npm run db:test"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.10",
+    "@netlify/functions": "^4.2.2",
     "@supabase/supabase-js": "^2.56.0",
+    "@types/google.maps": "^3.58.1",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
