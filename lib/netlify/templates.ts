@@ -187,29 +187,38 @@ export function createCrudEndpoint<
           )
       }
     },
-    {
-      functionName: config.functionName,
-      allowedMethods: Object.keys(config.handlers).map(op => {
-        switch (op) {
-          case 'get':
-          case 'list':
-            return 'GET'
-          case 'create':
-            return 'POST'
-          case 'update':
-            return 'PUT'
-          case 'delete':
-            return 'DELETE'
-          default:
-            return 'GET'
+    (() => {
+      const functionConfig: any = {
+        functionName: config.functionName,
+        allowedMethods: Object.keys(config.handlers).map(op => {
+          switch (op) {
+            case 'get':
+            case 'list':
+              return 'GET'
+            case 'create':
+              return 'POST'
+            case 'update':
+              return 'PUT'
+            case 'delete':
+              return 'DELETE'
+            default:
+              return 'GET'
+          }
+        }),
+      }
+
+      if (config.requireAuth) {
+        functionConfig.requireAuth = config.requireAuth
+      }
+
+      if (config.createSchema || config.updateSchema) {
+        functionConfig.validation = {
+          body: config.createSchema || config.updateSchema,
         }
-      }),
-      requireAuth: config.requireAuth,
-      validation:
-        config.createSchema || config.updateSchema
-          ? { body: config.createSchema || config.updateSchema }
-          : undefined,
-    }
+      }
+
+      return functionConfig
+    })()
   )
 }
 
@@ -233,7 +242,7 @@ export function createAIEndpoint<TInput = any, TOutput = any>(config: {
       // Validate output if schema provided
       if (config.outputSchema) {
         try {
-          result = config.outputSchema.parse(result)
+          result = config.outputSchema.parse(result) as Awaited<TOutput>
         } catch (error) {
           console.error(
             `[${config.functionName}] Output validation failed:`,
@@ -256,15 +265,22 @@ export function createAIEndpoint<TInput = any, TOutput = any>(config: {
         `${config.functionName} completed successfully`
       )
     },
-    {
-      functionName: config.functionName,
-      allowedMethods: ['POST'],
-      requireAuth: config.requireAuth,
-      rateLimit: config.rateLimit || { requests: 10, windowMs: 60000 }, // Default: 10 requests per minute
-      timeout: config.timeout || 30000, // Default: 30 second timeout for AI operations
-      validation: { body: config.inputSchema },
-      logLevel: 'debug',
-    }
+    (() => {
+      const functionConfig: any = {
+        functionName: config.functionName,
+        allowedMethods: ['POST'],
+        rateLimit: config.rateLimit || { requests: 10, windowMs: 60000 },
+        timeout: config.timeout || 30000,
+        validation: { body: config.inputSchema },
+        logLevel: 'debug',
+      }
+
+      if (config.requireAuth) {
+        functionConfig.requireAuth = config.requireAuth
+      }
+
+      return functionConfig
+    })()
   )
 }
 
@@ -322,14 +338,19 @@ export function createWebhookEndpoint<TPayload = any>(config: {
         'Webhook processed successfully'
       )
     },
-    {
-      functionName: config.functionName,
-      allowedMethods: ['POST'],
-      validation: config.payloadSchema
-        ? { body: config.payloadSchema }
-        : undefined,
-      logLevel: 'debug',
-    }
+    (() => {
+      const functionConfig: any = {
+        functionName: config.functionName,
+        allowedMethods: ['POST'],
+        logLevel: 'debug',
+      }
+
+      if (config.payloadSchema) {
+        functionConfig.validation = { body: config.payloadSchema }
+      }
+
+      return functionConfig
+    })()
   )
 }
 
@@ -339,7 +360,7 @@ export function createHealthCheckEndpoint(config?: {
   checks?: Record<string, () => Promise<boolean>>
 }) {
   return createFunction(
-    async (event, context) => {
+    async (_event, _context) => {
       const functionName = config?.functionName || 'health-check'
       const checks = config?.checks || {}
 

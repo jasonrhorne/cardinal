@@ -51,7 +51,9 @@ export function createFunctionError(
   error.type = type
   error.statusCode = statusCode || getDefaultStatusCode(type)
   error.details = details
-  error.requestId = requestId
+  if (requestId) {
+    error.requestId = requestId
+  }
   return error
 }
 
@@ -128,12 +130,13 @@ export function createErrorResponse(
 
   if (typeof error === 'string') {
     message = error
-    finalStatusCode = statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR
+    finalStatusCode =
+      statusCode || (HTTP_STATUS.INTERNAL_SERVER_ERROR as HttpStatusCode)
     finalDetails = details
     finalRequestId = requestId
   } else {
     message = error.message
-    finalStatusCode = error.statusCode
+    finalStatusCode = error.statusCode as HttpStatusCode
     finalDetails = error.details || details
     finalRequestId = error.requestId || requestId
   }
@@ -261,10 +264,17 @@ export function parseAuthHeader(headers: Record<string, string>): {
   }
 
   const [type, token] = authHeader.split(' ')
-  return {
-    type: type || undefined,
-    token: token || undefined,
+  const result: { type?: string; token?: string } = {}
+
+  if (type) {
+    result.type = type
   }
+
+  if (token) {
+    result.token = token
+  }
+
+  return result
 }
 
 // Log function execution
