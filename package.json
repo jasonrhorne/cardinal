@@ -37,6 +37,10 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
     "@googlemaps/js-api-loader": "^1.16.10",
+    "@langchain/anthropic": "^0.3.26",
+    "@langchain/community": "^0.3.53",
+    "@langchain/core": "^0.3.72",
+    "@langchain/openai": "^0.6.9",
     "@netlify/functions": "^4.2.2",
     "@supabase/supabase-js": "^2.56.0",
     "@types/google.maps": "^3.58.1",
@@ -44,6 +48,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "dotenv": "^17.2.1",
+    "langchain": "^0.3.31",
     "next": "^14.2.32",
     "openai": "^5.15.0",
     "react": "^18.3.1",

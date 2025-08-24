@@ -299,7 +299,7 @@ Focus on distinctive, less obvious choices that match their interests.`
         system: request.systemPrompt,
         max_tokens: request.maxTokens,
         temperature: request.temperature,
-        model: 'claude-3-sonnet-20240229',
+        model: 'claude-3-5-sonnet-20241022',
       })
 
       return {

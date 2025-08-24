@@ -15,8 +15,12 @@ export const claudeRequestSchema = z.object({
     })
   ),
   model: z
-    .enum(['claude-3-sonnet-20240229', 'claude-3-haiku-20240307'])
-    .default('claude-3-sonnet-20240229'),
+    .enum([
+      'claude-3-5-sonnet-20241022',
+      'claude-3-sonnet-20240229',
+      'claude-3-haiku-20240307',
+    ])
+    .default('claude-3-5-sonnet-20241022'),
   max_tokens: z.number().positive().max(4096).default(2000),
   temperature: z.number().min(0).max(1).default(0.7),
   system: z.string().optional(),
@@ -54,7 +58,7 @@ export interface ClaudeError extends Error {
 
 export class AnthropicClient {
   private client: Anthropic
-  private defaultModel: string = 'claude-3-sonnet-20240229'
+  private defaultModel: string = 'claude-3-5-sonnet-20241022'
 
   constructor(apiKey?: string) {
     const key = apiKey || process.env.ANTHROPIC_API_KEY

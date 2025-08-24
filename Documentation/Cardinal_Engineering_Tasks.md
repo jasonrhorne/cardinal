@@ -30,7 +30,7 @@
 | ✓   | F012 | Supabase Authentication Setup (Magic Links)      | Backend  | P0       | 3           | F011         | DONE   | -        | 2025-08-22 |
 | ✓   | F013 | Google Maps API Setup & Billing                  | API      | P0       | 3           | None         | DONE   | -        | 2025-08-23 |
 | ✓   | F014 | LLM Provider Setup (Anthropic/OpenAI)            | Backend  | P0       | 3           | None         | DONE   | -        | 2025-08-24 |
-| ☐   | F015 | LangChain Integration Setup                      | Backend  | P0       | 4           | F014         | TODO   | -        | -          |
+| ✓   | F015 | LangChain Integration Setup                      | Backend  | P0       | 4           | F014         | DONE   | -        | 2025-08-24 |
 | ☐   | F016 | Netlify Functions Scaffolding                    | Backend  | P0       | 3           | F002         | TODO   | -        | -          |
 | ☐   | F017 | Error Handling & Logging Infrastructure          | Backend  | P0       | 4           | F016         | TODO   | -        | -          |
 | ☐   | F018 | Security Headers & CSP Configuration             | DevOps   | P0       | 2           | F002         | TODO   | -        | -          |
