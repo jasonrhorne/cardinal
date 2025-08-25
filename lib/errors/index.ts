@@ -103,7 +103,8 @@ export function isRetryableError(error: unknown): boolean {
       error.category === 'network' ||
       error.category === 'rate_limit' ||
       (error.category === 'external_api' &&
-        error.statusCode &&
+        error.statusCode !== null &&
+        error.statusCode !== undefined &&
         error.statusCode >= 500)
     )
   }
@@ -167,21 +168,23 @@ export function createErrorContext(request?: {
   sessionId?: string
   requestId?: string
 }): {
-  userId?: string
-  sessionId?: string
-  requestId?: string
-  url?: string
-  userAgent?: string
-  ip?: string
+  userId?: string | undefined
+  sessionId?: string | undefined
+  requestId?: string | undefined
+  url?: string | undefined
+  userAgent?: string | undefined
+  ip?: string | undefined
 } {
   return {
-    userId: request?.userId,
-    sessionId: request?.sessionId,
+    userId: request?.userId || undefined,
+    sessionId: request?.sessionId || undefined,
     requestId: request?.requestId || crypto.randomUUID(),
-    url: request?.url,
-    userAgent: request?.headers?.['user-agent'],
+    url: request?.url || undefined,
+    userAgent: request?.headers?.['user-agent'] || undefined,
     ip:
-      request?.headers?.['x-forwarded-for'] || request?.headers?.['x-real-ip'],
+      request?.headers?.['x-forwarded-for'] ||
+      request?.headers?.['x-real-ip'] ||
+      undefined,
   }
 }
 
@@ -201,7 +204,10 @@ export const CommonErrors = {
   rateLimited: (retryAfter?: number) =>
     new CardinalError('Rate limit exceeded', 'rate_limit', 'medium', 'server', {
       statusCode: 429,
-      details: retryAfter ? { retryAfter } : undefined,
+      details:
+        retryAfter !== null && retryAfter !== undefined
+          ? { retryAfter }
+          : undefined,
     }),
 
   serviceUnavailable: (service?: string) =>

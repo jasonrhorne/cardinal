@@ -44,7 +44,7 @@ const testRequestSchema = z.object({
     'database',
     'ai-service',
   ]),
-  params: z.record(z.any()).optional(),
+  params: z.record(z.string(), z.any()).optional(),
   shouldFail: z.boolean().optional().default(false),
 })
 
@@ -187,7 +187,7 @@ async function testErrorTypes(shouldFail: boolean): Promise<TestResult> {
 }
 
 // Test logging functionality
-async function testLogging(params: any): Promise<TestResult> {
+async function testLogging(_params: any): Promise<TestResult> {
   const testLogger = createLogger({
     level: 'debug',
     transports: [
@@ -244,7 +244,7 @@ async function testLogging(params: any): Promise<TestResult> {
 }
 
 // Test error monitoring
-async function testMonitoring(params: any): Promise<TestResult> {
+async function testMonitoring(_params: any): Promise<TestResult> {
   const monitor = getErrorMonitor()
 
   // Create test errors
@@ -285,7 +285,7 @@ async function testMonitoring(params: any): Promise<TestResult> {
 }
 
 // Test circuit breaker
-async function testCircuitBreaker(params: any): Promise<TestResult> {
+async function testCircuitBreaker(_params: any): Promise<TestResult> {
   const circuitBreaker = new CircuitBreaker(3, 5000) // 3 failures, 5s reset
 
   let successCount = 0
@@ -329,7 +329,7 @@ async function testCircuitBreaker(params: any): Promise<TestResult> {
 }
 
 // Test retry mechanism
-async function testRetryMechanism(params: any): Promise<TestResult> {
+async function testRetryMechanism(_params: any): Promise<TestResult> {
   let attemptCount = 0
   const maxAttempts = 3
 
@@ -364,7 +364,7 @@ async function testRetryMechanism(params: any): Promise<TestResult> {
 }
 
 // Test error aggregator
-async function testErrorAggregator(params: any): Promise<TestResult> {
+async function testErrorAggregator(_params: any): Promise<TestResult> {
   const aggregator = new ErrorAggregator()
 
   // Add various errors
@@ -425,7 +425,7 @@ async function testPerformanceMonitoring(
 }
 
 // Test validation errors
-async function testValidationErrors(params: any): Promise<TestResult> {
+async function testValidationErrors(_params: any): Promise<TestResult> {
   const testSchema = z.object({
     name: z.string().min(1),
     email: z.string().email(),
@@ -460,7 +460,7 @@ async function testValidationErrors(params: any): Promise<TestResult> {
 }
 
 // Test external API errors
-async function testExternalApiErrors(params: any): Promise<TestResult> {
+async function testExternalApiErrors(_params: any): Promise<TestResult> {
   const errors = [
     createExternalApiError(
       'TestAPI',
@@ -502,7 +502,7 @@ async function testExternalApiErrors(params: any): Promise<TestResult> {
 }
 
 // Test database errors
-async function testDatabaseErrors(params: any): Promise<TestResult> {
+async function testDatabaseErrors(_params: any): Promise<TestResult> {
   const errors = [
     createDatabaseError('SELECT', 'users', new Error('Connection timeout')),
     createDatabaseError(
@@ -534,7 +534,7 @@ async function testDatabaseErrors(params: any): Promise<TestResult> {
 }
 
 // Test AI service errors
-async function testAiServiceErrors(params: any): Promise<TestResult> {
+async function testAiServiceErrors(_params: any): Promise<TestResult> {
   const errors = [
     createAiServiceError(
       'anthropic',

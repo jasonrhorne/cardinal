@@ -14,17 +14,12 @@ import {
   DatabaseError,
   AiServiceError,
   type BaseError,
-  type ErrorCategory,
-  type ErrorSeverity,
 } from '../errors/types'
 import { logger } from '../logging/logger'
 import { getErrorMonitor } from '../monitoring/error-monitor'
 
-import {
-  createErrorResponse,
-  createFunctionContext,
-  type TFunctionContext,
-} from './utils'
+import type { TFunctionContext } from './types'
+import { createErrorResponse, createFunctionContext } from './utils'
 
 // Enhanced function handler with comprehensive error handling
 export function withErrorHandling<TEvent = any, TResult = any>(
@@ -263,7 +258,7 @@ export function createDatabaseError(
   return new DatabaseError(message, {
     operation,
     table: table || undefined,
-    query,
+    query: query || undefined,
     constraint: extractConstraintViolation(error),
   })
 }

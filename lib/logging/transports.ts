@@ -356,10 +356,4 @@ export function createDefaultTransports(): LogTransport[] {
   return transports
 }
 
-export {
-  ConsoleTransport,
-  FileTransport,
-  HttpTransport,
-  WebhookTransport,
-  MemoryTransport,
-}
+// Note: Classes are already exported above, no need for re-export

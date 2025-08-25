@@ -37,13 +37,12 @@ export interface BaseError extends Error {
   category: ErrorCategory
   severity: ErrorSeverity
   context: ErrorContext
-  statusCode?: number
-  details?: Record<string, any>
+  statusCode?: number | undefined
+  details?: Record<string, any> | undefined
   timestamp: string
-  userId?: string
-  requestId?: string
-  sessionId?: string
-  stack?: string
+  userId?: string | undefined
+  requestId?: string | undefined
+  sessionId?: string | undefined
   cause?: Error | undefined
 }
 
@@ -61,9 +60,9 @@ export interface ExternalApiErrorDetail {
   service: string
   endpoint: string
   method: string
-  statusCode?: number | undefined
+  statusCode?: number
   response?: any
-  rateLimited?: boolean | undefined
+  rateLimited?: boolean
 }
 
 // Database error details
@@ -117,17 +116,21 @@ export class CardinalError extends Error implements BaseError {
     this.category = category
     this.severity = severity
     this.context = context
-    this.statusCode = options.statusCode
-    this.details = options.details
+    this.statusCode = options.statusCode || undefined
+    this.details = options.details || undefined
     this.timestamp = new Date().toISOString()
-    this.userId = options.userId
-    this.requestId = options.requestId
-    this.sessionId = options.sessionId
+    this.userId = options.userId || undefined
+    this.requestId = options.requestId || undefined
+    this.sessionId = options.sessionId || undefined
 
     // Maintain stack trace
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, CardinalError)
     }
+  }
+
+  override get cause(): Error | undefined {
+    return super.cause as Error | undefined
   }
 }
 
@@ -284,7 +287,7 @@ export const errorResponseSchema = z.object({
     context: z.string(),
     timestamp: z.string(),
     statusCode: z.number().optional(),
-    details: z.record(z.any()).optional(),
+    details: z.record(z.string(), z.any()).optional(),
   }),
   requestId: z.string().optional(),
   timestamp: z.string(),

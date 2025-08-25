@@ -4,7 +4,6 @@
  */
 
 import type { BaseError, ErrorSeverity, ErrorCategory } from '../errors/types'
-import type { LogEntry } from '../logging/logger'
 import { logger } from '../logging/logger'
 
 // Alert configuration
@@ -504,7 +503,7 @@ export class ErrorMonitor {
     )
 
     const severityMap = ['low', 'medium', 'high', 'critical'] as const
-    return severityMap[maxSeverity]
+    return severityMap[maxSeverity] || 'low'
   }
 
   // Generate alert message

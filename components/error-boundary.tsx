@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<
     }
   }
 
-  static override getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
       hasError: true,
       error,
@@ -140,7 +140,7 @@ export class ErrorBoundary extends Component<
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Use custom fallback if provided
       if (this.props.fallback) {

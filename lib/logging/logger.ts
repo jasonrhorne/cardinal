@@ -3,14 +3,7 @@
  * Comprehensive logging infrastructure with multiple transports
  */
 
-import { z } from 'zod'
-
-import type {
-  BaseError,
-  ErrorSeverity,
-  ErrorCategory,
-  ErrorContext,
-} from '../errors/types'
+import type { BaseError, ErrorSeverity, ErrorCategory } from '../errors/types'
 
 // Log levels
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal'
@@ -26,6 +19,7 @@ export type LogContext =
   | 'external_api'
   | 'user_action'
   | 'client'
+  | 'monitoring'
 
 // Base log entry structure
 export interface LogEntry {
@@ -34,17 +28,19 @@ export interface LogEntry {
   level: LogLevel
   context: LogContext
   message: string
-  data?: Record<string, any>
+  data?: Record<string, any> | undefined
   userId?: string
   requestId?: string
   sessionId?: string
-  error?: {
-    name: string
-    message: string
-    stack?: string
-    category?: ErrorCategory
-    severity?: ErrorSeverity
-  }
+  error?:
+    | {
+        name: string
+        message: string
+        stack?: string | undefined
+        category?: ErrorCategory | undefined
+        severity?: ErrorSeverity | undefined
+      }
+    | undefined
   performance?: {
     duration?: number
     memory?: number
@@ -155,7 +151,7 @@ export class Logger {
       level,
       context,
       message,
-      data: this.sanitizeData(data),
+      data: this.sanitizeData(data) || undefined,
       error: error ? this.formatError(error) : undefined,
       metadata: {
         environment: process.env.NODE_ENV || 'development',
@@ -398,15 +394,15 @@ export class Logger {
     const formatted: LogEntry['error'] = {
       name: error.name,
       message: error.message,
-      stack: error.stack,
+      stack: error.stack || undefined,
     }
 
     // Add Cardinal-specific error details
-    if ('category' in error) {
+    if ('category' in error && formatted) {
       formatted.category = error.category
     }
 
-    if ('severity' in error) {
+    if ('severity' in error && formatted) {
       formatted.severity = error.severity
     }
 
