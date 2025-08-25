@@ -12,25 +12,19 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # Security Headers (fallback for edge cases)
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    
-    # Cache control for static assets
-    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/_next/static/*"
   [headers.values]
-    # Long-term caching for Next.js static assets
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/api/*"
   [headers.values]
-    # No caching for API routes
     Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate"
     X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive"
 
@@ -50,14 +44,11 @@
     Cache-Control = "public, max-age=31536000, immutable"
     Cross-Origin-Resource-Policy = "cross-origin"
 
-# Function timeout configuration
+# Function configuration
 [functions]
   directory = "netlify/functions/"
-  
-  [functions.environment]
-    NODE_ENV = "production"
 
-# Edge functions configuration
+# Edge functions configuration  
 [edge_functions]
   directory = "netlify/edge-functions/"
 
