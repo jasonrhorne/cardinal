@@ -20,6 +20,7 @@ export type LogContext =
   | 'user_action'
   | 'client'
   | 'monitoring'
+  | 'performance'
 
 // Base log entry structure
 export interface LogEntry {
