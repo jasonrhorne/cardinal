@@ -1,27 +1,18 @@
-import { z } from 'zod'
+// import { z } from 'zod' // Kept for future validation schemas
 
 /**
  * Semantic HTML validation schemas
  */
-const headingLevelSchema = z.union([
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
-  z.literal(6),
-])
+// Validation schemas (kept for future use)
+// const headingLevelSchema = z.union([
+//   z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5), z.literal(6),
+// ])
 
-const landmarkRoleSchema = z.union([
-  z.literal('banner'),
-  z.literal('main'),
-  z.literal('navigation'),
-  z.literal('contentinfo'),
-  z.literal('complementary'),
-  z.literal('form'),
-  z.literal('search'),
-  z.literal('region'),
-])
+// const landmarkRoleSchema = z.union([
+//   z.literal('banner'), z.literal('main'), z.literal('navigation'),
+//   z.literal('contentinfo'), z.literal('complementary'), z.literal('form'),
+//   z.literal('search'), z.literal('region'),
+// ])
 
 /**
  * Semantic validation utilities
@@ -133,7 +124,14 @@ export class SemanticValidator {
       )
 
       controls.forEach((control, controlIndex) => {
-        const hasLabel = control.labels && control.labels.length > 0
+        const inputElement = control as
+          | HTMLInputElement
+          | HTMLTextAreaElement
+          | HTMLSelectElement
+        const hasLabel =
+          'labels' in inputElement &&
+          inputElement.labels &&
+          inputElement.labels.length > 0
         const hasAriaLabel = control.getAttribute('aria-label')
         const hasAriaLabelledBy = control.getAttribute('aria-labelledby')
 

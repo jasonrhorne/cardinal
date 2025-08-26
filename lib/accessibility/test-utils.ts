@@ -5,7 +5,7 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { ReactElement } from 'react'
 
 // Extend Jest matchers
-expect.extend(toHaveNoViolations)
+expect.extend({ toHaveNoViolations })
 
 interface AccessibilityTestOptions {
   /**
@@ -42,6 +42,7 @@ export async function expectNoAccessibilityViolations(
   const container = 'container' in element ? element.container : element
   const results = await axe(container, config)
 
+  // @ts-ignore - jest-axe extends expect with toHaveNoViolations
   expect(results).toHaveNoViolations()
   return results
 }
@@ -202,7 +203,7 @@ export class SemanticTester {
 
     inputs.forEach((input, index) => {
       const element = input as HTMLInputElement
-      const id = element.id
+      // element.id could be used for more detailed error messages
       const hasLabel = element.labels && element.labels.length > 0
       const hasAriaLabel = element.getAttribute('aria-label')
       const hasAriaLabelledBy = element.getAttribute('aria-labelledby')

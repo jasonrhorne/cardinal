@@ -69,13 +69,13 @@ export function useFocusTrap(
           // Shift + Tab: moving backwards
           if (activeElement === firstElement) {
             event.preventDefault()
-            lastElement.focus()
+            lastElement?.focus()
           }
         } else {
           // Tab: moving forwards
           if (activeElement === lastElement) {
             event.preventDefault()
-            firstElement.focus()
+            firstElement?.focus()
           }
         }
       }
@@ -106,7 +106,7 @@ export function useFocusTrap(
     // Focus the first focusable element in the container
     const focusableElements = getFocusableElements(containerRef.current)
     if (focusableElements.length > 0) {
-      focusableElements[0].focus()
+      focusableElements[0]?.focus()
     }
 
     // Add event listener for keyboard navigation
@@ -220,6 +220,7 @@ export function useRovingTabindex<T extends HTMLElement>(
       activeItem.addEventListener('keydown', handleKeyDown)
       return () => activeItem.removeEventListener('keydown', handleKeyDown)
     }
+    return undefined
   }, [items, activeIndex, handleKeyDown])
 }
 

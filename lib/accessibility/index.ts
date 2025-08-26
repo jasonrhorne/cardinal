@@ -61,15 +61,21 @@ export type { AriaLivePriority, AriaState } from './aria-patterns'
  */
 export function initializeAccessibility() {
   // Initialize focus-visible management
-  initializeFocusVisible()
+  if (typeof window !== 'undefined') {
+    import('./focus-management').then(
+      ({ initializeFocusVisible, LiveAnnouncer }) => {
+        initializeFocusVisible()
+        LiveAnnouncer.getInstance()
+      }
+    )
 
-  // Enable semantic validation in development
-  if (process.env.NODE_ENV === 'development') {
-    enableSemanticValidation()
+    // Enable semantic validation in development
+    if (process.env.NODE_ENV === 'development') {
+      import('./semantic-patterns').then(({ enableSemanticValidation }) => {
+        enableSemanticValidation()
+      })
+    }
   }
-
-  // Initialize live announcer
-  LiveAnnouncer.getInstance()
 }
 
 /**

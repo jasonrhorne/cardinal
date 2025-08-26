@@ -226,12 +226,18 @@ export function useCombobox<T>(
           )
           break
         case 'Enter':
-          if (isOpen && selectedIndex >= 0) {
+          if (
+            isOpen &&
+            selectedIndex >= 0 &&
+            selectedIndex < filteredOptions.length
+          ) {
             event.preventDefault()
             const selectedOption = filteredOptions[selectedIndex]
-            setInputValue(getOptionLabel(selectedOption))
-            setIsOpen(false)
-            setSelectedIndex(-1)
+            if (selectedOption) {
+              setInputValue(getOptionLabel(selectedOption))
+              setIsOpen(false)
+              setSelectedIndex(-1)
+            }
           }
           break
         case 'Escape':
@@ -249,8 +255,8 @@ export function useCombobox<T>(
     'aria-owns': listboxId.current,
     'aria-haspopup': 'listbox' as const,
     'aria-activedescendant':
-      selectedIndex >= 0
-        ? getOptionId(filteredOptions[selectedIndex], selectedIndex)
+      selectedIndex >= 0 && selectedIndex < filteredOptions.length
+        ? getOptionId(filteredOptions[selectedIndex]!, selectedIndex)
         : undefined,
     'aria-autocomplete': 'list' as const,
     value: inputValue,
@@ -285,7 +291,7 @@ export function useCombobox<T>(
 /**
  * Accordion ARIA pattern hook
  */
-export function useAccordion(panels: string[], allowMultiple: boolean = false) {
+export function useAccordion(allowMultiple: boolean = false) {
   const [expandedPanels, setExpandedPanels] = useState<Set<string>>(new Set())
 
   const togglePanel = useCallback(
@@ -365,22 +371,34 @@ export function useTabs(tabIds: string[], initialActiveTab?: string) {
         case 'ArrowDown':
           event.preventDefault()
           const nextIndex = (currentIndex + 1) % tabIds.length
-          setActiveTab(tabIds[nextIndex])
+          const nextTab = tabIds[nextIndex]
+          if (nextTab) {
+            setActiveTab(nextTab)
+          }
           break
         case 'ArrowLeft':
         case 'ArrowUp':
           event.preventDefault()
           const prevIndex =
             currentIndex === 0 ? tabIds.length - 1 : currentIndex - 1
-          setActiveTab(tabIds[prevIndex])
+          const prevTab = tabIds[prevIndex]
+          if (prevTab) {
+            setActiveTab(prevTab)
+          }
           break
         case 'Home':
           event.preventDefault()
-          setActiveTab(tabIds[0])
+          const firstTab = tabIds[0]
+          if (firstTab) {
+            setActiveTab(firstTab)
+          }
           break
         case 'End':
           event.preventDefault()
-          setActiveTab(tabIds[tabIds.length - 1])
+          const lastTab = tabIds[tabIds.length - 1]
+          if (lastTab) {
+            setActiveTab(lastTab)
+          }
           break
       }
     },
@@ -413,7 +431,7 @@ export function useDialog(isOpen: boolean, onClose: () => void) {
       if (dialogRef.current) {
         const focusableElements = getFocusableElements(dialogRef.current)
         if (focusableElements.length > 0) {
-          focusableElements[0].focus()
+          focusableElements[0]?.focus()
         } else {
           dialogRef.current.focus()
         }
@@ -440,6 +458,7 @@ export function useDialog(isOpen: boolean, onClose: () => void) {
       document.addEventListener('keydown', handleKeyDown)
       return () => document.removeEventListener('keydown', handleKeyDown)
     }
+    return undefined
   }, [isOpen, handleKeyDown])
 
   const dialogProps = {
@@ -591,7 +610,7 @@ export function useMenu(menuItems: string[]) {
     onKeyDown: handleMenuKeyDown,
   }
 
-  const getItemProps = (itemId: string, index: number) => ({
+  const getItemProps = (_itemId: string, index: number) => ({
     role: 'menuitem',
     tabIndex: index === focusedIndex ? 0 : -1,
   })
