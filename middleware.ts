@@ -17,6 +17,7 @@ const authRoutes = ['/auth/signin', '/auth/signup', '/auth/callback']
 // Public routes don't need explicit checking as they're the default
 // const publicRoutes = ['/', '/about', '/privacy', '/terms']
 
+/* TEMPORARILY COMMENTED OUT FOR DEBUGGING - Re-enable after fixing auth
 /**
  * Check if path requires authentication
  */
@@ -82,9 +83,10 @@ function getSupabaseSession(request: NextRequest) {
     authToken,
   }
 }
+*/
 
 export function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
+  const { pathname } = request.nextUrl
 
   // TEMPORARY: Disable all auth checks to debug the issue
   console.log('[Middleware Debug] Path:', pathname)
