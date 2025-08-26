@@ -5,8 +5,8 @@
 - **Owner**: Cardinal Engineering Team
 - **Document Status**: Draft v0.3 - Foundation Phase 75% Complete
 - **Last Updated**: 2025-08-25
-- **Total Tasks**: 93
-- **Estimated Total Effort**: 1,254 story points (~6-8 months for 2-3 engineers)
+- **Total Tasks**: 92
+- **Estimated Total Effort**: 1,253 story points (~6-8 months for 2-3 engineers)
 
 ---
 
@@ -36,9 +36,9 @@
 | ✓   | F018 | Security Headers & CSP Configuration             | DevOps   | P0       | 2           | F002         | DONE   | -        | 2025-08-25 |
 | ✓   | F019 | Performance Monitoring Setup                     | DevOps   | P0       | 3           | F002         | DONE   | Claude   | 2025-08-25 |
 | ✓   | F020 | Accessibility Foundation (WCAG AA)               | Frontend | P0       | 4           | F003         | DONE   | Claude   | 2025-08-26 |
-| ✅  | F021 | Authentication Middleware Enhancement            | Backend  | P1       | 2           | F012         | DONE   | Claude   | 2025-08-26 |
-| ✅  | F023 | User Profile Management System                   | Backend  | P1       | 3           | F012         | DONE   | Claude   | 2025-08-26 |
-| ☐   | F024 | Authentication Unit Tests                        | Testing  | P1       | 3           | F012, F007   | TODO   | -        | -          |
+| ✓   | F021 | Authentication Middleware Enhancement            | Backend  | P1       | 2           | F012         | DONE   | Claude   | 2025-08-26 |
+| ✓   | F023 | User Profile Management System                   | Backend  | P1       | 3           | F012         | DONE   | Claude   | 2025-08-26 |
+| ☐   | F022 | Authentication Unit Tests                        | Testing  | P1       | 3           | F012, F007   | TODO   | -        | -          |
 
 ### Core Features Phase
 
@@ -135,7 +135,7 @@
 
 ## Task Details by Phase
 
-### Foundation & Setup Phase (Tasks F001-F024)
+### Foundation & Setup Phase (Tasks F001-F022)
 
 **Objective**: Establish the technical foundation and development environment
 **Timeline**: 4-6 weeks
