@@ -1,11 +1,8 @@
 'use client'
 
 import { render, RenderResult } from '@testing-library/react'
-import { axe, toHaveNoViolations } from 'jest-axe'
+import { axe } from 'jest-axe'
 import { ReactElement } from 'react'
-
-// Import and extend Jest matchers
-expect.extend({ toHaveNoViolations })
 
 interface AccessibilityTestOptions {
   /**
