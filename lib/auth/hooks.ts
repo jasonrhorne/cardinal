@@ -36,17 +36,19 @@ export function useAuth() {
     initialized: false,
   })
 
-  // Only create Supabase client on the client side
-  const [supabase] = useState(() => {
-    if (typeof window === 'undefined') {
-      return null as any
+  // Lazily create Supabase client only on client-side
+  const [supabase] = useState<ReturnType<typeof createSupabaseClient> | null>(
+    () => {
+      if (typeof window === 'undefined') {
+        return null
+      }
+      return createSupabaseClient()
     }
-    return createSupabaseClient()
-  })
+  )
 
   useEffect(() => {
-    // Skip on server-side
-    if (!supabase || typeof window === 'undefined') {
+    // Skip if Supabase client not available (SSR)
+    if (!supabase) {
       return
     }
 
@@ -70,7 +72,7 @@ export function useAuth() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
+      async (_event: AuthChangeEvent, session: Session | null) => {
         setAuthState({
           user: session?.user ?? null,
           session: session,
@@ -78,14 +80,8 @@ export function useAuth() {
           initialized: true,
         })
 
-        // Handle specific auth events
-        if (event === 'SIGNED_IN') {
-          console.log('User signed in:', session?.user?.email)
-        } else if (event === 'SIGNED_OUT') {
-          console.log('User signed out')
-        } else if (event === 'TOKEN_REFRESHED') {
-          console.log('Token refreshed')
-        }
+        // Handle specific auth events if needed
+        // Events available: SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED, USER_UPDATED
       }
     )
 
@@ -97,8 +93,9 @@ export function useAuth() {
   const signOutUser = useCallback(async () => {
     try {
       await signOut()
-    } catch (error) {
-      console.error('Sign out error:', error)
+    } catch {
+      // Silently fail sign out - user will remain signed in
+      // Could add error handling/notification here if needed
     }
   }, [])
 

@@ -31,39 +31,34 @@ function AuthCallbackContent() {
 
         if (accessToken && refreshToken) {
           // Set the session using the tokens from the URL
-          const { data, error: sessionError } = await supabase.auth.setSession({
+          const { error: sessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
           })
 
           if (sessionError) {
-            console.error('Session error:', sessionError)
             setError(sessionError.message)
             setStatus('error')
             return
           }
 
-          console.log('Authentication successful:', data.user?.email)
           setStatus('success')
         } else {
           // Check if we already have a session
           const { data, error: authError } = await supabase.auth.getSession()
 
           if (authError) {
-            console.error('Auth callback error:', authError)
             setError(authError.message)
             setStatus('error')
             return
           }
 
           if (!data.session) {
-            console.error('No session or auth tokens found')
             setError('Authentication failed - no session created')
             setStatus('error')
             return
           }
 
-          console.log('Existing session found:', data.session.user.email)
           setStatus('success')
         }
 
@@ -75,7 +70,6 @@ function AuthCallbackContent() {
           router.push(redirectTo)
         }, 1500)
       } catch (err) {
-        console.error('Callback handling error:', err)
         setError(
           err instanceof Error ? err.message : 'An unexpected error occurred'
         )

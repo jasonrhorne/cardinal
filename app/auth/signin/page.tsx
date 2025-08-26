@@ -30,7 +30,6 @@ function SignInContent() {
     e.preventDefault()
     reset()
 
-    // Handle SSR - window is not available during server-side rendering
     const callbackUrl =
       typeof window !== 'undefined'
         ? `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`
