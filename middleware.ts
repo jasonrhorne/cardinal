@@ -85,6 +85,14 @@ function getSupabaseSession(request: NextRequest) {
 
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
+
+  // TEMPORARY: Disable all auth checks to debug the issue
+  console.log('[Middleware Debug] Path:', pathname)
+
+  // Allow all requests to proceed without auth checks
+  return NextResponse.next()
+
+  /* COMMENTED OUT FOR DEBUGGING - Re-enable after fixing auth
   const { hasSession } = getSupabaseSession(request)
 
   // Allow API routes to handle their own auth
@@ -116,6 +124,7 @@ export function middleware(request: NextRequest) {
 
   // Allow all other requests to proceed
   return NextResponse.next()
+  */
 }
 
 // Configure which paths the middleware runs on
