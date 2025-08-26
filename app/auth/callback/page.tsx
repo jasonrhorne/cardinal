@@ -65,10 +65,10 @@ function AuthCallbackContent() {
         // Redirect to the intended destination
         const redirectTo = searchParams.get('redirectTo') || '/dashboard'
 
-        // Small delay to show success state
+        // Small delay to show success state (reduced from 1500ms)
         setTimeout(() => {
           router.push(redirectTo)
-        }, 1500)
+        }, 500)
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'An unexpected error occurred'
