@@ -14,7 +14,8 @@ import type { NextRequest } from 'next/server'
 // Define protected and auth routes
 const protectedRoutes = ['/dashboard', '/profile', '/settings', '/itineraries']
 const authRoutes = ['/auth/signin', '/auth/signup', '/auth/callback']
-const publicRoutes = ['/', '/about', '/privacy', '/terms']
+// Public routes don't need explicit checking as they're the default
+// const publicRoutes = ['/', '/about', '/privacy', '/terms']
 
 /**
  * Check if path requires authentication
