@@ -2,6 +2,8 @@
 
 AI-powered travel itinerary app for unique weekend getaways.
 
+[![CI](https://github.com/jasonrhorne/cardinal/workflows/CI/badge.svg)](https://github.com/jasonrhorne/cardinal/actions)
+
 - Product Requirements: Documentation/Cardinal_PRD.md
 - System Design: Documentation/Cardinal_SystemDesignDoc.md
 - Engineering Tasks: Documentation/Cardinal_Engineering_Tasks.md
