@@ -18,11 +18,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuthContext()
 
   const handleSignOut = async () => {
-    try {
-      await signOut()
-    } catch (error) {
-      console.error('Sign out error:', error)
-    }
+    await signOut()
   }
 
   return (
@@ -57,3 +53,6 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
+
+// Force dynamic rendering for dashboard routes
+export const dynamic = 'force-dynamic'
