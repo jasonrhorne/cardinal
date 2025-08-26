@@ -6,6 +6,10 @@ import { useState, useEffect, Suspense } from 'react'
 import { Button, Input } from '@/components/ui'
 import { useMagicLink, useAuth } from '@/lib/auth'
 
+// Force this page to be dynamic (not statically generated)
+// This prevents SSR issues with client-side auth components
+export const dynamic = 'force-dynamic'
+
 function SignInContent() {
   const [email, setEmail] = useState('')
   const router = useRouter()
@@ -26,10 +30,13 @@ function SignInContent() {
     e.preventDefault()
     reset()
 
-    const result = await sendMagicLink(
-      email,
-      `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`
-    )
+    // Handle SSR - window is not available during server-side rendering
+    const callbackUrl =
+      typeof window !== 'undefined'
+        ? `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+        : `/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+
+    const result = await sendMagicLink(email, callbackUrl)
 
     if (result.success) {
       // Optionally redirect to a confirmation page

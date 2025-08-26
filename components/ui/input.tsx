@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef } from 'react'
+import { InputHTMLAttributes, forwardRef, useId } from 'react'
 
 import { useAriaDescribedBy } from '@/lib/accessibility'
 
@@ -10,7 +10,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className = '', error, label, help, id, required, ...props }, ref) => {
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
+    const generatedId = useId()
+    const inputId = id || `input-${generatedId}`
     const labelId = `${inputId}-label`
     const errorId = error ? `${inputId}-error` : undefined
     const helpId = help ? `${inputId}-help` : undefined

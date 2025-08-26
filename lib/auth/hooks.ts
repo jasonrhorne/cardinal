@@ -36,9 +36,20 @@ export function useAuth() {
     initialized: false,
   })
 
-  const supabase = createSupabaseClient()
+  // Only create Supabase client on the client side
+  const [supabase] = useState(() => {
+    if (typeof window === 'undefined') {
+      return null as any
+    }
+    return createSupabaseClient()
+  })
 
   useEffect(() => {
+    // Skip on server-side
+    if (!supabase || typeof window === 'undefined') {
+      return
+    }
+
     // Get initial session
     const getInitialSession = async () => {
       const {
@@ -81,7 +92,7 @@ export function useAuth() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase.auth])
+  }, [supabase])
 
   const signOutUser = useCallback(async () => {
     try {
@@ -211,7 +222,7 @@ export function useAuthGuard(options: UseAuthGuardOptions = {}) {
     if (!isAuthenticated) {
       if (options.onUnauthenticated) {
         options.onUnauthenticated()
-      } else if (options.redirectTo) {
+      } else if (options.redirectTo && typeof window !== 'undefined') {
         window.location.href = options.redirectTo
       }
       setIsAuthorized(false)

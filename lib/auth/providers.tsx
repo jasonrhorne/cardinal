@@ -88,9 +88,11 @@ export function ProtectedRoute({
     }
 
     if (!isAuthenticated) {
-      const currentPath = window.location.pathname + window.location.search
-      const redirectUrl = `${redirectTo}?redirectTo=${encodeURIComponent(currentPath)}`
-      router.push(redirectUrl)
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname + window.location.search
+        const redirectUrl = `${redirectTo}?redirectTo=${encodeURIComponent(currentPath)}`
+        router.push(redirectUrl)
+      }
       return
     }
 
@@ -216,9 +218,11 @@ function AuthRequiredFallback({ redirectTo }: { redirectTo: string }) {
   const router = useRouter()
 
   useEffect(() => {
-    const currentPath = window.location.pathname + window.location.search
-    const redirectUrl = `${redirectTo}?redirectTo=${encodeURIComponent(currentPath)}`
-    router.push(redirectUrl)
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname + window.location.search
+      const redirectUrl = `${redirectTo}?redirectTo=${encodeURIComponent(currentPath)}`
+      router.push(redirectUrl)
+    }
   }, [router, redirectTo])
 
   return (

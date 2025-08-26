@@ -5,6 +5,10 @@ import { useEffect, useState, Suspense } from 'react'
 
 import { createSupabaseClient } from '@/lib/database/supabase'
 
+// Force this page to be dynamic (not statically generated)
+// This prevents SSR issues with client-side auth components
+export const dynamic = 'force-dynamic'
+
 function AuthCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -20,7 +24,7 @@ function AuthCallbackContent() {
 
         // Check for auth hash/fragment in URL (Supabase magic links use URL fragments)
         const hashParams = new URLSearchParams(
-          window.location.hash.substring(1)
+          typeof window !== 'undefined' ? window.location.hash.substring(1) : ''
         )
         const accessToken = hashParams.get('access_token')
         const refreshToken = hashParams.get('refresh_token')
