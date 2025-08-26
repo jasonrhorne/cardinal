@@ -69,9 +69,11 @@ describe('useAuth', () => {
   it('should set initialized after checking session', async () => {
     const { result } = renderHook(() => useAuth())
 
-    await waitFor(() => {
-      expect(result.current.initialized).toBe(true)
-      expect(result.current.loading).toBe(false)
+    await act(async () => {
+      await waitFor(() => {
+        expect(result.current.initialized).toBe(true)
+        expect(result.current.loading).toBe(false)
+      })
     })
   })
 

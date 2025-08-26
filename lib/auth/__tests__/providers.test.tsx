@@ -112,8 +112,9 @@ describe('ProtectedRoute', () => {
       </AuthProvider>
     )
 
-    // Should show loading spinner
-    expect(screen.getByRole('status', { hidden: true })).toBeInTheDocument()
+    // Should show loading spinner (look for the loading div)
+    const spinner = document.querySelector('.animate-spin')
+    expect(spinner).toBeInTheDocument()
     expect(screen.queryByText('Protected Content')).not.toBeInTheDocument()
   })
 
@@ -143,13 +144,15 @@ describe('ProtectedRoute', () => {
 
   it('should redirect to signin when not authenticated', async () => {
     // Mock window.location
-    const originalLocation = window.location
-    delete (window as any).location
-    window.location = {
-      ...originalLocation,
-      pathname: '/dashboard',
-      search: '?test=1',
-    } as Location
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/dashboard',
+        search: '?test=1',
+        href: 'http://localhost:3000/dashboard?test=1',
+        toString: () => 'http://localhost:3000/dashboard?test=1',
+      },
+    })
 
     mockUseAuth.mockReturnValue({
       user: null,
@@ -179,13 +182,16 @@ describe('ProtectedRoute', () => {
   })
 
   it('should redirect to custom path when specified', async () => {
-    const originalLocation = window.location
-    delete (window as any).location
-    window.location = {
-      ...originalLocation,
-      pathname: '/dashboard',
-      search: '',
-    } as Location
+    // Mock window.location
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/dashboard',
+        search: '',
+        href: 'http://localhost:3000/dashboard',
+        toString: () => 'http://localhost:3000/dashboard',
+      },
+    })
 
     mockUseAuth.mockReturnValue({
       user: null,
