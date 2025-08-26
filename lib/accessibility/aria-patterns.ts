@@ -1,4 +1,6 @@
-import { useEffect, useState, useRef, useCallback, ReactNode } from 'react'
+'use client'
+
+import { useEffect, useState, useRef, useCallback } from 'react'
 
 import { getFocusableElements } from './focus-management'
 

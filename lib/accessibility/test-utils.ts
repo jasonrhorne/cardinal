@@ -1,3 +1,5 @@
+'use client'
+
 import { render, RenderResult } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { ReactElement } from 'react'
