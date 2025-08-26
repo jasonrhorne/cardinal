@@ -4,7 +4,7 @@ import { render, RenderResult } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { ReactElement } from 'react'
 
-// Extend Jest matchers
+// Import and extend Jest matchers
 expect.extend({ toHaveNoViolations })
 
 interface AccessibilityTestOptions {

@@ -48,6 +48,13 @@ export function useFocusTrap(
     containerRef.current = node
   }, [])
 
+  const releaseFocus = useCallback(() => {
+    if (previouslyFocusedElement.current) {
+      previouslyFocusedElement.current.focus()
+      previouslyFocusedElement.current = null
+    }
+  }, [])
+
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (!enabled || !containerRef.current) {
@@ -85,15 +92,8 @@ export function useFocusTrap(
         releaseFocus()
       }
     },
-    [enabled]
+    [enabled, releaseFocus]
   )
-
-  const releaseFocus = useCallback(() => {
-    if (previouslyFocusedElement.current) {
-      previouslyFocusedElement.current.focus()
-      previouslyFocusedElement.current = null
-    }
-  }, [])
 
   useEffect(() => {
     if (!enabled || !containerRef.current) {

@@ -6,7 +6,8 @@
 import '@testing-library/jest-dom'
 
 // Setup jest-axe for accessibility testing
-import 'jest-axe/extend-expect'
+import { toHaveNoViolations } from 'jest-axe'
+expect.extend({ toHaveNoViolations })
 
 // Global test setup
 beforeEach(() => {
