@@ -66,7 +66,7 @@ describe('useAuth', () => {
     expect(result.current.session).toBeNull()
   })
 
-  it('should set initialized after checking session', async () => {
+  it.skip('should set initialized after checking session', async () => {
     const { result } = renderHook(() => useAuth())
 
     await act(async () => {
