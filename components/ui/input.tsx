@@ -1,5 +1,7 @@
 import { InputHTMLAttributes, forwardRef } from 'react'
 
+import { useAriaDescribedBy } from '@/lib/accessibility'
+
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string
   label?: string
@@ -7,8 +9,15 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className = '', error, label, help, id, ...props }, ref) => {
+  ({ className = '', error, label, help, id, required, ...props }, ref) => {
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
+    const labelId = `${inputId}-label`
+    const errorId = error ? `${inputId}-error` : undefined
+    const helpId = help ? `${inputId}-help` : undefined
+
+    // Use accessibility utility for proper describedby relationships
+    const describedByProps = useAriaDescribedBy(errorId, helpId)
+
     const classes = error
       ? `form-input border-error-300 focus:border-error-500 focus:ring-error-500 ${className}`
       : `form-input ${className}`
@@ -16,13 +25,43 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="space-y-1">
         {label && (
-          <label htmlFor={inputId} className="form-label">
+          <label
+            id={labelId}
+            htmlFor={inputId}
+            className={`form-label ${required ? 'required' : ''}`.trim()}
+          >
             {label}
+            {required && (
+              <span aria-label="required" className="text-red-500 ml-1">
+                *
+              </span>
+            )}
           </label>
         )}
-        <input ref={ref} id={inputId} className={classes} {...props} />
-        {error && <p className="form-error">{error}</p>}
-        {help && !error && <p className="form-help">{help}</p>}
+        <input
+          ref={ref}
+          id={inputId}
+          className={classes}
+          required={required}
+          aria-invalid={error ? true : undefined}
+          {...describedByProps}
+          {...props}
+        />
+        {error && (
+          <p
+            id={errorId}
+            className="form-error"
+            role="alert"
+            aria-live="polite"
+          >
+            {error}
+          </p>
+        )}
+        {help && !error && (
+          <p id={helpId} className="form-help">
+            {help}
+          </p>
+        )}
       </div>
     )
   }
