@@ -20,6 +20,8 @@ import React, {
   useCallback,
 } from 'react'
 
+import type { UserProfile } from '@/types/profile'
+
 import { useAuth } from './hooks'
 
 // =============================================================================
@@ -305,17 +307,13 @@ export function SessionPersistence({ children }: SessionPersistenceProps) {
 // USER PROFILE PROVIDER
 // =============================================================================
 
-interface UserProfile {
-  id: string
-  email: string | undefined
-  name: string
-}
-
 interface UserProfileContextType {
   profile: UserProfile | null
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
+  updateProfile: (data: Partial<UserProfile>) => Promise<void>
+  createProfile: (data: Partial<UserProfile>) => Promise<void>
 }
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(
@@ -349,24 +347,100 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     setError(null)
 
     try {
-      // TODO: Implement profile fetching from your database
-      // const response = await fetch(`/api/users/${user.id}/profile`)
-      // const data = await response.json()
-      // setProfile(data)
+      const response = await fetch('/api/profile')
+      const data = await response.json()
 
-      // Placeholder for now
-      const userProfile = {
-        id: user.id,
-        email: user.email,
-        name: user.user_metadata?.name || '',
+      if (data.status === 'success') {
+        setProfile(data.data)
+      } else {
+        setError(data.error || 'Failed to fetch profile')
       }
-      setProfile(userProfile)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch profile')
     } finally {
       setLoading(false)
     }
   }, [isAuthenticated, user])
+
+  const updateProfile = useCallback(
+    async (data: Partial<UserProfile>) => {
+      if (!isAuthenticated || !user) {
+        throw new Error('User must be authenticated to update profile')
+      }
+
+      setLoading(true)
+      setError(null)
+
+      try {
+        const response = await fetch('/api/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+
+        const result = await response.json()
+
+        if (result.status === 'success') {
+          setProfile(result.data)
+          return
+        } else {
+          const error = result.error || 'Failed to update profile'
+          setError(error)
+          throw new Error(error)
+        }
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to update profile'
+        setError(message)
+        throw new Error(message)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [isAuthenticated, user]
+  )
+
+  const createProfile = useCallback(
+    async (data: Partial<UserProfile>) => {
+      if (!isAuthenticated || !user) {
+        throw new Error('User must be authenticated to create profile')
+      }
+
+      setLoading(true)
+      setError(null)
+
+      try {
+        const response = await fetch('/api/profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+
+        const result = await response.json()
+
+        if (result.status === 'success') {
+          setProfile(result.data)
+          return
+        } else {
+          const error = result.error || 'Failed to create profile'
+          setError(error)
+          throw new Error(error)
+        }
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to create profile'
+        setError(message)
+        throw new Error(message)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [isAuthenticated, user]
+  )
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -382,6 +456,8 @@ export function UserProfileProvider({ children }: UserProfileProviderProps) {
     loading,
     error,
     refetch: fetchProfile,
+    updateProfile,
+    createProfile,
   }
 
   return (

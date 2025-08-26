@@ -21,6 +21,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          id: string
+          user_id: string
+          full_name: string | null
+          display_name: string | null
+          bio: string | null
+          avatar_url: string | null
+          travel_preferences: Json
+          settings: Json
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          full_name?: string | null
+          display_name?: string | null
+          bio?: string | null
+          avatar_url?: string | null
+          travel_preferences?: Json
+          settings?: Json
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          full_name?: string | null
+          display_name?: string | null
+          bio?: string | null
+          avatar_url?: string | null
+          travel_preferences?: Json
+          settings?: Json
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+      }
       users: {
         Row: {
           id: string

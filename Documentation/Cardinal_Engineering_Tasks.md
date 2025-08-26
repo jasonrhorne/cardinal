@@ -37,8 +37,7 @@
 | ✓   | F019 | Performance Monitoring Setup                     | DevOps   | P0       | 3           | F002         | DONE   | Claude   | 2025-08-25 |
 | ✓   | F020 | Accessibility Foundation (WCAG AA)               | Frontend | P0       | 4           | F003         | DONE   | Claude   | 2025-08-26 |
 | ✅  | F021 | Authentication Middleware Enhancement            | Backend  | P1       | 2           | F012         | DONE   | Claude   | 2025-08-26 |
-| ☐   | F022 | Supabase Email Template Customization            | Backend  | P2       | 1           | F012         | TODO   | -        | -          |
-| ☐   | F023 | User Profile Management System                   | Backend  | P1       | 3           | F012         | TODO   | -        | -          |
+| ✅  | F023 | User Profile Management System                   | Backend  | P1       | 3           | F012         | DONE   | Claude   | 2025-08-26 |
 | ☐   | F024 | Authentication Unit Tests                        | Testing  | P1       | 3           | F012, F007   | TODO   | -        | -          |
 
 ### Core Features Phase
@@ -130,6 +129,7 @@
 | ☐   | P018 | Dependency Vulnerability Scanning        | DevOps   | P1       | 3           | F001         | TODO   | -        | -        |
 | ☐   | P019 | Environment Parity & Local Development   | DevOps   | P1       | 4           | F009         | TODO   | -        | -        |
 | ☐   | P020 | Monitoring & Observability               | DevOps   | P1       | 6           | F019         | TODO   | -        | -        |
+| ☐   | P021 | Email Template Customization (Supabase)  | UX       | P2       | 1           | F012         | TODO   | -        | -        |
 
 ---
 
