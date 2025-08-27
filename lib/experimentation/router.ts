@@ -18,9 +18,10 @@ const DEFAULT_EXPERIMENT: ExperimentConfig = {
   startDate: new Date('2025-08-27'),
   endDate: undefined as Date | undefined, // Open-ended
   trafficSplit: {
-    'constrained-form': 50, // 50% for now (Phase 1)
-    'guided-prompts': 50, // 50% for now (Phase 2)
-    conversational: 0, // 0% until Phase 3
+    'constrained-form': 33, // 33% baseline
+    'open-text': 34, // 34% for E003 testing
+    'guided-prompts': 33, // 33% for E004 testing
+    conversational: 0, // 0% until E005
   },
   enabled: true,
 }

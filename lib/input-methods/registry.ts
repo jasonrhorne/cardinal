@@ -8,6 +8,7 @@ import { TTravelRequirements } from '../schemas/travel-requirements'
 import { ConstrainedFormInput } from './implementations/constrained-form'
 import { ConversationalInput } from './implementations/conversational'
 import { GuidedPromptsInput } from './implementations/guided-prompts'
+import { OpenTextInput } from './implementations/open-text'
 import {
   InputMethodType,
   InputMethodRegistration,
@@ -36,13 +37,22 @@ class InputMethodRegistry {
       enabled: true,
     })
 
-    // Guided prompts (new implementation)
+    // Open text input (E003 implementation)
+    this.register({
+      type: 'open-text',
+      name: 'Natural Language',
+      description: 'Describe your trip preferences in your own words',
+      component: OpenTextInput,
+      enabled: true,
+    })
+
+    // Guided prompts (E004 implementation)
     this.register({
       type: 'guided-prompts',
       name: 'Guided Questions',
       description: 'Step-by-step conversational wizard',
       component: GuidedPromptsInput,
-      enabled: true,
+      enabled: true, // E004: Enabled for testing
     })
 
     // Conversational interface (new implementation)
@@ -51,7 +61,7 @@ class InputMethodRegistry {
       name: 'Chat Interface',
       description: 'Natural language conversation with AI',
       component: ConversationalInput,
-      enabled: false, // Enable in phase 3
+      enabled: false, // Enable in E005
     })
   }
 

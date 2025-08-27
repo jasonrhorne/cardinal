@@ -64,6 +64,7 @@
     "*.config.js",
     "**/__tests__/**/*",
     "**/*.test.*",
-    "**/*.spec.*"
+    "**/*.spec.*",
+    "netlify/edge-functions/**/*"
   ]
 }

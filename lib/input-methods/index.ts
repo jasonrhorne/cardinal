@@ -28,7 +28,8 @@ export { experimentRouter, ExperimentRouter } from '../experimentation/router'
 export { InputMethodContainer } from '../../components/features/input-methods/input-method-container'
 export type { InputMethodContainerProps } from '../../components/features/input-methods/input-method-container'
 
-// Individual input method implementations (placeholders for now)
+// Individual input method implementations
 export { ConstrainedFormInput } from './implementations/constrained-form'
+export { OpenTextInput } from './implementations/open-text'
 export { GuidedPromptsInput } from './implementations/guided-prompts'
 export { ConversationalInput } from './implementations/conversational'

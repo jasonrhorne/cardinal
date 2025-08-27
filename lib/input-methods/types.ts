@@ -8,6 +8,7 @@ import { TTravelRequirements } from '../schemas/travel-requirements'
 // Input method types for A/B testing
 export type InputMethodType =
   | 'constrained-form'
+  | 'open-text'
   | 'guided-prompts'
   | 'conversational'
 
