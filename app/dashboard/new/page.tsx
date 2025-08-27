@@ -1,16 +1,18 @@
 'use client'
 
 import dynamicImport from 'next/dynamic'
-import { useState } from 'react'
 
-import type { TTravelRequirementsForm } from '@/lib/schemas/travel-requirements'
+import type { InputMethodMetadata } from '@/lib/input-methods/types'
+import type { TTravelRequirements } from '@/lib/schemas/travel-requirements'
 
-// Lazy load the form component to avoid SSR issues
-const TravelRequirementsForm = dynamicImport(
+// Lazy load the input method container to avoid SSR issues
+const InputMethodContainer = dynamicImport(
   () =>
-    import('@/components/travel/travel-requirements-form').then(mod => ({
-      default: mod.TravelRequirementsForm,
-    })),
+    import('@/components/features/input-methods/input-method-container').then(
+      mod => ({
+        default: mod.InputMethodContainer,
+      })
+    ),
   {
     ssr: false,
     loading: () => (
@@ -27,33 +29,35 @@ const TravelRequirementsForm = dynamicImport(
 )
 
 export default function NewTripPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const handleSubmit = async (data: TTravelRequirementsForm) => {
-    setIsSubmitting(true)
-
+  const handleComplete = async (
+    requirements: TTravelRequirements,
+    metadata: InputMethodMetadata
+  ) => {
     try {
       // TODO: Send to API endpoint for processing
-      console.log('Travel requirements submitted:', data)
+      console.log('Travel requirements submitted:', requirements)
+      console.log('Input method metadata:', metadata)
 
       // For now, just simulate processing
       await new Promise(resolve => setTimeout(resolve, 2000))
 
       // TODO: Navigate to destination suggestions page
       alert(
-        'Form submitted successfully! (This will redirect to destination suggestions)'
+        `Requirements collected via ${metadata.methodType}! (This will redirect to destination suggestions)`
       )
     } catch (error) {
       console.error('Error submitting travel requirements:', error)
       alert('Error submitting form. Please try again.')
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
-  const handleSaveDraft = (data: Partial<TTravelRequirementsForm>) => {
-    // TODO: Save to localStorage or API
-    console.log('Draft saved:', data)
+  const handleCancel = () => {
+    // TODO: Navigate back to dashboard or show confirmation dialog
+    if (
+      confirm('Are you sure you want to cancel? Any progress will be lost.')
+    ) {
+      window.history.back()
+    }
   }
 
   return (
@@ -70,12 +74,11 @@ export default function NewTripPage() {
           </p>
         </div>
 
-        {/* Form */}
+        {/* Input Method Container */}
         <div className="bg-white rounded-lg shadow-sm border p-6 md:p-8">
-          <TravelRequirementsForm
-            onSubmit={handleSubmit}
-            onSaveDraft={handleSaveDraft}
-            isLoading={isSubmitting}
+          <InputMethodContainer
+            onComplete={handleComplete}
+            onCancel={handleCancel}
           />
         </div>
 
