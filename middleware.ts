@@ -18,26 +18,21 @@ const authRoutes = ['/auth/signin', '/auth/signup', '/auth/callback']
 // const publicRoutes = ['/', '/about', '/privacy', '/terms']
 
 /* TEMPORARILY COMMENTED OUT FOR DEBUGGING - Re-enable after fixing auth
-/**
- * Check if path requires authentication
- */
+
+// Check if path requires authentication
 function isProtectedRoute(pathname: string): boolean {
   return protectedRoutes.some(route => pathname.startsWith(route))
 }
 
-/**
- * Check if path is an auth route
- */
+// Check if path is an auth route
 function isAuthRoute(pathname: string): boolean {
   return authRoutes.some(route => pathname.startsWith(route))
 }
 
-/**
- * Extract Supabase session from cookies
- * Modern Supabase uses chunked cookies with pattern:
- * - sb-<project-ref>-auth-token (base64url encoded session)
- * - sb-<project-ref>-auth-token.0, .1, etc (chunked for large sessions)
- */
+// Extract Supabase session from cookies
+// Modern Supabase uses chunked cookies with pattern:
+// - sb-<project-ref>-auth-token (base64url encoded session)
+// - sb-<project-ref>-auth-token.0, .1, etc (chunked for large sessions)
 function getSupabaseSession(request: NextRequest) {
   const cookies = request.cookies
 
