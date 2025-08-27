@@ -11,12 +11,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-/* TEMPORARILY COMMENTED OUT FOR DEBUGGING - Re-enable after fixing auth
 // Define protected and auth routes
 const protectedRoutes = ['/dashboard', '/profile', '/settings', '/itineraries']
 const authRoutes = ['/auth/signin', '/auth/signup', '/auth/callback']
-// Public routes don't need explicit checking as they're the default
-// const publicRoutes = ['/', '/about', '/privacy', '/terms']
 
 // Check if path requires authentication
 function isProtectedRoute(pathname: string): boolean {
@@ -28,73 +25,33 @@ function isAuthRoute(pathname: string): boolean {
   return authRoutes.some(route => pathname.startsWith(route))
 }
 
-// Extract Supabase session from cookies
-// Modern Supabase uses chunked cookies with pattern:
-// - sb-<project-ref>-auth-token (base64url encoded session)
-// - sb-<project-ref>-auth-token.0, .1, etc (chunked for large sessions)
-function getSupabaseSession(request: NextRequest) {
-  const cookies = request.cookies
+// Simplified session check - just look for any Supabase auth cookie
+function hasSupabaseSession(request: NextRequest): boolean {
+  const cookies = request.cookies.getAll()
 
-  // Check for Supabase auth token (may be chunked)
-  // First try to find the main auth token
-  let authToken: string | undefined
-
-  // Look for the base auth token
-  const baseAuthCookie = cookies.getAll().find(cookie => {
+  // Look for any Supabase auth-related cookies
+  const hasAuthCookie = cookies.some(cookie => {
     return (
       cookie.name.startsWith('sb-') &&
-      cookie.name.endsWith('-auth-token') &&
-      !cookie.name.includes('.')
+      cookie.name.includes('auth-token') &&
+      cookie.value &&
+      cookie.value.length > 0
     )
   })
 
-  if (baseAuthCookie) {
-    authToken = baseAuthCookie.value
-  } else {
-    // Check for chunked cookies (sb-xxx-auth-token.0, .1, etc)
-    const chunkedCookies = cookies
-      .getAll()
-      .filter(cookie => {
-        return (
-          cookie.name.startsWith('sb-') &&
-          cookie.name.includes('-auth-token.') &&
-          /\.\d+$/.test(cookie.name)
-        )
-      })
-      .sort((a, b) => {
-        const aIndex = parseInt(a.name.split('.').pop() || '0')
-        const bIndex = parseInt(b.name.split('.').pop() || '0')
-        return aIndex - bIndex
-      })
-
-    if (chunkedCookies.length > 0) {
-      authToken = chunkedCookies.map(c => c.value).join('')
-    }
-  }
-
-  return {
-    hasSession: !!authToken,
-    authToken,
-  }
+  return hasAuthCookie
 }
-*/
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // TEMPORARY: Disable all auth checks to debug the issue
-  console.log('[Middleware Debug] Path:', pathname)
-
-  // Allow all requests to proceed without auth checks
-  return NextResponse.next()
-
-  /* COMMENTED OUT FOR DEBUGGING - Re-enable after fixing auth
-  const { hasSession } = getSupabaseSession(request)
+  const { pathname, searchParams } = request.nextUrl
 
   // Allow API routes to handle their own auth
   if (pathname.startsWith('/api/')) {
     return NextResponse.next()
   }
+
+  // Check for session using simplified method
+  const hasSession = hasSupabaseSession(request)
 
   // Protected routes: redirect to signin if no session
   if (isProtectedRoute(pathname) && !hasSession) {
@@ -120,7 +77,6 @@ export function middleware(request: NextRequest) {
 
   // Allow all other requests to proceed
   return NextResponse.next()
-  */
 }
 
 // Configure which paths the middleware runs on
