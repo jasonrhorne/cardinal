@@ -11,13 +11,12 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+/* TEMPORARILY COMMENTED OUT FOR DEBUGGING - Re-enable after fixing auth
 // Define protected and auth routes
 const protectedRoutes = ['/dashboard', '/profile', '/settings', '/itineraries']
 const authRoutes = ['/auth/signin', '/auth/signup', '/auth/callback']
 // Public routes don't need explicit checking as they're the default
 // const publicRoutes = ['/', '/about', '/privacy', '/terms']
-
-/* TEMPORARILY COMMENTED OUT FOR DEBUGGING - Re-enable after fixing auth
 
 // Check if path requires authentication
 function isProtectedRoute(pathname: string): boolean {
