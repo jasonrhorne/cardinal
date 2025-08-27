@@ -1,13 +1,11 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { TravelRequirementsForm } from '@/components/travel/travel-requirements-form'
 import type { TTravelRequirementsForm } from '@/lib/schemas/travel-requirements'
 
 export default function NewTripPage() {
-  const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (data: TTravelRequirementsForm) => {

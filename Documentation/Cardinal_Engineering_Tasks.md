@@ -43,28 +43,28 @@
 
 ### Core Features Phase
 
-| ✓   | ID   | Task Name                                  | Domain   | Priority | Effort (SP) | Dependencies | Status | Assignee | Due Date |
-| --- | ---- | ------------------------------------------ | -------- | -------- | ----------- | ------------ | ------ | -------- | -------- |
-| ☐   | C001 | Magic Link Authentication Flow             | Backend  | P0       | 8           | F012, F016   | TODO   | -        | -        |
-| ☐   | C002 | User Session Management                    | Backend  | P0       | 5           | C001         | TODO   | -        | -        |
-| ☐   | C003 | Travel Requirements Intake Form            | Frontend | P0       | 8           | F003, F004   | TODO   | -        | -        |
-| ☐   | C004 | Form Validation & State Management         | Frontend | P0       | 6           | C003         | TODO   | -        | -        |
-| ☐   | C005 | Requirements Data Model & Storage          | Database | P0       | 5           | F010, C003   | TODO   | -        | -        |
-| ☐   | C006 | AI Destination Generation Engine           | Backend  | P0       | 12          | F015, F014   | TODO   | -        | -        |
-| ☐   | C007 | Destination Suggestion UI                  | Frontend | P0       | 6           | C006         | TODO   | -        | -        |
-| ☐   | C008 | Itinerary Generation Engine                | Backend  | P0       | 15          | C006, F015   | TODO   | -        | -        |
-| ☐   | C009 | Itinerary Display UI (Mobile-First)        | Frontend | P0       | 10          | C008         | TODO   | -        | -        |
-| ☐   | C010 | Chat-Based Refinement Interface            | Frontend | P0       | 8           | C009         | TODO   | -        | -        |
-| ☐   | C011 | Refinement Processing Engine               | Backend  | P0       | 10          | C008, C010   | TODO   | -        | -        |
-| ☐   | C012 | Itinerary Version History                  | Database | P0       | 6           | C008         | TODO   | -        | -        |
-| ☐   | C013 | PDF Export Functionality                   | Frontend | P0       | 8           | C009         | TODO   | -        | -        |
-| ☐   | C014 | Share Link Generation                      | Backend  | P0       | 4           | C008         | TODO   | -        | -        |
-| ☐   | C015 | Past Itineraries View                      | Frontend | P0       | 6           | C012         | TODO   | -        | -        |
-| ☐   | C016 | User Preferences Storage                   | Database | P0       | 4           | C005         | TODO   | -        | -        |
-| ☐   | C017 | Mobile Responsiveness & Touch Optimization | Frontend | P0       | 8           | C003, C009   | TODO   | -        | -        |
-| ☐   | C018 | Loading States & Progress Indicators       | Frontend | P0       | 4           | C006, C008   | TODO   | -        | -        |
-| ☐   | C019 | Error Boundaries & User Feedback           | Frontend | P0       | 5           | C003, C009   | TODO   | -        | -        |
-| ☐   | C020 | Form Progress Persistence                  | Frontend | P0       | 4           | C003, C004   | TODO   | -        | -        |
+| ✓   | ID   | Task Name                                  | Domain   | Priority | Effort (SP) | Dependencies | Status | Assignee | Due Date   |
+| --- | ---- | ------------------------------------------ | -------- | -------- | ----------- | ------------ | ------ | -------- | ---------- |
+| ☐   | C001 | Magic Link Authentication Flow             | Backend  | P0       | 8           | F012, F016   | TODO   | -        | -          |
+| ☐   | C002 | User Session Management                    | Backend  | P0       | 5           | C001         | TODO   | -        | -          |
+| ✓   | C003 | Travel Requirements Intake Form            | Frontend | P0       | 8           | F003, F004   | DONE   | Claude   | 2025-08-27 |
+| ☐   | C004 | Form Validation & State Management         | Frontend | P0       | 6           | C003         | TODO   | -        | -          |
+| ☐   | C005 | Requirements Data Model & Storage          | Database | P0       | 5           | F010, C003   | TODO   | -        | -          |
+| ☐   | C006 | AI Destination Generation Engine           | Backend  | P0       | 12          | F015, F014   | TODO   | -        | -          |
+| ☐   | C007 | Destination Suggestion UI                  | Frontend | P0       | 6           | C006         | TODO   | -        | -          |
+| ☐   | C008 | Itinerary Generation Engine                | Backend  | P0       | 15          | C006, F015   | TODO   | -        | -          |
+| ☐   | C009 | Itinerary Display UI (Mobile-First)        | Frontend | P0       | 10          | C008         | TODO   | -        | -          |
+| ☐   | C010 | Chat-Based Refinement Interface            | Frontend | P0       | 8           | C009         | TODO   | -        | -          |
+| ☐   | C011 | Refinement Processing Engine               | Backend  | P0       | 10          | C008, C010   | TODO   | -        | -          |
+| ☐   | C012 | Itinerary Version History                  | Database | P0       | 6           | C008         | TODO   | -        | -          |
+| ☐   | C013 | PDF Export Functionality                   | Frontend | P0       | 8           | C009         | TODO   | -        | -          |
+| ☐   | C014 | Share Link Generation                      | Backend  | P0       | 4           | C008         | TODO   | -        | -          |
+| ☐   | C015 | Past Itineraries View                      | Frontend | P0       | 6           | C012         | TODO   | -        | -          |
+| ☐   | C016 | User Preferences Storage                   | Database | P0       | 4           | C005         | TODO   | -        | -          |
+| ☐   | C017 | Mobile Responsiveness & Touch Optimization | Frontend | P0       | 8           | C003, C009   | TODO   | -        | -          |
+| ☐   | C018 | Loading States & Progress Indicators       | Frontend | P0       | 4           | C006, C008   | TODO   | -        | -          |
+| ☐   | C019 | Error Boundaries & User Feedback           | Frontend | P0       | 5           | C003, C009   | TODO   | -        | -          |
+| ☐   | C020 | Form Progress Persistence                  | Frontend | P0       | 4           | C003, C004   | TODO   | -        | -          |
 
 ### Integrations Phase
 

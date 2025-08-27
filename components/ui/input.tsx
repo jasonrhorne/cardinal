@@ -3,9 +3,9 @@ import { InputHTMLAttributes, forwardRef, useId } from 'react'
 import { useAriaDescribedBy } from '@/lib/accessibility'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  error?: string
-  label?: string
-  help?: string
+  error?: string | undefined
+  label?: string | undefined
+  help?: string | undefined
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(

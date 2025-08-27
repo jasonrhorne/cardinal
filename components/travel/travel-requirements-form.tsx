@@ -32,10 +32,12 @@ export function TravelRequirementsForm({
   className = '',
 }: TravelRequirementsFormProps) {
   // Form state
-  const [formData, setFormData] = useState<TTravelRequirementsForm>(() => ({
-    ...getDefaultTravelRequirements(),
-    ...initialData,
-  }))
+  const [formData, setFormData] = useState<Partial<TTravelRequirementsForm>>(
+    () => ({
+      ...getDefaultTravelRequirements(),
+      ...initialData,
+    })
+  )
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isDirty, setIsDirty] = useState(false)
@@ -182,6 +184,7 @@ export function TravelRequirementsForm({
 
       return () => clearTimeout(timeoutId)
     }
+    return undefined
   }, [formData, isDirty, onSaveDraft])
 
   return (

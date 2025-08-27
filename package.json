@@ -52,6 +52,7 @@
     "@types/uuid": "^10.0.0",
     "dotenv": "^17.2.1",
     "langchain": "^0.3.31",
+    "lucide-react": "^0.542.0",
     "next": "^14.2.32",
     "openai": "^5.15.0",
     "react": "^18.3.1",

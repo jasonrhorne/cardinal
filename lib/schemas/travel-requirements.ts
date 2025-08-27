@@ -83,10 +83,7 @@ export const travelRequirementsSchema = z.object({
 
   // Maximum travel duration per method
   travelDurationLimits: z
-    .record(
-      z.enum(TRAVEL_METHODS),
-      z.number().positive('Duration must be positive')
-    )
+    .record(z.string(), z.number().positive('Duration must be positive'))
     .optional(),
 
   // Interests (at least one required)
@@ -115,6 +112,7 @@ export const validateTravelRequirements = (data: unknown) => {
 // Default form values
 export const getDefaultTravelRequirements =
   (): Partial<TTravelRequirementsForm> => ({
+    originCity: '',
     numberOfAdults: 2,
     numberOfChildren: 0,
     childrenAges: [],
