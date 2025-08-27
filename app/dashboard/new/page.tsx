@@ -1,10 +1,30 @@
 'use client'
 
+import dynamicImport from 'next/dynamic'
 import { useState } from 'react'
 
-import { ClientOnly } from '@/components/client-only'
-import { TravelRequirementsForm } from '@/components/travel/travel-requirements-form'
 import type { TTravelRequirementsForm } from '@/lib/schemas/travel-requirements'
+
+// Lazy load the form component to avoid SSR issues
+const TravelRequirementsForm = dynamicImport(
+  () =>
+    import('@/components/travel/travel-requirements-form').then(mod => ({
+      default: mod.TravelRequirementsForm,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse space-y-6">
+        <div className="h-8 bg-gray-200 rounded w-3/4" />
+        <div className="h-4 bg-gray-200 rounded w-1/2" />
+        <div className="h-10 bg-gray-200 rounded" />
+        <div className="h-10 bg-gray-200 rounded" />
+        <div className="h-32 bg-gray-200 rounded" />
+        <div className="h-12 bg-blue-200 rounded" />
+      </div>
+    ),
+  }
+)
 
 export default function NewTripPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -52,24 +72,11 @@ export default function NewTripPage() {
 
         {/* Form */}
         <div className="bg-white rounded-lg shadow-sm border p-6 md:p-8">
-          <ClientOnly
-            fallback={
-              <div className="animate-pulse space-y-6">
-                <div className="h-8 bg-gray-200 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 rounded w-1/2" />
-                <div className="h-10 bg-gray-200 rounded" />
-                <div className="h-10 bg-gray-200 rounded" />
-                <div className="h-32 bg-gray-200 rounded" />
-                <div className="h-12 bg-blue-200 rounded" />
-              </div>
-            }
-          >
-            <TravelRequirementsForm
-              onSubmit={handleSubmit}
-              onSaveDraft={handleSaveDraft}
-              isLoading={isSubmitting}
-            />
-          </ClientOnly>
+          <TravelRequirementsForm
+            onSubmit={handleSubmit}
+            onSaveDraft={handleSaveDraft}
+            isLoading={isSubmitting}
+          />
         </div>
 
         {/* Footer */}
