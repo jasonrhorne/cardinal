@@ -23,7 +23,7 @@ const DEFAULT_EXPERIMENT: ExperimentConfig = {
     'guided-prompts': 33, // 33% for E004 testing
     conversational: 0, // 0% until E005
   },
-  enabled: true,
+  enabled: false, // Disabled for tab-based selection phase
 }
 
 // In-memory storage for development (will be replaced with Supabase)

@@ -2,20 +2,18 @@
 
 /**
  * Input Method Container
- * Routes users to appropriate input method based on A/B testing
+ * Provides tab-based interface to choose between different input methods
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-import { Spinner } from '@/components/ui/spinner'
-import { experimentRouter } from '@/lib/experimentation/router'
+// Removed unused Spinner import
 import { inputMethodRegistry } from '@/lib/input-methods/registry'
 import { InputMethodType, InputMethodMetadata } from '@/lib/input-methods/types'
 import { TTravelRequirements } from '@/lib/schemas/travel-requirements'
 // import { ErrorMessage } from '@/components/ui/error-message' // TODO: Create this component
 
 interface InputMethodContainerProps {
-  userId?: string
   onComplete: (
     requirements: TTravelRequirements,
     metadata: InputMethodMetadata
@@ -25,104 +23,39 @@ interface InputMethodContainerProps {
 }
 
 export function InputMethodContainer({
-  userId,
   onComplete,
   onCancel,
   defaultValues,
 }: InputMethodContainerProps) {
-  const [assignedMethod, setAssignedMethod] = useState<InputMethodType | null>(
-    null
-  )
-  const [isLoading, setIsLoading] = useState(true)
+  const [selectedMethod, setSelectedMethod] =
+    useState<InputMethodType>('constrained-form')
   const [error, setError] = useState<string | null>(null)
 
-  // Assign input method variant on mount
-  useEffect(() => {
-    const assignInputMethod = async () => {
-      try {
-        setIsLoading(true)
-
-        // Get user's assigned input method variant
-        const methodType = await experimentRouter.assignVariant(
-          userId || 'anonymous'
-        )
-
-        // Verify the method is available and enabled
-        const method = inputMethodRegistry.getMethod(methodType)
-        if (!method) {
-          throw new Error(`Input method ${methodType} not found`)
-        }
-
-        if (!method.enabled) {
-          console.warn(
-            `Input method ${methodType} is disabled, falling back to constrained-form`
-          )
-          setAssignedMethod('constrained-form')
-        } else {
-          setAssignedMethod(methodType)
-        }
-
-        // Track method selection for analytics
-        await experimentRouter.trackConversion(
-          userId || 'anonymous',
-          'method-selected'
-        )
-      } catch (err) {
-        console.error('Failed to assign input method:', err)
-        setError('Failed to load input form. Please try again.')
-
-        // Fallback to default method
-        setAssignedMethod('constrained-form')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    assignInputMethod()
-  }, [userId])
+  // Get enabled methods for tabs
+  const enabledMethods = inputMethodRegistry.getEnabledMethods()
 
   // Handle completion from child input method
-  const handleComplete = async (
+  const handleComplete = (
     requirements: TTravelRequirements,
     metadata: InputMethodMetadata
   ) => {
-    try {
-      // Track successful completion
-      await experimentRouter.trackConversion(
-        userId || 'anonymous',
-        'requirements-submitted'
-      )
-
-      // Pass to parent
-      onComplete(requirements, metadata)
-    } catch (err) {
-      console.error('Failed to track completion:', err)
-      // Still complete the flow even if tracking fails
-      onComplete(requirements, metadata)
-    }
+    // TODO: Add analytics tracking here later
+    onComplete(requirements, metadata)
   }
 
   // Handle cancellation
   const handleCancel = () => {
-    if (assignedMethod) {
-      // Track cancellation for analytics (don't await to avoid blocking)
-      experimentRouter
-        .trackConversion(userId || 'anonymous', 'input-started')
-        .catch(console.error)
-    }
+    // TODO: Add analytics tracking here later
     onCancel()
   }
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12">
-        <Spinner className="mb-4" />
-        <p className="text-gray-600">
-          Setting up your travel preferences form...
-        </p>
-      </div>
-    )
+  // Handle method selection
+  const handleMethodChange = (methodType: InputMethodType) => {
+    const method = inputMethodRegistry.getMethod(methodType)
+    if (method && method.enabled) {
+      setSelectedMethod(methodType)
+      setError(null) // Clear any previous errors
+    }
   }
 
   // Error state
@@ -140,36 +73,76 @@ export function InputMethodContainer({
     )
   }
 
-  // No assigned method (shouldn't happen with fallback)
-  if (!assignedMethod) {
+  // No enabled methods (shouldn't happen)
+  if (enabledMethods.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-red-600">
-          Unable to load input form. Please refresh the page.
+          No input methods available. Please contact support.
         </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          Refresh Page
-        </button>
       </div>
     )
   }
 
-  // Render the assigned input method component
-  const methodRegistration = inputMethodRegistry.getMethod(assignedMethod)!
+  // Get the selected method registration
+  const methodRegistration = inputMethodRegistry.getMethod(selectedMethod)
+  if (!methodRegistration) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600">
+          Invalid input method selected. Please refresh the page.
+        </p>
+      </div>
+    )
+  }
+
   const InputMethodComponent = methodRegistration.component
 
   return (
     <div className="input-method-container">
+      {/* Method Selection Tabs */}
+      <div className="mb-6">
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8" aria-label="Input methods">
+            {enabledMethods.map(method => (
+              <button
+                key={method.type}
+                onClick={() => handleMethodChange(method.type)}
+                className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                  selectedMethod === method.type
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+                aria-current={
+                  selectedMethod === method.type ? 'page' : undefined
+                }
+              >
+                {method.name}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* Method Description */}
+        <div className="mt-2 text-sm text-gray-600">
+          {methodRegistration.description}
+        </div>
+      </div>
+
       {/* Debug info in development */}
       {process.env.NODE_ENV === 'development' && (
         <div className="mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
           <strong>Debug:</strong> Using {methodRegistration.name} (
-          {assignedMethod})
+          {selectedMethod})
           <br />
           <em>{methodRegistration.description}</em>
+        </div>
+      )}
+
+      {/* Error Display */}
+      {error && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600 text-sm">{error}</p>
         </div>
       )}
 
