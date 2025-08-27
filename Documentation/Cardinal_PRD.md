@@ -3,8 +3,8 @@
 ### Document Info
 
 - **Owner**: Cardinal
-- **Doc Status**: Draft v0.1 (MVP)
-- **Last Updated**: 2025-08-20
+- **Doc Status**: Draft v0.2 (MVP - Updated Requirements)
+- **Last Updated**: 2025-08-26
 
 ---
 
@@ -47,7 +47,7 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ### In-Scope (MVP)
 
 - **Magic link authentication**
-- **Requirements intake**: origin location; appetite for travel time (air and driving); lodging preferences; number of travelers; number and ages of children; interests when traveling
+- **Requirements intake**: origin city; number of adults traveling; number of children traveling (with ages for each); preferred travel methods (drive, rail, air) with maximum travel duration tolerance; interests (arts, architecture, nature and outdoors, music and nightlife, sports and recreation, history, etc.)
 - **Destination suggestions**: List of candidate destinations with rationale and 2–3 key highlights each
 - **Selected destination itinerary**: A more extensive plan that adapts to user requirements (lodging choice, neighborhoods of interest, constraints)
 - **Refinement loop**: Users can request changes (e.g., “we’re staying at X hotel,” “spend more time in Y neighborhood”)
@@ -67,7 +67,7 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ## 6) User Journey
 
 1. **Onboard**: Email → magic link → authenticated session
-2. **Requirements**: Origin, travel time appetite, travelers, interests, pace, constraints
+2. **Requirements**: Origin city, number of adults/children (ages), preferred travel methods and duration limits, interests
 3. **Destinations**: 3–7 suggestions with rationale, highlights, travel times
 4. **Select**: Choose destination, adjust constraints (hotel, neighborhoods)
 5. **Generate**: Day-by-day itinerary with meals, activities, reservations, backups
