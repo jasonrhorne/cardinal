@@ -3,10 +3,10 @@
 ## Document Info
 
 - **Owner**: Cardinal Engineering Team
-- **Document Status**: Draft v0.4 - Foundation Phase 100% Complete
-- **Last Updated**: 2025-08-26
-- **Total Tasks**: 93
-- **Estimated Total Effort**: 1,258 story points (~6-8 months for 2-3 engineers)
+- **Document Status**: Draft v0.5 - Foundation Phase Complete, Core Features Started
+- **Last Updated**: 2025-08-27
+- **Total Tasks**: 102 (added Experimentation Phase)
+- **Estimated Total Effort**: 1,318 story points (~7-9 months for 2-3 engineers)
 
 ---
 
@@ -43,34 +43,48 @@
 
 ### Core Features Phase
 
-| ✓   | ID   | Task Name                                  | Domain   | Priority | Effort (SP) | Dependencies | Status | Assignee | Due Date   |
-| --- | ---- | ------------------------------------------ | -------- | -------- | ----------- | ------------ | ------ | -------- | ---------- |
-| ☐   | C001 | Magic Link Authentication Flow             | Backend  | P0       | 8           | F012, F016   | TODO   | -        | -          |
-| ☐   | C002 | User Session Management                    | Backend  | P0       | 5           | C001         | TODO   | -        | -          |
-| ✓   | C003 | Travel Requirements Intake Form            | Frontend | P0       | 8           | F003, F004   | DONE   | Claude   | 2025-08-27 |
-| ☐   | C004 | Form Validation & State Management         | Frontend | P0       | 6           | C003         | TODO   | -        | -          |
-| ☐   | C005 | Requirements Data Model & Storage          | Database | P0       | 5           | F010, C003   | TODO   | -        | -          |
-| ☐   | C006 | AI Destination Generation Engine           | Backend  | P0       | 12          | F015, F014   | TODO   | -        | -          |
-| ☐   | C007 | Destination Suggestion UI                  | Frontend | P0       | 6           | C006         | TODO   | -        | -          |
-| ☐   | C008 | Itinerary Generation Engine                | Backend  | P0       | 15          | C006, F015   | TODO   | -        | -          |
-| ☐   | C009 | Itinerary Display UI (Mobile-First)        | Frontend | P0       | 10          | C008         | TODO   | -        | -          |
-| ☐   | C010 | Chat-Based Refinement Interface            | Frontend | P0       | 8           | C009         | TODO   | -        | -          |
-| ☐   | C011 | Refinement Processing Engine               | Backend  | P0       | 10          | C008, C010   | TODO   | -        | -          |
-| ☐   | C012 | Itinerary Version History                  | Database | P0       | 6           | C008         | TODO   | -        | -          |
-| ☐   | C013 | PDF Export Functionality                   | Frontend | P0       | 8           | C009         | TODO   | -        | -          |
-| ☐   | C014 | Share Link Generation                      | Backend  | P0       | 4           | C008         | TODO   | -        | -          |
-| ☐   | C015 | Past Itineraries View                      | Frontend | P0       | 6           | C012         | TODO   | -        | -          |
-| ☐   | C016 | User Preferences Storage                   | Database | P0       | 4           | C005         | TODO   | -        | -          |
-| ☐   | C017 | Mobile Responsiveness & Touch Optimization | Frontend | P0       | 8           | C003, C009   | TODO   | -        | -          |
-| ☐   | C018 | Loading States & Progress Indicators       | Frontend | P0       | 4           | C006, C008   | TODO   | -        | -          |
-| ☐   | C019 | Error Boundaries & User Feedback           | Frontend | P0       | 5           | C003, C009   | TODO   | -        | -          |
-| ☐   | C020 | Form Progress Persistence                  | Frontend | P0       | 4           | C003, C004   | TODO   | -        | -          |
+| ✓   | ID   | Task Name                                   | Domain   | Priority | Effort (SP) | Dependencies | Status | Assignee | Due Date   |
+| --- | ---- | ------------------------------------------- | -------- | -------- | ----------- | ------------ | ------ | -------- | ---------- |
+| ☐   | C001 | Magic Link Authentication Flow              | Backend  | P0       | 8           | F012, F016   | TODO   | -        | -          |
+| ☐   | C002 | User Session Management                     | Backend  | P0       | 5           | C001         | TODO   | -        | -          |
+| ✓   | C003 | Travel Requirements Intake Form             | Frontend | P0       | 8           | F003, F004   | DONE   | Claude   | 2025-08-27 |
+| ☐   | C004 | Input Method Validation & State Management  | Frontend | P0       | 6           | E002         | TODO   | -        | -          |
+| ☐   | C005 | Universal Requirements Data Model & Storage | Database | P0       | 5           | F010, E001   | TODO   | -        | -          |
+| ☐   | C006 | AI Destination Generation Engine            | Backend  | P0       | 12          | E008, F014   | TODO   | -        | -          |
+| ☐   | C007 | Destination Suggestion UI                   | Frontend | P0       | 6           | C006         | TODO   | -        | -          |
+| ☐   | C008 | Itinerary Generation Engine                 | Backend  | P0       | 15          | C006, F015   | TODO   | -        | -          |
+| ☐   | C009 | Itinerary Display UI (Mobile-First)         | Frontend | P0       | 10          | C008         | TODO   | -        | -          |
+| ☐   | C010 | Chat-Based Refinement Interface             | Frontend | P1       | 8           | C009, E005   | TODO   | -        | -          |
+| ☐   | C011 | Refinement Processing Engine                | Backend  | P0       | 10          | C008, C010   | TODO   | -        | -          |
+| ☐   | C012 | Itinerary Version History                   | Database | P0       | 6           | C008         | TODO   | -        | -          |
+| ☐   | C013 | PDF Export Functionality                    | Frontend | P0       | 8           | C009         | TODO   | -        | -          |
+| ☐   | C014 | Share Link Generation                       | Backend  | P0       | 4           | C008         | TODO   | -        | -          |
+| ☐   | C015 | Past Itineraries View                       | Frontend | P0       | 6           | C012         | TODO   | -        | -          |
+| ☐   | C016 | User Preferences Storage                    | Database | P0       | 4           | C005         | TODO   | -        | -          |
+| ☐   | C017 | Mobile Responsiveness & Touch Optimization  | Frontend | P0       | 8           | C003, C009   | TODO   | -        | -          |
+| ☐   | C018 | Loading States & Progress Indicators        | Frontend | P0       | 4           | C006, C008   | TODO   | -        | -          |
+| ☐   | C019 | Error Boundaries & User Feedback            | Frontend | P0       | 5           | C003, C009   | TODO   | -        | -          |
+| ☐   | C020 | Input Method Progress Persistence           | Frontend | P1       | 4           | E002, C004   | TODO   | -        | -          |
+
+### Experimentation & Learning Phase
+
+| ✓   | ID   | Task Name                            | Domain   | Priority | Effort (SP) | Dependencies | Status | Assignee | Due Date |
+| --- | ---- | ------------------------------------ | -------- | -------- | ----------- | ------------ | ------ | -------- | -------- |
+| ☐   | E001 | Input Method Abstraction Layer       | Backend  | P0       | 4           | C003         | TODO   | -        | -        |
+| ☐   | E002 | Registry Pattern for Input Methods   | Backend  | P0       | 3           | E001         | TODO   | -        | -        |
+| ☐   | E003 | Open Text Input Method               | Frontend | P0       | 6           | E002         | TODO   | -        | -        |
+| ☐   | E004 | Guided Hybrid Input Method           | Frontend | P0       | 8           | E002         | TODO   | -        | -        |
+| ☐   | E005 | Conversational Chat Input Method     | Frontend | P0       | 10          | E002         | TODO   | -        | -        |
+| ☐   | E006 | Input Method Comparison UI           | Frontend | P0       | 5           | E002         | TODO   | -        | -        |
+| ☐   | E007 | Experiment Tracking & Analytics      | Backend  | P0       | 6           | E001         | TODO   | -        | -        |
+| ☐   | E008 | Multi-Agent Orchestration Foundation | Backend  | P0       | 12          | F015, E001   | TODO   | -        | -        |
+| ☐   | E009 | Agent Performance Metrics System     | Backend  | P1       | 5           | E008         | TODO   | -        | -        |
 
 ### Integrations Phase
 
 | ✓   | ID   | Task Name                              | Domain  | Priority | Effort (SP) | Dependencies | Status | Assignee | Due Date |
 | --- | ---- | -------------------------------------- | ------- | -------- | ----------- | ------------ | ------ | -------- | -------- |
-| ☐   | I001 | Google Places API Integration          | API     | P0       | 8           | F013, C006   | TODO   | -        | -        |
+| ☐   | I001 | Google Places API Integration          | API     | P0       | 8           | F013, E008   | TODO   | -        | -        |
 | ☐   | I002 | Google Maps Integration (Travel Times) | API     | P0       | 6           | F013, C006   | TODO   | -        | -        |
 | ☐   | I003 | Place Data Validation & Enrichment     | Backend | P0       | 8           | I001, I002   | TODO   | -        | -        |
 | ☐   | I004 | Geographic Adjacency Logic             | Backend | P0       | 6           | I003         | TODO   | -        | -        |
@@ -90,9 +104,9 @@
 
 | ✓   | ID    | Task Name                            | Domain  | Priority | Effort (SP) | Dependencies | Status | Assignee | Due Date |
 | --- | ----- | ------------------------------------ | ------- | -------- | ----------- | ------------ | ------ | -------- | -------- |
-| ☐   | AI001 | Persona-Based Prompt Engineering     | Backend | P0       | 8           | F015, C006   | TODO   | -        | -        |
-| ☐   | AI002 | Structured Output Schema Design      | Backend | P0       | 6           | AI001        | TODO   | -        | -        |
-| ☐   | AI003 | Multi-Agent Orchestration            | Backend | P0       | 12          | F015, AI001  | TODO   | -        | -        |
+| ☐   | AI001 | Persona-Based Prompt Engineering     | Backend | P1       | 8           | E008         | TODO   | -        | -        |
+| ☐   | AI002 | Structured Output Schema Design      | Backend | P1       | 6           | E008         | TODO   | -        | -        |
+| ☐   | AI003 | Multi-Agent Orchestration            | Backend | P1       | 12          | E008         | TODO   | -        | -        |
 | ☐   | AI004 | Hallucination Detection & Prevention | Backend | P0       | 8           | AI003, I003  | TODO   | -        | -        |
 | ☐   | AI005 | Response Quality Validation          | Backend | P0       | 6           | AI004        | TODO   | -        | -        |
 | ☐   | AI006 | Context Window Management            | Backend | P0       | 5           | AI003        | TODO   | -        | -        |
@@ -153,47 +167,70 @@
 
 ### Core Features Phase (Tasks C001-C020)
 
-**Objective**: Implement core user-facing functionality
-**Timeline**: 8-10 weeks
+**Objective**: Implement core user-facing functionality and data models
+**Timeline**: 6-8 weeks  
 **Dependencies**: Foundation Phase
 **Key Deliverables**:
 
 - User authentication flow
-- Travel requirements form
-- AI-powered destination suggestions
-- Itinerary generation
-- Refinement interface
-- Export and sharing capabilities
+- Travel requirements form (✅ Complete)
+- Universal data models
+- Basic UI components
+- Core system architecture
 
-**Critical Path**: C001 → C003 → C006 → C008 → C009 → C010 → C011
+**Critical Path**: C001 → C003 → C005 → C006 → C007
+
+### Experimentation & Learning Phase (Tasks E001-E009)
+
+**Objective**: Research and develop multi-agent AI system with input method experimentation
+**Timeline**: 4-6 weeks
+**Dependencies**: Core Features Phase (C003)
+**Key Deliverables**:
+
+- Multi-input method system (structured form, open text, guided hybrid, conversational chat)
+- Multi-agent orchestration foundation
+- Agent performance metrics and experiment tracking
+- Input specificity vs. output quality analysis
+- Registry pattern for extensible input methods
+
+**Critical Path**: E001 → E002 → E008 → E003/E004/E005 → E007
+
+**Learning Goals**:
+
+- Which input methods produce highest quality AI agent results?
+- How does input specificity affect agent reasoning and performance?
+- What multi-agent coordination patterns work best for travel recommendations?
 
 ### Integrations Phase (Tasks I001-I015)
 
-**Objective**: Connect external services and APIs
+**Objective**: Connect external services and APIs to multi-agent system
 **Timeline**: 6-8 weeks
-**Dependencies**: Core Features Phase
+**Dependencies**: Experimentation Phase (E008)
 **Key Deliverables**:
 
-- Google Places/Maps integration
+- Google Places/Maps integration with multi-agent research
 - Travel time calculations
 - Geographic logic
-- Data validation
+- Data validation and enrichment
 
 **Critical Path**: I001 → I002 → I003 → I004 → I005
 
 ### AI & Intelligence Phase (Tasks AI001-AI015)
 
-**Objective**: Implement AI capabilities and intelligence
-**Timeline**: 6-8 weeks
-**Dependencies**: Integrations Phase
+**Objective**: Advanced AI capabilities and optimization  
+**Timeline**: 4-6 weeks
+**Dependencies**: Experimentation Phase (E008)
 **Key Deliverables**:
 
-- Persona-based prompting
-- Multi-agent orchestration
-- Quality validation
-- Response optimization
+- Advanced persona-based prompting (building on E008 foundation)
+- Production-ready multi-agent orchestration
+- Hallucination detection and quality validation
+- Response caching and optimization
+- Personalization and learning systems
 
-**Critical Path**: AI001 → AI002 → AI003 → AI004 → AI005
+**Critical Path**: AI001 → AI002 → AI004 → AI005 → AI008
+
+**Note**: Core multi-agent orchestration happens in E008; this phase focuses on production readiness and advanced features.
 
 ### Polish & Optimization Phase (Tasks P001-P020)
 
@@ -319,42 +356,44 @@
 - **LLM API**: $100-500 (depending on volume)
 - **Monitoring**: $50-200 (DataDog/CloudWatch)
 
-### Development Timeline
+### Development Timeline (Updated v0.5)
 
-- **Foundation**: 4-6 weeks
-- **Core Features**: 8-10 weeks
+- **Foundation**: 4-6 weeks ✅
+- **Core Features**: 6-8 weeks (partial - C003 complete)
+- **🆕 Experimentation & Learning**: 4-6 weeks
 - **Integrations**: 6-8 weeks
-- **AI Intelligence**: 6-8 weeks
+- **AI Intelligence**: 4-6 weeks
 - **Polish & Optimization**: 4-6 weeks
-- **Total**: 28-38 weeks (7-10 months)
+- **Total**: 28-40 weeks (7-10 months)
 
 ---
 
-## Next Steps
+## Next Steps (Updated for Experimentation Phase)
 
-1. **Immediate (Week 1-2)**
-   - Review and approve task breakdown
-   - Assign team members and responsibilities
-   - Set up development environment
-   - Begin foundation phase tasks
+1. **Immediate (Current Focus)**
+   - ✅ C003: Travel Requirements Intake Form completed
+   - **Next**: E001 → E002 → E008 (Input abstraction + Multi-agent foundation)
+   - Begin multi-input method experimentation
 
 2. **Short Term (Month 1-2)**
-   - Complete foundation phase
-   - Set up CI/CD pipeline
-   - Begin core features development
-   - Establish development standards
+   - Complete E001-E002: Input method abstraction layer
+   - Build E008: Multi-agent orchestration foundation
+   - Develop E003-E005: Alternative input methods (open text, guided hybrid, chat)
+   - Establish experiment tracking framework (E007)
 
-3. **Medium Term (Month 3-6)**
-   - Complete core features
-   - Implement integrations
-   - Begin AI intelligence development
-   - Conduct user testing
+3. **Medium Term (Month 3-4)**
+   - Analyze input method effectiveness and user preferences
+   - Complete core features informed by experimentation results
+   - Begin integrations with winning input methods and agent patterns
+   - Transition from research to production implementation
 
-4. **Long Term (Month 7-10)**
-   - Complete AI intelligence
-   - Polish and optimize
-   - Security audit and testing
-   - Production deployment
+4. **Long Term (Month 5-10)**
+   - Production-ready multi-agent system
+   - External API integrations
+   - Advanced AI features and optimization
+   - Security audit and production deployment
+
+**Key Change**: Experimentation phase front-loads learning about input methods and multi-agent coordination, informing all subsequent development phases.
 
 ---
 
