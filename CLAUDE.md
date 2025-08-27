@@ -4,7 +4,7 @@ AI-powered travel itinerary app using Next.js, Netlify Functions, and Tailwind C
 
 ## Project Overview
 
-Cardinal is a web application that helps people find and select travel destinations for short weekend trips and generates bespoke, mobile-friendly itineraries. It combines AI agents, LLM intelligence, and external API validation to craft unique travel experiences through persona-driven lenses (e.g., Photographer's Weekend, Architecture Buff, Food-Forward).
+Cardinal is a web application that helps people find and select travel destinations for short weekend trips and generates bespoke, mobile-friendly itineraries. It uses **multi-agent AI orchestration** with specialized research, curation, and validation agents working together to craft unique travel experiences through persona-driven lenses (e.g., Photographer's Weekend, Architecture Buff, Food-Forward).
 
 **Target Audience**: Culturally-aware people in their 20s-40s seeking unique travel experiences with confidence in recommendations.
 
@@ -146,47 +146,66 @@ export const handler: Handler = async event => {
 - **Grid**: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6`
 - **Form Fields**: `w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500`
 
-## AI Integration Patterns
+## Multi-Agent AI Architecture
 
 ```typescript
-// Persona-driven prompt structure
-const generateItineraryPrompt = (
-  requirements: TRequirements,
-  persona: string
-) => `
-You are a ${persona} travel concierge. Generate a ${requirements.duration}-day itinerary for ${requirements.destination}.
+// Multi-agent orchestration pattern
+interface AgentResponse<T> {
+  agentId: string
+  success: boolean
+  data?: T
+  error?: string
+  metadata: { duration: number; tokensUsed?: number }
+}
 
-User Profile:
-- Origin: ${requirements.origin}
-- Travelers: ${requirements.travelers} (${requirements.children} children)
-- Interests: ${requirements.interests.join(', ')}
-- Budget: ${requirements.budget}
-- Pace: ${requirements.pace}
+// Research Agent - Finds destinations and activities
+class ResearchAgent {
+  async findDestinations(requirements: TRequirements): Promise<TDestination[]> {
+    const prompt = `Research travel destinations matching: ${JSON.stringify(requirements)}`
+    return this.callLLM(prompt, destinationSchema.array())
+  }
+}
 
-Return valid JSON matching this schema:
-${JSON.stringify(itinerarySchema)}
+// Curation Agent - Crafts detailed itineraries
+class CurationAgent {
+  async generateItinerary(
+    destination: TDestination,
+    requirements: TRequirements,
+    persona: string
+  ): Promise<TItinerary> {
+    const prompt = `You are a ${persona} travel concierge. Generate detailed itinerary...`
+    return this.callLLM(prompt, itinerarySchema)
+  }
+}
 
-Focus on ${persona.toLowerCase()} perspective: unique local gems, authentic experiences, hidden neighborhoods.
-`
+// Validation Agent - Verifies feasibility and quality
+class ValidationAgent {
+  async validateItinerary(itinerary: TItinerary): Promise<ValidationResult> {
+    // Cross-reference with external APIs, check timing, etc.
+    return { valid: boolean, warnings: string[], errors: string[] }
+  }
+}
 
-// Always validate AI responses with Zod
-const callAIAgent = async (prompt: string, schema: z.ZodType) => {
-  const response = await anthropic.messages.create({
-    model: 'claude-3-sonnet-20240229',
-    messages: [{ role: 'user', content: prompt }],
-    max_tokens: 4000,
-  })
-
-  const parsed = JSON.parse(response.content[0].text)
-  return schema.parse(parsed) // Throws if invalid
+// Agent Orchestrator
+class AgentOrchestrator {
+  async processRequirements(requirements: TRequirements): Promise<TItinerary[]> {
+    const destinations = await this.researchAgent.findDestinations(requirements)
+    const itineraries = await Promise.all(
+      destinations.map(dest =>
+        this.curationAgent.generateItinerary(dest, requirements, requirements.persona)
+      )
+    )
+    return await this.validationAgent.validateAll(itineraries)
+  }
 }
 ```
 
 ## Key User Journeys
 
-1. **Magic Link Auth** → Requirements Form → Destination Suggestions → Itinerary Generation
-2. **Refinement Loop** → Chat-based modifications → Updated itinerary → PDF export/sharing
+1. **Magic Link Auth** → **Input Method Selection** → Requirements Capture → Multi-Agent Processing → Itinerary Generation
+2. **Refinement Loop** → Chat-based modifications → Agent re-processing → Updated itinerary → PDF export/sharing
 3. **History View** → Past itineraries → Duplicate and modify
+4. **Input Method Experimentation** → A/B test different input approaches → Compare AI agent performance
 
 ## API Response Standards
 
@@ -231,12 +250,15 @@ data: { type: 'chunk' | 'complete', content: string, itinerary?: TItinerary }
 
 ## Key Architectural Decisions
 
+- **Multi-Agent Orchestration** over single-agent approach (core differentiator, better quality)
+- **Registry Pattern** for input methods (extensible experimentation framework)
 - **Supabase** over Auth0/Clerk (simpler integration, includes database)
 - **Zustand** over Redux Toolkit (lighter, simpler API)
 - **React Query** over SWR (better developer experience, caching)
 - **Netlify Edge Functions** for AI orchestration (streaming support, 10min timeout)
 - **Next.js App Router** over Pages Router (modern, better DX)
 - **Zod everywhere** (runtime + compile-time validation)
+- **Modular Input Methods** for granularity testing (constrained vs. specific inputs)
 
 ## Don'ts
 
@@ -282,16 +304,28 @@ NEXT_TELEMETRY_DISABLED=1
 ## Development Workflow
 
 1. **Tasks tracked** in Documentation/Cardinal_Engineering_Tasks.md
-2. **Mark tasks complete** with ✓ and date when finished
-3. **Decision logging** - Update DECISIONS.md for any architectural, technical, or product decisions
-4. **Mobile-first development** - test on mobile breakpoints first
-5. **TypeScript strict** - resolve all type errors before committing
-6. **Test AI integrations** thoroughly - LLMs can be unpredictable
+2. **Experimentation-first approach** - prioritize E001-E009 tasks for POC validation
+3. **Mark tasks complete** with ✓ and date when finished
+4. **Decision logging** - Update DECISIONS.md for any architectural, technical, or product decisions
+5. **A/B test input methods** - compare constrained ("arts") vs. specific ("street art") inputs
+6. **Multi-agent validation** - ensure orchestration improves quality over single-agent
+7. **Mobile-first development** - test on mobile breakpoints first
+8. **TypeScript strict** - resolve all type errors before committing
+9. **Test AI integrations** thoroughly - LLMs can be unpredictable
 
-## Current Status
+## Current Status - Experimentation Phase
+
+**Foundation Complete:**
 
 - ✅ F001: Project Repository Setup
 - ✅ F002: Netlify Project Configuration
-- ⏳ F003: Next.js Project Scaffolding (next priority)
+- ✅ F003: Next.js Project Scaffolding
+
+**Active Experimentation Phase (E001-E009):**
+
+- ⏳ E001: Input Method Abstraction Layer (next priority)
+- Pending: E002 Registry Pattern → E008 Multi-Agent Foundation
+
+**Goal**: Test input granularity effects on AI agent performance (constrained vs. specific inputs)
 
 See `Documentation/Cardinal_Engineering_Tasks.md` for full task breakdown and dependencies.

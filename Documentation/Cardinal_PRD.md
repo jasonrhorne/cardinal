@@ -3,8 +3,8 @@
 ### Document Info
 
 - **Owner**: Cardinal
-- **Doc Status**: Draft v0.2 (MVP - Updated Requirements)
-- **Last Updated**: 2025-08-26
+- **Doc Status**: Draft v0.3 (MVP + Experimentation Phase)
+- **Last Updated**: 2025-08-27
 
 ---
 
@@ -16,7 +16,7 @@ Cardinal is a web application that helps people find and select travel destinati
 
 ## 2) Background and Context
 
-AI advances enable creating travel recommendations with more soul than generic web scraping. Combining AI agents, LLM intelligence, and external API validation creates a unique experience for finding the right travel situation.
+AI advances enable creating travel recommendations with more soul than generic web scraping. **Multi-agent AI orchestration** with specialized research, curation, and validation agents working together creates a unique experience for finding the right travel situation. Our experimentation-first approach tests how input method granularity affects AI agent performance.
 
 ---
 
@@ -67,19 +67,21 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 ## 6) User Journey
 
 1. **Onboard**: Email → magic link → authenticated session
-2. **Requirements**: Origin city, number of adults/children (ages), preferred travel methods and duration limits, interests
-3. **Destinations**: 3–7 suggestions with rationale, highlights, travel times
-4. **Select**: Choose destination, adjust constraints (hotel, neighborhoods)
-5. **Generate**: Day-by-day itinerary with meals, activities, reservations, backups
-6. **Refine**: Chat-based changes ("more coffee shops," "we booked X hotel")
-7. **Save/Share**: PDF export, share links, history access
+2. **Input Method Selection**: Choose from constrained form, guided prompts, or conversational interface
+3. **Requirements**: Capture travel preferences through selected input method (testing granularity effects)
+4. **Multi-Agent Processing**: Research agents find destinations → Curation agents craft itineraries → Validation agents verify quality
+5. **Destinations**: 3–7 suggestions with rationale, highlights, travel times
+6. **Select**: Choose destination, adjust constraints (hotel, neighborhoods)
+7. **Generate**: Day-by-day itinerary with meals, activities, reservations, backups
+8. **Refine**: Chat-based changes ("more coffee shops," "we booked X hotel")
+9. **Save/Share**: PDF export, share links, history access
 
 ---
 
 ## 7) Functional Requirements
 
 - **FR1 Authentication**: Email-based magic link sign-in; sessions persist; minimal PII stored.
-- **FR2 Requirements Intake**: Structured form with validation; prefilled defaults (derived from origin); save partial progress.
+- **FR2 Requirements Intake**: Multiple input methods (form, conversational, hybrid); A/B testing framework; granularity experimentation (constrained vs specific); save partial progress.
 - **FR3 Destination Generation**: Generate 3–7 candidates with clear rationale and highlights; show estimated drive/flight time bands.
 - **FR4 Itinerary Generation**: Persona-lens curation; day segments; adjacency-aware sequencing; budget and child-friendly tags; justification blurbs.
 - **FR5 Refinements**: Chat-like prompts that persist; diff previous vs updated itinerary; support specific changes (hotel, neighborhoods, dietary needs).
@@ -98,17 +100,34 @@ Cardinal curates itineraries through persona-driven lenses (Photographer's Weeke
 
 ---
 
-## 9) AI, Data, and Validation Approach
+## 9) Multi-Agent AI Architecture & Validation
 
-- **Core LLM**: Use an LLM to ideate destinations and itineraries using persona prompts and structured output schemas.
-- **Validation & Enrichment**: Cross-check and enrich with APIs where feasible.
-  - Google Places / Maps: place details, hours, ratings, coordinates.
-  - Event/arts sources (future): museums/galleries calendars.
-  - Travel time estimation: driving distance via Maps API; flight-time band heuristics for common routes.
-- **RAG/Retrieval (Phase 2+)**: Curate high-quality POI corpora per city; store embeddings; retrieve for LLM grounding.
-- **Quality Controls**: Hallucination checks, hours-of-operation sanity, duplicate detection, closed-venue detection, and geo-adjacency constraints.
-- **Prompting**: System prompts encode persona, constraints, and output schema. User prompts turned into structured change requests.
-- **Safety**: Avoid unsafe/illegal activities; avoid recommending private property trespass; include common-sense disclaimers.
+- **Multi-Agent Orchestration**: Specialized agents working in coordination rather than single LLM calls
+  - **Research Agent**: Discovers destinations and activities matching user requirements
+  - **Curation Agent**: Crafts detailed, persona-driven itineraries with local insights
+  - **Validation Agent**: Cross-references external APIs, checks feasibility, ensures quality
+  - **Response Agent**: Formats final output and handles refinement requests
+
+- **Input Method Experimentation**: Test how input granularity affects agent performance
+  - **Constrained inputs** ("arts", "food", "music") vs **Specific inputs** ("street art", "fine dining", "jazz")
+  - **Form-based** vs **Conversational** vs **Hybrid guided prompts**
+  - A/B testing framework to measure quality differences
+
+- **Validation & Enrichment**: Multi-layer validation through agents and APIs
+  - Google Places / Maps: place details, hours, ratings, coordinates
+  - Agent cross-validation: Research findings verified by Validation agent
+  - Event/arts sources (future): museums/galleries calendars
+  - Travel time estimation: driving distance via Maps API; flight-time band heuristics
+
+- **Quality Controls**: Agent-based quality assurance
+  - Validation agent performs hallucination checks, hours verification, duplicate detection
+  - Curation agent ensures geo-adjacency and temporal feasibility
+  - Response agent handles formatting consistency and safety guidelines
+
+- **Prompting Strategy**: Agent-specific prompting with inter-agent communication
+  - Each agent optimized for its specialized function
+  - Structured data passing between agents
+  - Persona encoding distributed across Curation and Response agents
 
 ---
 
@@ -148,10 +167,10 @@ Secondary diagnostics (internal):
 
 ## 13) Release Plan
 
-- **Phase 0 (Internal Prototype)**: Focus on AI model performance across diverse city types; manual validations; basic share link.
-- **Phase 1 (MVP Public)**: AI-first approach with any city input; magic link auth; requirements form; destination shortlist; itinerary with PDF/share; Buy-me-a-coffee.
-- **Phase 2**: RAG memories per city; stronger validation; collaborator comments; improved ranking.
-- **Phase 3**: Reservations links, calendar export, lodging integrations.
+- **Phase 0 (Experimentation - Current)**: Multi-agent foundation; input method testing; A/B testing framework; quality comparison analysis
+- **Phase 1 (MVP Public)**: Best-performing input method; multi-agent orchestration; magic link auth; destination shortlist; itinerary with PDF/share; Buy-me-a-coffee
+- **Phase 2**: RAG memories per city; enhanced agent specialization; collaborator comments; improved ranking
+- **Phase 3**: Reservations links, calendar export, lodging integrations; advanced agent capabilities
 
 ---
 
@@ -166,10 +185,13 @@ Secondary diagnostics (internal):
 
 ## 15) Risks and Mitigations
 
-- **Hallucinations/closures**: Validate with Places API; add user report/flag; keep freshness metadata.
-- **Latency costs**: Cache by city/persona; reuse partial results; multi-step agent with short prompts.
-- **Content trust**: Provide rationale and source snippets; show last-validated timestamps when possible.
-- **Scope creep**: Maintain MVP guardrails; defer bookings and complex collaboration to later phases.
+- **Multi-Agent Complexity**: Start simple with basic orchestration; add sophistication incrementally; maintain fallback to single-agent
+- **Input Method Selection**: Use experimentation phase to validate best approach; avoid premature optimization; maintain multiple working options
+- **Agent Coordination Failures**: Implement robust error handling between agents; graceful degradation; clear agent responsibility boundaries
+- **Hallucinations/closures**: Validation agent cross-checks with Places API; user report/flag system; freshness metadata
+- **Latency costs**: Cache agent results by city/persona; reuse validated data; parallel agent execution where possible
+- **Content trust**: Agent-generated rationale and validation timestamps; transparent source attribution
+- **Scope creep**: Focus on experimentation phase completion; defer advanced agent features to later phases
 
 ---
 
@@ -186,5 +208,13 @@ Secondary diagnostics (internal):
 
 ## 17) Appendix
 
-- **Glossary**: POI (point of interest), RAG (retrieval-augmented generation), Persona Lens (curation perspective), Adjacency (geographic/temporal proximity to reduce backtracking).
-- **Legal/Disclaimer (MVP)**: Recommendations are best-effort; verify hours, availability, and safety; respect local laws and private property; drive safely.
+- **Glossary**:
+  - **POI** (point of interest)
+  - **RAG** (retrieval-augmented generation)
+  - **Persona Lens** (curation perspective)
+  - **Adjacency** (geographic/temporal proximity to reduce backtracking)
+  - **Multi-Agent Orchestration** (specialized AI agents working in coordination)
+  - **Input Granularity** (spectrum from constrained to specific user inputs)
+  - **Agent Registry** (modular system for managing input method experiments)
+
+- **Legal/Disclaimer (MVP)**: Recommendations are AI-generated best-effort suggestions; verify hours, availability, and safety; respect local laws and private property; drive safely.
