@@ -29,16 +29,28 @@ function isAuthRoute(pathname: string): boolean {
 function hasSupabaseSession(request: NextRequest): boolean {
   const cookies = request.cookies.getAll()
 
+  // TEMPORARY DEBUG: Log cookies to understand what we're getting
+  console.log(
+    '[Middleware Debug] All cookies:',
+    cookies.map(c => `${c.name}=${c.value ? 'present' : 'empty'}`)
+  )
+
   // Look for any Supabase auth-related cookies
   const hasAuthCookie = cookies.some(cookie => {
-    return (
+    const isSupabaseCookie =
       cookie.name.startsWith('sb-') &&
       cookie.name.includes('auth-token') &&
       cookie.value &&
       cookie.value.length > 0
-    )
+
+    if (isSupabaseCookie) {
+      console.log('[Middleware Debug] Found Supabase auth cookie:', cookie.name)
+    }
+
+    return isSupabaseCookie
   })
 
+  console.log('[Middleware Debug] Has session:', hasAuthCookie)
   return hasAuthCookie
 }
 
