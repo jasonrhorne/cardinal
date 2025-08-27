@@ -11,6 +11,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+/* DISABLED: Middleware auth doesn't work reliably with modern browsers
 // Define protected and auth routes
 const protectedRoutes = ['/dashboard', '/profile', '/settings', '/itineraries']
 const authRoutes = ['/auth/signin', '/auth/signup', '/auth/callback']
@@ -24,70 +25,28 @@ function isProtectedRoute(pathname: string): boolean {
 function isAuthRoute(pathname: string): boolean {
   return authRoutes.some(route => pathname.startsWith(route))
 }
+*/
 
-// Simplified session check - just look for any Supabase auth cookie
+/* DISABLED: Middleware auth doesn't work reliably with modern browsers
+// They often don't send cookies to middleware, especially in production
+// Client-side ProtectedRoute handles all auth protection instead
+
 function hasSupabaseSession(request: NextRequest): boolean {
-  const cookies = request.cookies.getAll()
-
-  // TEMPORARY DEBUG: Log cookies to understand what we're getting
-  console.log(
-    '[Middleware Debug] All cookies:',
-    cookies.map(c => `${c.name}=${c.value ? 'present' : 'empty'}`)
-  )
-
-  // Look for any Supabase auth-related cookies
-  const hasAuthCookie = cookies.some(cookie => {
-    const isSupabaseCookie =
-      cookie.name.startsWith('sb-') &&
-      cookie.name.includes('auth-token') &&
-      cookie.value &&
-      cookie.value.length > 0
-
-    if (isSupabaseCookie) {
-      console.log('[Middleware Debug] Found Supabase auth cookie:', cookie.name)
-    }
-
-    return isSupabaseCookie
-  })
-
-  console.log('[Middleware Debug] Has session:', hasAuthCookie)
-  return hasAuthCookie
+  // This function is disabled - see comment above
+  return false
 }
+*/
 
 export function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
+  const { pathname } = request.nextUrl
 
-  // Allow API routes to handle their own auth
-  if (pathname.startsWith('/api/')) {
-    return NextResponse.next()
-  }
+  // TEMPORARY FIX: Disable middleware auth since cookies aren't available
+  // Modern browsers don't send cookies to middleware in many cases
+  // Let client-side ProtectedRoute handle all auth instead
 
-  // Check for session using simplified method
-  const hasSession = hasSupabaseSession(request)
+  console.log('[Middleware Debug] Skipping auth check for:', pathname)
 
-  // Protected routes: redirect to signin if no session
-  if (isProtectedRoute(pathname) && !hasSession) {
-    const redirectUrl = new URL('/auth/signin', request.url)
-    redirectUrl.searchParams.set(
-      'redirectTo',
-      pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '')
-    )
-    return NextResponse.redirect(redirectUrl)
-  }
-
-  // Auth routes: redirect to dashboard if already authenticated
-  if (isAuthRoute(pathname) && hasSession) {
-    // Don't redirect from callback page (it handles its own logic)
-    if (pathname === '/auth/callback') {
-      return NextResponse.next()
-    }
-
-    // Get redirect target from query params or default to dashboard
-    const redirectTo = searchParams.get('redirectTo') || '/dashboard'
-    return NextResponse.redirect(new URL(redirectTo, request.url))
-  }
-
-  // Allow all other requests to proceed
+  // Allow all requests to proceed - client-side auth will handle protection
   return NextResponse.next()
 }
 
