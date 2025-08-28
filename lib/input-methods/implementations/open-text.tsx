@@ -183,7 +183,7 @@ export function OpenTextInput({ onComplete, onCancel }: InputMethodProps) {
   }
 
   return (
-    <div className="open-text-input max-w-2xl mx-auto">
+    <div className="open-text-input">
       {/* Header */}
       <div className="mb-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
@@ -201,24 +201,24 @@ export function OpenTextInput({ onComplete, onCancel }: InputMethodProps) {
           <textarea
             value={state.text}
             onChange={e => handleTextChange(e.target.value)}
-            placeholder="Example: We're a couple in our 30s living in San Francisco. We love art galleries and great food, and want to visit somewhere we can drive to in about 4 hours. We'd prefer not to fly since it's just a weekend. We're into wine tasting and photography too..."
-            className="w-full min-h-[200px] p-4 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 resize-y"
+            placeholder="Example: We're a couple living in San Francisco. We love art galleries and great food, and want to visit somewhere we can drive to in about 4 hours for a weekend trip..."
+            className="w-full min-h-[200px] p-4 pr-20 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 resize-y"
             disabled={state.isProcessing}
           />
 
           {/* Word Counter */}
-          <div className="absolute bottom-3 right-3 text-xs text-gray-500">
+          <div className="absolute bottom-3 right-3 bg-white px-2 py-1 rounded text-xs text-gray-500 shadow-sm">
             {wordCount} words
           </div>
         </div>
 
         {/* Example Prompts */}
-        <div className="mt-3 text-sm text-gray-500">
+        <div className="mt-4 text-sm text-gray-500">
           <details className="cursor-pointer">
-            <summary className="hover:text-gray-700">
+            <summary className="hover:text-gray-700 mb-2">
               💡 Need inspiration? Click for example prompts
             </summary>
-            <div className="mt-2 space-y-2 pl-4">
+            <div className="mt-3 space-y-3 pl-4 border-l-2 border-gray-200">
               <p className="italic">
                 &quot;Family of 4 with kids aged 8 and 12 looking for outdoor
                 adventures within driving distance of Denver. Budget around
@@ -245,7 +245,7 @@ export function OpenTextInput({ onComplete, onCancel }: InputMethodProps) {
           <button
             onClick={handleProcess}
             disabled={state.isProcessing || wordCount < 5}
-            className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {state.isProcessing && <Spinner className="w-4 h-4" />}
             {status === 'extracting' && 'Understanding your preferences...'}
@@ -254,7 +254,7 @@ export function OpenTextInput({ onComplete, onCancel }: InputMethodProps) {
           </button>
 
           {wordCount < 5 && (
-            <p className="mt-2 text-sm text-gray-500 text-center">
+            <p className="mt-3 text-sm text-gray-500 text-center italic">
               Please write a few sentences about your travel preferences
             </p>
           )}
@@ -342,12 +342,12 @@ export function OpenTextInput({ onComplete, onCancel }: InputMethodProps) {
       )}
 
       {/* Cancel Button */}
-      <div className="text-center">
+      <div className="text-center mt-6">
         <button
           onClick={onCancel}
           className="text-gray-500 hover:text-gray-700 underline text-sm"
         >
-          Use a different input method
+          Cancel and choose different input method
         </button>
       </div>
     </div>
