@@ -185,7 +185,9 @@ export function OpenTextInput({
 
   // Handle form submission
   const handleSubmit = useCallback(() => {
-    if (!state.processedData) return
+    if (!state.processedData) {
+      return
+    }
 
     const metadata = {
       methodType: 'open-text' as const,
