@@ -37,11 +37,12 @@ class InputMethodRegistry {
       enabled: true,
     })
 
-    // Open text input (E003 implementation)
+    // Hybrid input (E003 implementation)
     this.register({
       type: 'open-text',
       name: 'Natural Language',
-      description: 'Describe your trip preferences in your own words',
+      description:
+        'Structured fields for facts, natural language for preferences',
       component: OpenTextInput,
       enabled: true,
     })
