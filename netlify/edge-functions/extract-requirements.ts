@@ -22,6 +22,7 @@ interface ExtractedRequirements {
     | 'nature-outdoors'
     | 'sports-recreation'
     | 'history'
+    | 'shopping'
     | 'culture-local-experiences'
   >
   travelDurationLimits?: Record<'drive' | 'rail' | 'air', number>
@@ -37,7 +38,7 @@ Extract the following information from the user's travel description:
 3. **Number of Children**: Count of children (default: 0)
 4. **Children Ages**: If children mentioned, extract ages and assign random IDs
 5. **Travel Methods**: Preferred transportation (drive, rail, air) - infer from context
-6. **Interests**: Map to these categories only: arts, architecture, food-dining, music-nightlife, nature-outdoors, sports-recreation, history, culture-local-experiences
+6. **Interests**: Map to these categories only: arts, architecture, food-dining, music-nightlife, nature-outdoors, sports-recreation, history, shopping, culture-local-experiences
 7. **Duration Limits**: If they mention time/distance limits for different transport modes
 
 IMPORTANT RULES:
@@ -224,6 +225,7 @@ export default async function handler(request: Request) {
       'nature-outdoors',
       'sports-recreation',
       'history',
+      'shopping',
       'culture-local-experiences',
     ]
     if (requirements.interests) {

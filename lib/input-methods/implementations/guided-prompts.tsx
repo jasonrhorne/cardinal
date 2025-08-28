@@ -50,14 +50,8 @@ interface GuidedPromptsState {
   isComplete: boolean
 }
 
-// Step 1: Destination with smart suggestions
-function DestinationStep({
-  value,
-  onChange,
-  onNext,
-  isValid,
-  error,
-}: StepProps) {
+// Step 1: Origin with smart suggestions
+function OriginStep({ value, onChange, onNext, isValid, error }: StepProps) {
   const [input, setInput] = useState(value || '')
   const [suggestions, setSuggestions] = useState<string[]>([])
 
@@ -68,12 +62,16 @@ function DestinationStep({
     // Simple smart suggestions based on input
     if (newValue.length > 2) {
       const mockSuggestions = [
-        'Paris, France',
-        'Tokyo, Japan',
-        'New York City, USA',
-        'Barcelona, Spain',
-        'Bangkok, Thailand',
-        'Rome, Italy',
+        'San Francisco, CA',
+        'New York, NY',
+        'Los Angeles, CA',
+        'Chicago, IL',
+        'Boston, MA',
+        'Seattle, WA',
+        'Denver, CO',
+        'Austin, TX',
+        'Miami, FL',
+        'Portland, OR',
       ].filter(city => city.toLowerCase().includes(newValue.toLowerCase()))
       setSuggestions(mockSuggestions.slice(0, 3))
     } else {
@@ -85,12 +83,12 @@ function DestinationStep({
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <MapPin className="w-5 h-5 text-blue-600" />
-        <h3 className="text-lg font-semibold">Where would you like to go?</h3>
+        <h3 className="text-lg font-semibold">Where are you traveling from?</h3>
       </div>
 
       <p className="text-gray-600 text-sm">
-        Tell us your dream destination. We&apos;ll help you discover the perfect
-        experiences there.
+        Tell us your starting city so we can find destinations within your
+        preferred travel distance.
       </p>
 
       <div className="relative">
@@ -98,7 +96,7 @@ function DestinationStep({
           type="text"
           value={input}
           onChange={e => handleInputChange(e.target.value)}
-          placeholder="e.g., Paris, Tokyo, or 'somewhere warm with great food'"
+          placeholder="e.g., San Francisco, CA or New York, NY"
           className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           onKeyDown={e => e.key === 'Enter' && isValid && onNext()}
         />
@@ -603,11 +601,11 @@ export function GuidedPromptsInput({
 
   const steps: GuidedStep[] = [
     {
-      id: 'destination',
-      title: 'Destination',
-      description: 'Where do you want to go?',
+      id: 'origin',
+      title: 'Origin',
+      description: 'Where are you traveling from?',
       required: true,
-      component: DestinationStep,
+      component: OriginStep,
     },
     {
       id: 'travel-details',
@@ -643,11 +641,11 @@ export function GuidedPromptsInput({
     value: any
   ): { valid: boolean; error?: string } => {
     switch (stepId) {
-      case 'destination': {
+      case 'origin': {
         const isValid = typeof value === 'string' && value.trim().length > 0
         return {
           valid: isValid,
-          ...(isValid ? {} : { error: 'Please enter a destination' }),
+          ...(isValid ? {} : { error: 'Please enter your origin city' }),
         }
       }
       case 'travel-details': {
@@ -789,7 +787,7 @@ export function GuidedPromptsInput({
       ) // Remove duplicates
 
     const requirements: TTravelRequirements = {
-      originCity: 'Not specified', // Will be enhanced in future versions
+      originCity: finalState.values.origin || 'Not specified',
       numberOfAdults: finalState.values['travel-details']?.travelers || 2,
       numberOfChildren: finalState.values['travel-details']?.children || 0,
       childrenAges: [], // Will be enhanced to capture actual ages
