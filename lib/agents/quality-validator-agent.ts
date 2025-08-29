@@ -3,7 +3,7 @@
  * Validates and enriches recommendations using external APIs and web searches
  */
 
-import { BaseAgent } from './base-agent.ts'
+import { BaseAgent } from './base-agent'
 import type {
   AgentConfig,
   AgentContext,
@@ -11,7 +11,7 @@ import type {
   TaskSpecification,
   Recommendation,
   QualityValidation,
-} from './types.ts'
+} from './types'
 
 export class QualityValidatorAgent extends BaseAgent {
   constructor() {

@@ -4,10 +4,10 @@
  * Coordinates all agents to generate travel itineraries
  */
 
-import { ConciergeAgent } from './concierge-agent.ts'
-import { FoodDiningAgent } from './food-dining-agent.ts'
-import { LodgingAgent } from './lodging-agent.ts'
-import { QualityValidatorAgent } from './quality-validator-agent.ts'
+import { ConciergeAgent } from './concierge-agent'
+import { FoodDiningAgent } from './food-dining-agent'
+import { LodgingAgent } from './lodging-agent'
+import { QualityValidatorAgent } from './quality-validator-agent'
 import type {
   AgentContext,
   AgentType,
@@ -20,7 +20,7 @@ import type {
   AgentMessage,
   QualityValidation,
   TTravelRequirements,
-} from './types.ts'
+} from './types'
 
 export class AgentOrchestrator {
   private concierge: ConciergeAgent

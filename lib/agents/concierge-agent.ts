@@ -7,7 +7,7 @@
  * - Final itinerary assembly
  */
 
-import { BaseAgent } from './base-agent.ts'
+import { BaseAgent } from './base-agent'
 import type {
   AgentConfig,
   AgentContext,
@@ -17,7 +17,7 @@ import type {
   Itinerary,
   OrchestrationResult,
   AgentType,
-} from './types.ts'
+} from './types'
 
 export class ConciergeAgent extends BaseAgent {
   constructor() {
