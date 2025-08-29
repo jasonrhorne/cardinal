@@ -3,8 +3,8 @@
 ## Document Info
 
 - **Owner**: Cardinal Engineering Team
-- **Document Status**: Draft v0.6 - Foundation Phase Complete, Experimentation Phase 67% Complete
-- **Last Updated**: 2025-08-28
+- **Document Status**: Draft v0.7 - Foundation Phase Complete, Experimentation Phase 89% Complete
+- **Last Updated**: 2025-08-29
 - **Total Tasks**: 102 (added Experimentation Phase)
 - **Estimated Total Effort**: 1,318 story points (~7-9 months for 2-3 engineers)
 
@@ -76,8 +76,8 @@
 | ✓   | E004 | Guided Hybrid Input Method           | Frontend | P0       | 8           | E002         | DONE   | Claude   | 2025-08-27 |
 | ✓   | E005 | Conversational Chat Input Method     | Frontend | P0       | 10          | E002         | DONE   | Claude   | 2025-08-28 |
 | ✓   | E006 | Input Method Comparison UI           | Frontend | P0       | 5           | E002         | DONE   | Claude   | 2025-08-27 |
-| ☐   | E007 | Experiment Tracking & Analytics      | Backend  | P0       | 6           | E001         | TODO   | -        | -          |
-| ☐   | E008 | Multi-Agent Orchestration Foundation | Backend  | P0       | 12          | F015, E001   | TODO   | -        | -          |
+| ✓   | E007 | Experiment Tracking & Analytics      | Backend  | P0       | 6           | E001         | DONE   | Claude   | 2025-08-29 |
+| ✓   | E008 | Multi-Agent Orchestration Foundation | Backend  | P0       | 12          | F015, E001   | DONE   | Claude   | 2025-08-29 |
 | ☐   | E009 | Agent Performance Metrics System     | Backend  | P1       | 5           | E008         | TODO   | -        | -          |
 
 ### Integrations Phase
