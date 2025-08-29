@@ -3,8 +3,8 @@
  * Tests the multi-agent system with Pittsburgh PA
  */
 
-import { orchestrator } from './orchestrator'
-import type { TTravelRequirements, PersonaProfile } from './types'
+import { orchestrator } from './orchestrator.ts'
+import type { TTravelRequirements, PersonaProfile } from './types.ts'
 
 // Test cases for different personas
 export const pittsburghTestCases = {

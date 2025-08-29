@@ -14,7 +14,7 @@ import type {
   AgentResponse,
   AgentType,
   TaskSpecification,
-} from './types'
+} from './types.ts'
 
 export abstract class BaseAgent {
   protected config: AgentConfig

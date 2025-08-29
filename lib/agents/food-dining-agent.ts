@@ -3,7 +3,7 @@
  * Discovers exceptional dining experiences aligned with traveler preferences
  */
 
-import { BaseAgent } from './base-agent'
+import { BaseAgent } from './base-agent.ts'
 import type {
   AgentConfig,
   AgentContext,
@@ -11,7 +11,7 @@ import type {
   TaskSpecification,
   ResearchOutput,
   Recommendation,
-} from './types'
+} from './types.ts'
 
 export class FoodDiningAgent extends BaseAgent {
   constructor() {
