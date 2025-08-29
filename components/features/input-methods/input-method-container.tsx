@@ -5,9 +5,10 @@
  * Provides tab-based interface to choose between different input methods
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // Removed unused Spinner import
+import { useExperimentTracking } from '@/lib/analytics/experiment-tracker'
 import { inputMethodRegistry } from '@/lib/input-methods/registry'
 import { InputMethodType, InputMethodMetadata } from '@/lib/input-methods/types'
 import { TTravelRequirements } from '@/lib/schemas/travel-requirements'
@@ -30,22 +31,45 @@ export function InputMethodContainer({
   const [selectedMethod, setSelectedMethod] =
     useState<InputMethodType>('constrained-form')
   const [error, setError] = useState<string | null>(null)
+  const [methodStartTime, setMethodStartTime] = useState<number>(0)
+
+  // Initialize experiment tracking
+  const {
+    initializeSession,
+    trackMethodSelection,
+    trackMethodStart,
+    trackMethodCompletion,
+    trackMethodAbandonment,
+    trackError,
+  } = useExperimentTracking()
 
   // Get enabled methods for tabs
   const enabledMethods = inputMethodRegistry.getEnabledMethods()
+
+  // Initialize tracking on mount
+  useEffect(() => {
+    initializeSession()
+
+    // Track initial method selection
+    trackMethodSelection('constrained-form')
+    trackMethodStart('constrained-form')
+    setMethodStartTime(Date.now())
+  }, [initializeSession, trackMethodSelection, trackMethodStart])
 
   // Handle completion from child input method
   const handleComplete = (
     requirements: TTravelRequirements,
     metadata: InputMethodMetadata
   ) => {
-    // TODO: Add analytics tracking here later
+    // Track successful completion
+    trackMethodCompletion(selectedMethod, requirements, metadata)
     onComplete(requirements, metadata)
   }
 
   // Handle cancellation
   const handleCancel = () => {
-    // TODO: Add analytics tracking here later
+    // Track abandonment at cancellation point
+    trackMethodAbandonment(selectedMethod, 'user_cancelled')
     onCancel()
   }
 
@@ -53,9 +77,31 @@ export function InputMethodContainer({
   const handleMethodChange = (methodType: InputMethodType) => {
     const method = inputMethodRegistry.getMethod(methodType)
     if (method && method.enabled) {
+      // Track abandonment of previous method if user was partway through
+      if (selectedMethod !== methodType && methodStartTime > 0) {
+        const timeSpent = Date.now() - methodStartTime
+        if (timeSpent > 5000) {
+          // Only track if user spent more than 5 seconds
+          trackMethodAbandonment(selectedMethod, 'method_switch')
+        }
+      }
+
+      // Track selection of new method
       setSelectedMethod(methodType)
+      trackMethodSelection(methodType)
+      trackMethodStart(methodType, { previousMethod: selectedMethod })
+      setMethodStartTime(Date.now())
       setError(null) // Clear any previous errors
     }
+  }
+
+  // Handle errors from child components
+  const handleError = (error: string) => {
+    setError(error)
+    trackError(selectedMethod, error, {
+      timestamp: Date.now(),
+      timeInMethod: Date.now() - methodStartTime,
+    })
   }
 
   // Error state
@@ -150,6 +196,7 @@ export function InputMethodContainer({
       <InputMethodComponent
         onComplete={handleComplete}
         onCancel={handleCancel}
+        onError={handleError}
         {...(defaultValues && { defaultValues })}
       />
     </div>

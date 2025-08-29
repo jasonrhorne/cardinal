@@ -61,6 +61,7 @@ export interface InputMethodProps {
     metadata: InputMethodMetadata
   ) => void
   onCancel: () => void
+  onError?: (error: string) => void
   defaultValues?: Partial<TTravelRequirements>
 }
 
