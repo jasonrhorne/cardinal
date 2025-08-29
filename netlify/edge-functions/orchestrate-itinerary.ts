@@ -4,7 +4,7 @@
  */
 
 import { Config, Context } from '@netlify/edge-functions'
-import { orchestrator } from '../../lib/agents/index.ts'
+import { orchestrator } from '../../lib/agents/orchestrator.ts'
 import type {
   TTravelRequirements,
   PersonaProfile,
