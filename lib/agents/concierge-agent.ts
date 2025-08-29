@@ -16,6 +16,7 @@ import type {
   ResearchOutput,
   Itinerary,
   OrchestrationResult,
+  AgentType,
 } from './types'
 
 export class ConciergeAgent extends BaseAgent {
@@ -139,8 +140,8 @@ Return a JSON array of tasks with this structure:
   private async executeResearchTasks(
     tasks: TaskSpecification[],
     context: AgentContext
-  ): Promise<Map<string, ResearchOutput>> {
-    const results = new Map<string, ResearchOutput>()
+  ): Promise<Map<AgentType, ResearchOutput>> {
+    const results = new Map<AgentType, ResearchOutput>()
 
     // For now, simulate research agent responses
     // In the full implementation, this will call actual research agents
@@ -203,7 +204,7 @@ Return JSON matching this structure:
 
   private async assembleItinerary(
     context: AgentContext,
-    research: Map<string, ResearchOutput>
+    research: Map<AgentType, ResearchOutput>
   ): Promise<Itinerary> {
     const prompt = `You are assembling a final itinerary from research results.
 
@@ -260,7 +261,9 @@ Return JSON matching this structure:
     }
   }
 
-  private calculateConfidence(research: Map<string, ResearchOutput>): number {
+  private calculateConfidence(
+    research: Map<AgentType, ResearchOutput>
+  ): number {
     const confidences = Array.from(research.values()).map(r => r.confidence)
     if (confidences.length === 0) {
       return 0.5

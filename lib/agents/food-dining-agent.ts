@@ -170,7 +170,11 @@ Return JSON with this structure:
 - Variety of cuisines`,
     }
 
-    return focuses[persona] || focuses.balanced
+    return (
+      focuses[persona] ??
+      focuses['balanced'] ??
+      'General dining recommendations'
+    )
   }
 
   private categorizeDining(

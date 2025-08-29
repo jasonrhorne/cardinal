@@ -19,6 +19,7 @@ import type {
   Itinerary,
   AgentMessage,
   QualityValidation,
+  TTravelRequirements,
 } from './types'
 
 export class AgentOrchestrator {
@@ -33,11 +34,10 @@ export class AgentOrchestrator {
     this.qualityValidator = new QualityValidatorAgent()
 
     // Initialize research agents
-    this.researchAgents = new Map([
-      ['lodging', new LodgingAgent()],
-      ['food-dining', new FoodDiningAgent()],
-      // Additional agents will be added here
-    ])
+    this.researchAgents = new Map<AgentType, any>()
+    this.researchAgents.set('lodging', new LodgingAgent())
+    this.researchAgents.set('food-dining', new FoodDiningAgent())
+    // Additional agents will be added here
   }
 
   /**
@@ -332,7 +332,7 @@ export class AgentOrchestrator {
     validations.forEach(validation => {
       if (validation.enrichedData) {
         // Find and update the original recommendation
-        validated.forEach((output, agentType) => {
+        validated.forEach(output => {
           if (output.recommendations) {
             output.recommendations = output.recommendations.map(rec => {
               if (rec.name === validation.originalRecommendation.name) {

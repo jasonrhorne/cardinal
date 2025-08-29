@@ -158,7 +158,11 @@ Return JSON with this structure:
 - Versatile neighborhood options`,
     }
 
-    return priorities[persona] || priorities.balanced
+    return (
+      priorities[persona] ??
+      priorities['balanced'] ??
+      'General lodging recommendations'
+    )
   }
 
   private enhanceRecommendations(
