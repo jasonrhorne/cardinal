@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react'
 
 // Removed unused Spinner import
 import { useExperimentTracking } from '@/lib/analytics/experiment-tracker'
+import { useABTesting } from '@/lib/experimentation/ab-testing'
 import { inputMethodRegistry } from '@/lib/input-methods/registry'
 import { InputMethodType, InputMethodMetadata } from '@/lib/input-methods/types'
 import { TTravelRequirements } from '@/lib/schemas/travel-requirements'
@@ -28,10 +29,12 @@ export function InputMethodContainer({
   onCancel,
   defaultValues,
 }: InputMethodContainerProps) {
+  const [sessionId, setSessionId] = useState<string>('')
   const [selectedMethod, setSelectedMethod] =
     useState<InputMethodType>('constrained-form')
   const [error, setError] = useState<string | null>(null)
   const [methodStartTime, setMethodStartTime] = useState<number>(0)
+  const [showMethodTabs, setShowMethodTabs] = useState<boolean>(true)
 
   // Initialize experiment tracking
   const {
@@ -43,18 +46,65 @@ export function InputMethodContainer({
     trackError,
   } = useExperimentTracking()
 
+  // Initialize A/B testing
+  const { getInputMethod, shouldShowSelection, getAssignedVariant } =
+    useABTesting(sessionId)
+
   // Get enabled methods for tabs
   const enabledMethods = inputMethodRegistry.getEnabledMethods()
 
-  // Initialize tracking on mount
+  // Initialize tracking and A/B testing on mount
   useEffect(() => {
-    initializeSession()
+    const newSessionId = initializeSession()
+    setSessionId(newSessionId)
+  }, [initializeSession])
 
-    // Track initial method selection
+  // Apply A/B testing assignment
+  useEffect(() => {
+    if (!sessionId) {
+      return
+    }
+
+    // TEMPORARILY DISABLED FOR PROTOTYPING - Enable A/B testing by uncommenting below
+    /*
+    const assignedMethod = getInputMethod()
+    const showTabs = shouldShowSelection()
+    const variant = getAssignedVariant()
+
+    setShowMethodTabs(showTabs)
+
+    // If not user choice, automatically select the assigned method
+    if (assignedMethod !== 'user-choice') {
+      setSelectedMethod(assignedMethod)
+      trackMethodSelection(assignedMethod)
+      trackMethodStart(assignedMethod, {
+        variant: variant?.name,
+        testId: variant?.id,
+      })
+      setMethodStartTime(Date.now())
+    } else {
+    */
+
+    // For prototyping - always show all tabs and let user choose
+    setShowMethodTabs(true)
+
+    // User choice - track initial selection
     trackMethodSelection('constrained-form')
-    trackMethodStart('constrained-form')
+    trackMethodStart('constrained-form', {
+      variant: 'User Choice',
+      testId: 'prototype-mode',
+    })
     setMethodStartTime(Date.now())
-  }, [initializeSession, trackMethodSelection, trackMethodStart])
+
+    // } // Closing brace for else when A/B testing is enabled
+  }, [
+    sessionId,
+    getInputMethod,
+    shouldShowSelection,
+    getAssignedVariant,
+    trackMethodSelection,
+    trackMethodStart,
+  ])
 
   // Handle completion from child input method
   const handleComplete = (
@@ -146,40 +196,58 @@ export function InputMethodContainer({
 
   return (
     <div className="input-method-container">
-      {/* Method Selection Tabs */}
-      <div className="mb-6">
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8" aria-label="Input methods">
-            {enabledMethods.map(method => (
-              <button
-                key={method.type}
-                onClick={() => handleMethodChange(method.type)}
-                className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
-                  selectedMethod === method.type
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-                aria-current={
-                  selectedMethod === method.type ? 'page' : undefined
-                }
-              >
-                {method.name}
-              </button>
-            ))}
-          </nav>
-        </div>
+      {/* Method Selection Tabs - Only show if A/B test allows user choice */}
+      {showMethodTabs && (
+        <div className="mb-6">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8" aria-label="Input methods">
+              {enabledMethods.map(method => (
+                <button
+                  key={method.type}
+                  onClick={() => handleMethodChange(method.type)}
+                  className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                    selectedMethod === method.type
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                  aria-current={
+                    selectedMethod === method.type ? 'page' : undefined
+                  }
+                >
+                  {method.name}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-        {/* Method Description */}
-        <div className="mt-2 text-sm text-gray-600">
-          {methodRegistration.description}
+          {/* Method Description */}
+          <div className="mt-2 text-sm text-gray-600">
+            {methodRegistration.description}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* A/B Test Indicator - Show when user is assigned to a specific method */}
+      {!showMethodTabs && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+          <p className="text-sm text-blue-800">
+            🧪 You&apos;re participating in an experiment to improve our travel
+            planning experience. You&apos;ve been assigned to test the{' '}
+            <strong>{methodRegistration.name}</strong> input method.
+          </p>
+        </div>
+      )}
 
       {/* Debug info in development */}
       {process.env.NODE_ENV === 'development' && (
         <div className="mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
           <strong>Debug:</strong> Using {methodRegistration.name} (
           {selectedMethod})
+          <br />
+          <strong>A/B Test:</strong>{' '}
+          {showMethodTabs ? 'User Choice' : `Assigned to ${selectedMethod}`}
+          <br />
+          <strong>Session:</strong> {sessionId.substring(0, 20)}...
           <br />
           <em>{methodRegistration.description}</em>
         </div>
