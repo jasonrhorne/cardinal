@@ -1,245 +1,245 @@
-
 # AI Development Tasks for Cardinal Project
 # Specialized tasks for AI agent development and LLM integration
 
 version: '3'
 
-# AI Agent Development Tasks
-agent:dev:
-  desc: Start AI agent development environment
-  cmds:
-    - echo "🚀 Starting AI agent development environment"
-    - echo "Available agents:"
-    - ls -la lib/agents/
-    - echo ""
-    - echo "Run 'task agent:test' to test agents"
-    - echo "Run 'task agent:generate' to create new agents"
+tasks:
+  # AI Agent Development Tasks
+  agent:dev:
+    desc: Start AI agent development environment
+    cmds:
+      - echo "🚀 Starting AI agent development environment"
+      - echo "Available agents:"
+      - ls -la lib/agents/
+      - echo ""
+      - echo "Run 'task agent:test' to test agents"
+      - echo "Run 'task agent:generate' to create new agents"
 
-agent:test:
-  desc: Test all AI agents
-  cmds:
-    - echo "🧪 Testing AI agents..."
-    - npm run test -- lib/agents/
-  sources:
-    - lib/agents/**/*
-    - __tests__/**/*
+  agent:test:
+    desc: Test all AI agents
+    cmds:
+      - echo "🧪 Testing AI agents..."
+      - npm run test -- lib/agents/
+    sources:
+      - lib/agents/**/*
+      - __tests__/**/*
 
-agent:generate:
-  desc: Generate a new AI agent with full boilerplate
-  cmds:
-    - |
-      if [ -z "{{.CLI_ARGS}}" ]; then
-        echo "Usage: task agent:generate AgentName"
-        exit 1
-      fi
-      AGENT_NAME="{{.CLI_ARGS}}"
-      AGENT_DIR="lib/agents"
-      mkdir -p "$AGENT_DIR"
-      
-      # Generate the agent class
-      cat > "$AGENT_DIR/$AGENT_NAME.ts" << 'EOF'
-      import { BaseAgent } from './base-agent';
-      import { AgentResult, AgentInput } from './types';
-      
-      export interface ${AGENT_NAME}Input extends AgentInput {
-        // Add specific input properties here
-      }
-      
-      export interface ${AGENT_NAME}Result extends AgentResult {
-        // Add specific result properties here
-      }
-      
-      export class ${AGENT_NAME} extends BaseAgent {
-        constructor() {
-          super('${AGENT_NAME}');
+  agent:generate:
+    desc: Generate a new AI agent with full boilerplate
+    cmds:
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          echo "Usage: task agent:generate AgentName"
+          exit 1
+        fi
+        AGENT_NAME="{{.CLI_ARGS}}"
+        AGENT_DIR="lib/agents"
+        mkdir -p "$AGENT_DIR"
+        
+        # Generate the agent class
+        cat > "$AGENT_DIR/$AGENT_NAME.ts" << 'EOF'
+        import { BaseAgent } from './base-agent';
+        import { AgentResult, AgentInput } from './types';
+        
+        export interface ${AGENT_NAME}Input extends AgentInput {
+          // Add specific input properties here
         }
         
-        async process(input: ${AGENT_NAME}Input): Promise<${AGENT_NAME}Result> {
-          try {
-            this.logger.info('Processing ${AGENT_NAME} request', { input });
-            
-            // Implement agent logic here
-            const result: ${AGENT_NAME}Result = {
-              success: true,
-              data: input,
-              metadata: {
-                agent: this.name,
-                timestamp: new Date().toISOString(),
-                processingTime: 0
-              }
-            };
-            
-            this.logger.info('${AGENT_NAME} processing completed', { result });
-            return result;
-            
-          } catch (error) {
-            this.logger.error('${AGENT_NAME} processing failed', { error, input });
-            throw error;
+        export interface ${AGENT_NAME}Result extends AgentResult {
+          // Add specific result properties here
+        }
+        
+        export class ${AGENT_NAME} extends BaseAgent {
+          constructor() {
+            super('${AGENT_NAME}');
+          }
+          
+          async process(input: ${AGENT_NAME}Input): Promise<${AGENT_NAME}Result> {
+            try {
+              this.logger.info('Processing ${AGENT_NAME} request', { input });
+              
+              // Implement agent logic here
+              const result: ${AGENT_NAME}Result = {
+                success: true,
+                data: input,
+                metadata: {
+                  agent: this.name,
+                  timestamp: new Date().toISOString(),
+                  processingTime: 0
+                }
+              };
+              
+              this.logger.info('${AGENT_NAME} processing completed', { result });
+              return result;
+              
+            } catch (error) {
+              this.logger.error('${AGENT_NAME} processing failed', { error, input });
+              throw error;
+            }
+          }
+          
+          async validate(input: ${AGENT_NAME}Input): Promise<boolean> {
+            // Implement input validation logic
+            return true;
           }
         }
+        EOF
         
-        async validate(input: ${AGENT_NAME}Input): Promise<boolean> {
-          // Implement input validation logic
-          return true;
+        # Generate the test file
+        TEST_DIR="__tests__/agents"
+        mkdir -p "$TEST_DIR"
+        cat > "$TEST_DIR/$AGENT_NAME.test.ts" << 'EOF'
+        import { ${AGENT_NAME} } from '../../lib/agents/$AGENT_NAME';
+        
+        describe('${AGENT_NAME}', () => {
+          let agent: ${AGENT_NAME};
+          
+          beforeEach(() => {
+            agent = new ${AGENT_NAME}();
+          });
+          
+          it('should be instantiated correctly', () => {
+            expect(agent).toBeInstanceOf(${AGENT_NAME});
+            expect(agent.name).toBe('${AGENT_NAME}');
+          });
+          
+          it('should process input successfully', async () => {
+            const input = {
+              // Add test input here
+            };
+            
+            const result = await agent.process(input);
+            
+            expect(result.success).toBe(true);
+            expect(result.data).toEqual(input);
+            expect(result.metadata.agent).toBe('${AGENT_NAME}');
+          });
+          
+          it('should validate input correctly', async () => {
+            const input = {
+              // Add test input here
+            };
+            
+            const isValid = await agent.validate(input);
+            expect(isValid).toBe(true);
+          });
+        });
+        EOF
+        
+        # Generate the index export
+        INDEX_FILE="$AGENT_DIR/index.ts"
+        if [ ! -f "$INDEX_FILE" ]; then
+          cat > "$INDEX_FILE" << 'EOF'
+        export * from './base-agent';
+        export * from './types';
+        EOF
+        fi
+        
+        # Add export to index
+        echo "export * from './$AGENT_NAME';" >> "$INDEX_FILE"
+        
+        echo "✅ Generated AI agent: $AGENT_DIR/$AGENT_NAME.ts"
+        echo "✅ Generated tests: $TEST_DIR/$AGENT_NAME.test.ts"
+        echo "✅ Updated index exports"
+        echo ""
+        echo "Next steps:"
+        echo "1. Implement the process() method logic"
+        echo "2. Add proper input validation"
+        echo "3. Run 'task agent:test' to verify"
+    silent: false
+
+  agent:orchestrate:
+    desc: Test agent orchestration
+    cmds:
+      - echo "🎭 Testing agent orchestration..."
+      - npm run test -- lib/agents/orchestrator.test.ts
+    sources:
+      - lib/agents/orchestrator.ts
+      - __tests__/**/*
+
+  # LLM Integration Tasks
+  llm:test:
+    desc: Test LLM integrations
+    cmds:
+      - echo "🤖 Testing LLM integrations..."
+      - npm run test -- lib/llm/
+    sources:
+      - lib/llm/**/*
+      - __tests__/**/*
+
+  llm:validate:
+    desc: Validate LLM configuration
+    cmds:
+      - echo "🔍 Validating LLM configuration..."
+      - npm run env:validate
+      - echo "Checking LLM environment variables..."
+      - node -e "
+        const { getClientEnv } = require('./lib/config/env');
+        const env = getClientEnv();
+        console.log('✅ LLM Environment:', {
+          ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY ? 'Set' : 'Missing',
+          OPENAI_API_KEY: env.OPENAI_API_KEY ? 'Set' : 'Missing'
+        });
+      "
+
+  # LangChain Integration Tasks
+  langchain:test:
+    desc: Test LangChain integrations
+    cmds:
+      - echo "🔗 Testing LangChain integrations..."
+      - npm run test -- lib/langchain/
+    sources:
+      - lib/langchain/**/*
+      - __tests__/**/*
+
+  langchain:validate:
+    desc: Validate LangChain configuration
+    cmds:
+      - echo "🔍 Validating LangChain configuration..."
+      - node -e "
+        try {
+          const { config } = require('./lib/langchain/config');
+          console.log('✅ LangChain config loaded:', config);
+        } catch (error) {
+          console.error('❌ LangChain config error:', error.message);
         }
-      }
-      EOF
-      
-      # Generate the test file
-      TEST_DIR="__tests__/agents"
-      mkdir -p "$TEST_DIR"
-      cat > "$TEST_DIR/$AGENT_NAME.test.ts" << 'EOF'
-      import { ${AGENT_NAME} } from '../../lib/agents/$AGENT_NAME';
-      
-      describe('${AGENT_NAME}', () => {
-        let agent: ${AGENT_NAME};
-        
-        beforeEach(() => {
-          agent = new ${AGENT_NAME}();
-        });
-        
-        it('should be instantiated correctly', () => {
-          expect(agent).toBeInstanceOf(${AGENT_NAME});
-          expect(agent.name).toBe('${AGENT_NAME}');
-        });
-        
-        it('should process input successfully', async () => {
-          const input = {
-            // Add test input here
-          };
-          
-          const result = await agent.process(input);
-          
-          expect(result.success).toBe(true);
-          expect(result.data).toEqual(input);
-          expect(result.metadata.agent).toBe('${AGENT_NAME}');
-        });
-        
-        it('should validate input correctly', async () => {
-          const input = {
-            // Add test input here
-          };
-          
-          const isValid = await agent.validate(input);
-          expect(isValid).toBe(true);
-        });
-      });
-      EOF
-      
-      # Generate the index export
-      INDEX_FILE="$AGENT_DIR/index.ts"
-      if [ ! -f "$INDEX_FILE" ]; then
-        cat > "$INDEX_FILE" << 'EOF'
-      export * from './base-agent';
-      export * from './types';
-      EOF
-      fi
-      
-      # Add export to index
-      echo "export * from './$AGENT_NAME';" >> "$INDEX_FILE"
-      
-      echo "✅ Generated AI agent: $AGENT_DIR/$AGENT_NAME.ts"
-      echo "✅ Generated tests: $TEST_DIR/$AGENT_NAME.test.ts"
-      echo "✅ Updated index exports"
-      echo ""
-      echo "Next steps:"
-      echo "1. Implement the process() method logic"
-      echo "2. Add proper input validation"
-      echo "3. Run 'task agent:test' to verify"
-  silent: false
+      "
 
-agent:orchestrate:
-  desc: Test agent orchestration
-  cmds:
-    - echo "🎭 Testing agent orchestration..."
-    - npm run test -- lib/agents/orchestrator.test.ts
-  sources:
-    - lib/agents/orchestrator.ts
-    - __tests__/**/*
+  # AI Experimentation Tasks
+  experiment:track:
+    desc: Track AI experiments
+    cmds:
+      - echo "📊 Tracking AI experiments..."
+      - npm run test -- lib/analytics/
+    sources:
+      - lib/analytics/**/*
+      - __tests__/**/*
 
-# LLM Integration Tasks
-llm:test:
-  desc: Test LLM integrations
-  cmds:
-    - echo "🤖 Testing LLM integrations..."
-    - npm run test -- lib/llm/
-  sources:
-    - lib/llm/**/*
-    - __tests__/**/*
+  experiment:compare:
+    desc: Compare AI agent performance
+    cmds:
+      - echo "⚖️ Comparing AI agent performance..."
+      - echo "This will run performance benchmarks on your agents"
+      - npm run test -- lib/agents/ --testNamePattern="performance"
 
-llm:validate:
-  desc: Validate LLM configuration
-  cmds:
-    - echo "🔍 Validating LLM configuration..."
-    - npm run env:validate
-    - echo "Checking LLM environment variables..."
-    - node -e "
-      const { getClientEnv } = require('./lib/config/env');
-      const env = getClientEnv();
-      console.log('✅ LLM Environment:', {
-        ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY ? 'Set' : 'Missing',
-        OPENAI_API_KEY: env.OPENAI_API_KEY ? 'Set' : 'Missing'
-      });
-    "
+  # AI Development Workflow
+  ai:workflow:
+    desc: Complete AI development workflow
+    deps: [agent:test, llm:test, langchain:test, experiment:track]
+    cmds:
+      - echo "🚀 AI development workflow completed successfully!"
 
-# LangChain Integration Tasks
-langchain:test:
-  desc: Test LangChain integrations
-  cmds:
-    - echo "🔗 Testing LangChain integrations..."
-    - npm run test -- lib/langchain/
-  sources:
-    - lib/langchain/**/*
-    - __tests__/**/*
+  # AI Code Generation (Future Integration)
+  ai:codegen:component:
+    desc: AI-powered component generation (Claude integration)
+    cmds:
+      - echo "🤖 AI-powered component generation coming soon..."
+      - echo "This will integrate with Claude API to generate intelligent components"
+      - echo "Usage: task ai:codegen:component 'A form component for travel preferences'"
 
-langchain:validate:
-  desc: Validate LangChain configuration
-  cmds:
-    - echo "🔍 Validating LangChain configuration..."
-    - node -e "
-      try {
-        const { config } = require('./lib/langchain/config');
-        console.log('✅ LangChain config loaded:', config);
-      } catch (error) {
-        console.error('❌ LangChain config error:', error.message);
-      }
-    "
-
-# AI Experimentation Tasks
-experiment:track:
-  desc: Track AI experiments
-  cmds:
-    - echo "📊 Tracking AI experiments..."
-    - npm run test -- lib/analytics/
-  sources:
-    - lib/analytics/**/*
-    - __tests__/**/*
-
-experiment:compare:
-  desc: Compare AI agent performance
-  cmds:
-    - echo "⚖️ Comparing AI agent performance..."
-    - echo "This will run performance benchmarks on your agents"
-    - npm run test -- lib/agents/ --testNamePattern="performance"
-
-# AI Development Workflow
-ai:workflow:
-  desc: Complete AI development workflow
-  deps: [agent:test, llm:test, langchain:test, experiment:track]
-  cmds:
-    - echo "🚀 AI development workflow completed successfully!"
-
-# AI Code Generation (Future Integration)
-ai:codegen:component:
-  desc: AI-powered component generation (Claude integration)
-  cmds:
-    - echo "🤖 AI-powered component generation coming soon..."
-    - echo "This will integrate with Claude API to generate intelligent components"
-    - echo "Usage: task ai:codegen:component 'A form component for travel preferences'"
-
-ai:codegen:test:
-  desc: AI-powered test generation (Claude integration)
-  cmds:
-    - echo "🤖 AI-powered test generation coming soon..."
-    - echo "This will analyze your components and generate comprehensive tests"
-    - echo "Usage: task ai:codegen:test path/to/component.tsx"
+  ai:codegen:test:
+    desc: AI-powered test generation (Claude integration)
+    cmds:
+      - echo "🤖 AI-powered test generation coming soon..."
+      - echo "This will analyze your components and generate comprehensive tests"
+      - echo "Usage: task ai:codegen:test path/to/component.tsx"

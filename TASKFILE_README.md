@@ -5,11 +5,13 @@ This project uses [Taskfile](https://taskfile.dev/) as a modern task runner to a
 ## 🚀 Quick Start
 
 ### View All Available Tasks
+
 ```bash
 task --list-all
 ```
 
 ### Get Help
+
 ```bash
 task help
 ```
@@ -17,6 +19,7 @@ task help
 ## 📋 Core Development Tasks
 
 ### Development Server
+
 ```bash
 # Start development server
 task dev
@@ -26,6 +29,7 @@ task dev:clean
 ```
 
 ### Code Quality
+
 ```bash
 # Run all code quality checks
 task code-quality
@@ -38,6 +42,7 @@ task typecheck     # TypeScript checking
 ```
 
 ### Testing
+
 ```bash
 # Run all tests
 task test
@@ -56,6 +61,7 @@ task test:ci
 ```
 
 ### Building
+
 ```bash
 # Build application
 task build
@@ -69,6 +75,7 @@ task build:clean
 The Cardinal project includes specialized AI development tasks in `.taskfiles/ai-development.yml`:
 
 ### AI Agent Development
+
 ```bash
 # Start AI development environment
 task agent:dev
@@ -84,6 +91,7 @@ task agent:orchestrate
 ```
 
 ### LLM Integration
+
 ```bash
 # Test LLM integrations
 task llm:test
@@ -96,6 +104,7 @@ task langchain:test
 ```
 
 ### AI Workflows
+
 ```bash
 # Complete AI development workflow
 task ai:workflow
@@ -106,6 +115,7 @@ task ai:workflow
 Database operations are handled in `.taskfiles/database.yml`:
 
 ### Database Management
+
 ```bash
 # Check database status
 task db:status
@@ -123,6 +133,7 @@ task db:test
 ```
 
 ### Database Development
+
 ```bash
 # Create new migration
 task db:migrate:create "add_user_preferences_table"
@@ -140,6 +151,7 @@ task db:workflow
 ## 🏗️ Code Generation Tasks
 
 ### Component Generation
+
 ```bash
 # Generate React component
 task generate:component MyComponent
@@ -157,6 +169,7 @@ task generate:test components/ui/MyComponent.tsx
 ## 🔧 Utility Tasks
 
 ### Environment & Setup
+
 ```bash
 # Setup development environment
 task setup:dev
@@ -169,6 +182,7 @@ task setup:hooks
 ```
 
 ### Security & Auditing
+
 ```bash
 # Security audit
 task security:audit
@@ -178,6 +192,7 @@ task security:fix
 ```
 
 ### Health Checks
+
 ```bash
 # Project health check
 task health:check
@@ -189,24 +204,28 @@ task db:health
 ## 🚀 Quick Development Workflows
 
 ### Complete Development Workflow
+
 ```bash
 # Format, lint, test, and build
 task dev:workflow
 ```
 
 ### Quick Development Setup
+
 ```bash
 # Install dependencies and start dev server
 task quick:dev
 ```
 
 ### Quick Testing
+
 ```bash
 # Lint and test
 task quick:test
 ```
 
 ### Quick Build
+
 ```bash
 # Lint and build
 task quick:build
@@ -225,17 +244,21 @@ Taskfile.yml              # Main task definitions
 ## 🎯 Best Practices
 
 ### 1. Use Task Dependencies
+
 Tasks can depend on other tasks using the `deps` attribute:
+
 ```yaml
 build:clean:
   desc: Clean build artifacts and rebuild
-  deps: [clean]  # Runs 'clean' task first
+  deps: [clean] # Runs 'clean' task first
   cmds:
     - npm run build
 ```
 
 ### 2. Leverage File Watching
+
 Use `sources` and `generates` for smart caching:
+
 ```yaml
 build:
   sources:
@@ -246,14 +269,18 @@ build:
 ```
 
 ### 3. Use CLI Arguments
+
 Pass arguments to tasks:
+
 ```bash
 task generate:component MyButton
 task generate:page user-profile
 ```
 
 ### 4. Combine Tasks
+
 Create workflow tasks that combine multiple operations:
+
 ```bash
 task code-quality    # Runs typecheck, lint, format:check, test:ci, test:accessibility
 task dev:workflow    # Runs format, lint:fix, typecheck, test, build
@@ -262,11 +289,13 @@ task dev:workflow    # Runs format, lint:fix, typecheck, test, build
 ## 🔍 Task Discovery
 
 ### List All Tasks
+
 ```bash
 task --list-all
 ```
 
 ### List Tasks by Category
+
 ```bash
 # Development tasks
 task --list | grep "^dev"
@@ -279,6 +308,7 @@ task --list | grep "^agent"
 ```
 
 ### Task Descriptions
+
 ```bash
 # Show task description
 task --list-all | grep "generate:component"
@@ -287,18 +317,23 @@ task --list-all | grep "generate:component"
 ## 🛠️ Customization
 
 ### Adding New Tasks
+
 1. Add to main `Taskfile.yml` for general tasks
 2. Add to specialized `.taskfiles/*.yml` for domain-specific tasks
 3. Use descriptive names with colons for grouping (e.g., `db:migrate:create`)
 
 ### Task Templates
+
 Use the existing generation tasks as templates:
+
 - `generate:component` for React components
 - `generate:agent` for AI agents
 - `generate:test` for test files
 
 ### Environment Variables
+
 Tasks can use environment variables and project variables:
+
 ```yaml
 vars:
   NODE_ENV: development
@@ -314,13 +349,17 @@ vars:
 3. **Dependency issues**: Check task dependencies with `task --list-deps <taskname>`
 
 ### Debug Mode
+
 Run tasks with verbose output:
+
 ```bash
 task --verbose <taskname>
 ```
 
 ### Task Dependencies
+
 View task dependencies:
+
 ```bash
 task --list-deps <taskname>
 ```
@@ -334,6 +373,7 @@ task --list-deps <taskname>
 ## 🤝 Contributing
 
 When adding new tasks:
+
 1. Follow the existing naming conventions
 2. Add descriptive `desc` attributes
 3. Use appropriate dependencies

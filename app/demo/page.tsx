@@ -8,6 +8,9 @@ import { TravelRequirementsForm } from '@/components/travel/travel-requirements-
 import type { DestinationRecommendation } from '@/lib/agents/destination-agent'
 import type { TTravelRequirements } from '@/lib/schemas/travel-requirements'
 
+// Force dynamic rendering to prevent static generation errors
+export const dynamic = 'force-dynamic'
+
 type FlowStep = 'requirements' | 'destinations' | 'itinerary'
 
 export default function DemoPage() {

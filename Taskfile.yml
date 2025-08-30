@@ -1,32 +1,347 @@
+# https://taskfile.dev
+# Cardinal Project Taskfile - AI-powered travel itinerary generator
+
 version: '3'
 
-help:
-  desc: Show all available tasks
-  cmds:
-    - task --list-all
-  silent: true
+includes:
+  ai: .taskfiles/ai-development.yml
+  db: .taskfiles/database.yml
 
-dev:
-  desc: Start development server
-  cmds:
-    - npm run dev
+vars:
+  NODE_ENV: development
+  PROJECT_NAME: cardinal
 
-test:
-  desc: Run all tests
-  cmds:
-    - npm run test
+tasks:
+  default:
+    desc: Show all available tasks
+    cmds:
+      - task --list-all
+    silent: true
 
-build:
-  desc: Build the application
-  cmds:
-    - npm run build
+  help:
+    desc: Show all available tasks
+    cmds:
+      - task --list-all
+    silent: true
 
-lint:
-  desc: Run ESLint
-  cmds:
-    - npm run lint
+  # Development tasks
+  dev:
+    desc: Start development server
+    cmds:
+      - npm run dev
 
-format:
-  desc: Format code with Prettier
-  cmds:
-    - npm run format
+  dev:clean:
+    desc: Clean and start development server
+    cmds:
+      - rm -rf .next
+      - npm run dev
+
+  # Code quality tasks
+  lint:
+    desc: Run ESLint
+    cmds:
+      - npm run lint
+
+  lint:fix:
+    desc: Fix ESLint issues automatically
+    cmds:
+      - npm run lint:fix
+
+  format:
+    desc: Format code with Prettier
+    cmds:
+      - npm run format
+
+  format:check:
+    desc: Check code formatting
+    cmds:
+      - npm run format:check
+
+  typecheck:
+    desc: Run TypeScript type checking
+    cmds:
+      - npm run typecheck
+
+  # Testing tasks
+  test:
+    desc: Run all tests
+    cmds:
+      - npm run test
+
+  test:watch:
+    desc: Run tests in watch mode
+    cmds:
+      - npm run test:watch
+
+  test:coverage:
+    desc: Run tests with coverage report
+    cmds:
+      - npm run test:coverage
+
+  test:accessibility:
+    desc: Run accessibility tests
+    cmds:
+      - npm run test:accessibility
+
+  test:ci:
+    desc: Run tests for CI/CD pipeline
+    cmds:
+      - npm run test:ci
+
+  # Code generation tasks
+  generate:component:
+    desc: Generate a new React component
+    cmds:
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          echo "Usage: task generate:component ComponentName"
+          exit 1
+        fi
+        COMPONENT_NAME="{{.CLI_ARGS}}"
+        COMPONENT_DIR="components/ui"
+        mkdir -p "$COMPONENT_DIR"
+        cat > "$COMPONENT_DIR/$COMPONENT_NAME.tsx" << 'EOF'
+        import React from 'react';
+
+        interface $COMPONENT_NAMEProps {
+          // Add your props here
+        }
+
+        export function $COMPONENT_NAME({}: $COMPONENT_NAMEProps) {
+          return (
+            <div>
+              {/* Add your component content here */}
+            </div>
+          );
+        }
+        EOF
+        echo "✅ Generated component: $COMPONENT_DIR/$COMPONENT_NAME.tsx"
+    silent: false
+
+  generate:page:
+    desc: Generate a new Next.js page
+    cmds:
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          echo "Usage: task generate:page page-name"
+          exit 1
+        fi
+        PAGE_NAME="{{.CLI_ARGS}}"
+        PAGE_DIR="app/$PAGE_NAME"
+        mkdir -p "$PAGE_DIR"
+        cat > "$PAGE_DIR/page.tsx" << 'EOF'
+        export default function $PAGE_NAME() {
+          return (
+            <div>
+              <h1>$PAGE_NAME</h1>
+              {/* Add your page content here */}
+            </div>
+          );
+        }
+        EOF
+        echo "✅ Generated page: $PAGE_DIR/page.tsx"
+    silent: false
+
+  generate:agent:
+    desc: Generate a new AI agent
+    cmds:
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          echo "Usage: task generate:agent AgentName"
+          exit 1
+        fi
+        AGENT_NAME="{{.CLI_ARGS}}"
+        AGENT_DIR="lib/agents"
+        mkdir -p "$AGENT_DIR"
+        cat > "$AGENT_DIR/$AGENT_NAME.ts" << 'EOF'
+        import { BaseAgent } from './base-agent';
+
+        export class $AGENT_NAME extends BaseAgent {
+          constructor() {
+            super('$AGENT_NAME');
+          }
+          
+          async process(input: any): Promise<any> {
+            // Implement agent logic here
+            return { success: true, data: input };
+          }
+        }
+        EOF
+        echo "✅ Generated agent: $AGENT_DIR/$AGENT_NAME.ts"
+    silent: false
+
+  generate:test:
+    desc: Generate test file for a component/module
+    cmds:
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          echo "Usage: task generate:test path/to/component"
+          exit 1
+        fi
+        COMPONENT_PATH="{{.CLI_ARGS}}"
+        TEST_PATH="${COMPONENT_PATH%.*}.test.tsx"
+        TEST_DIR=$(dirname "$TEST_PATH")
+        mkdir -p "$TEST_DIR"
+        COMPONENT_NAME=$(basename "$COMPONENT_PATH" .tsx)
+        cat > "$TEST_PATH" << 'EOF'
+        import { render, screen } from '@testing-library/react';
+        import { $COMPONENT_NAME } from './$COMPONENT_NAME';
+
+        describe('$COMPONENT_NAME', () => {
+          it('renders without crashing', () => {
+            render(<$COMPONENT_NAME />);
+            // Add your test assertions here
+          });
+        });
+        EOF
+        echo "✅ Generated test: $TEST_PATH"
+    silent: false
+
+  # Database tasks
+  db:deploy:
+    desc: Deploy database schema
+    cmds:
+      - npm run db:deploy
+
+  db:deploy:dev:
+    desc: Deploy database schema to development
+    cmds:
+      - npm run db:deploy:dev
+
+  db:deploy:staging:
+    desc: Deploy database schema to staging
+    cmds:
+      - npm run db:deploy:staging
+
+  db:deploy:prod:
+    desc: Deploy database schema to production
+    cmds:
+      - npm run db:deploy:prod
+
+  db:test:
+    desc: Test database connection
+    cmds:
+      - npm run db:test
+
+  db:setup:
+    desc: Setup database (deploy + test)
+    cmds:
+      - npm run db:setup
+
+  # Build and deployment tasks
+  build:
+    desc: Build the application
+    cmds:
+      - npm run build
+
+  build:clean:
+    desc: Clean build artifacts and rebuild
+    cmds:
+      - rm -rf .next out
+      - npm run build
+
+  deploy:validate:
+    desc: Validate deployment readiness
+    cmds:
+      - npm run deployment-ready
+
+  # Environment and configuration tasks
+  env:setup:
+    desc: Setup environment configuration
+    cmds:
+      - npm run setup-env
+
+  env:validate:
+    desc: Validate environment configuration
+    cmds:
+      - npm run env:validate
+
+  env:check:
+    desc: Check current environment
+    cmds:
+      - npm run env:check
+
+  # Security and audit tasks
+  security:audit:
+    desc: Run security audit
+    cmds:
+      - npm run security-audit
+
+  security:fix:
+    desc: Fix security vulnerabilities
+    cmds:
+      - npm audit fix
+
+  # Utility tasks
+  clean:
+    desc: Clean build artifacts and temporary files
+    cmds:
+      - rm -rf .next
+      - rm -rf out
+      - rm -rf coverage
+      - rm -rf node_modules/.cache
+      - rm -rf .swc
+      - rm -f tsconfig.tsbuildinfo
+
+  install:
+    desc: Install dependencies
+    cmds:
+      - npm install
+
+  install:clean:
+    desc: Clean install dependencies
+    cmds:
+      - rm -rf node_modules package-lock.json
+      - npm install
+
+  # Code quality pipeline
+  code-quality:
+    desc: Run full code quality checks
+    deps: [typecheck, lint, format:check, test:ci, test:accessibility]
+
+  # Development workflow
+  dev:workflow:
+    desc: Complete development workflow (format, lint, test, build)
+    deps: [format, lint:fix, typecheck, test, build]
+
+  # Pre-commit tasks
+  pre-commit:
+    desc: Run pre-commit checks
+    cmds:
+      - npm run pre-commit
+
+  # Setup tasks
+  setup:hooks:
+    desc: Setup pre-commit hooks
+    cmds:
+      - npm run setup:hooks
+
+  # Quick development shortcuts
+  quick:dev:
+    desc: Quick development setup (install + dev)
+    deps: [install, dev]
+
+  quick:test:
+    desc: Quick test run (lint + test)
+    deps: [lint, test]
+
+  quick:build:
+    desc: Quick build (lint + build)
+    deps: [lint, build]
+
+  # Health check tasks
+  health:check:
+    desc: Run health checks for the project
+    cmds:
+      - npm run env:validate
+      - npm run db:test
+      - npm run typecheck
+      - echo "✅ Health checks completed"
+
+  # Development environment setup
+  setup:dev:
+    desc: Complete development environment setup
+    deps: [install, setup:hooks, env:setup, db:setup]
+    cmds:
+      - echo "✅ Development environment setup completed"
+      - echo "Run 'task dev' to start development server"
