@@ -2,6 +2,59 @@
 
 AI-powered travel itinerary app using Next.js, Netlify Functions, and Tailwind CSS.
 
+## 🎯 IMPORTANT: Use Taskfile for ALL Operations
+
+**This project uses Taskfile for automation. ALWAYS prefer task commands over npm/manual commands:**
+
+### Essential Task Commands (Use These First!)
+
+```bash
+# Development
+task dev                        # Start dev server (instead of npm run dev)
+task dev:clean                  # Clean start when debugging issues
+
+# Code Quality (ALWAYS run before commits)
+task code-quality               # Complete quality check
+task lint:fix                   # Auto-fix linting issues
+task typecheck                  # TypeScript checking
+
+# Testing
+task test                       # Run all tests
+task cardinal:demo:manual      # Test demo flow manually
+task cardinal:cardinal:qa      # Complete QA pipeline
+
+# Cardinal-Specific
+task cardinal:cardinal:status  # Show project status & next steps
+task cardinal:cardinal:agent:visualize  # Show agent flow
+task ai:workflow               # Test all AI agents
+
+# Quick Workflows
+task dev:workflow              # Format → Lint → Test → Build
+task quick:test               # Fast test run
+
+# View All Tasks
+task --list-all               # See everything available
+task --list | grep cardinal   # See Cardinal-specific tasks
+```
+
+### When Working on Features
+
+```bash
+# Before starting work:
+task cardinal:cardinal:status  # Check current progress
+
+# During development:
+task dev                       # Start dev server
+task cardinal:demo:manual     # Test your changes
+
+# Before committing:
+task cardinal:cardinal:qa     # Run complete QA
+task lint:fix                 # Fix any issues
+
+# To understand the system:
+task cardinal:cardinal:agent:visualize  # See agent architecture
+```
+
 ## Project Overview
 
 Cardinal is a web application that helps people find and select travel destinations for short weekend trips and generates bespoke, mobile-friendly itineraries. It uses **multi-agent AI orchestration** with specialized research, curation, and validation agents working together to craft unique travel experiences through persona-driven lenses (e.g., Photographer's Weekend, Architecture Buff, Food-Forward).
@@ -303,15 +356,47 @@ NEXT_TELEMETRY_DISABLED=1
 
 ## Development Workflow
 
+### 🚀 ALWAYS Use Taskfile Commands
+
+1. **Start work session**: `task cardinal:cardinal:status` to see current state
+2. **During development**: Use `task dev` not `npm run dev`
+3. **Before ANY commit**: Run `task cardinal:cardinal:qa` for complete validation
+4. **Testing changes**: Use `task cardinal:demo:manual` to test the flow
+5. **Quick iterations**: Use `task quick:test` for fast feedback
+
+### Task-Driven Development Process
+
 1. **Tasks tracked** in Documentation/Cardinal_Engineering_Tasks.md
 2. **Experimentation-first approach** - prioritize E001-E009 tasks for POC validation
+   - Test with: `task cardinal:experiment:input-methods`
+   - Compare agents: `task cardinal:experiment:compare`
 3. **Mark tasks complete** with ✓ and date when finished
 4. **Decision logging** - Update DECISIONS.md for any architectural, technical, or product decisions
 5. **A/B test input methods** - compare constrained ("arts") vs. specific ("street art") inputs
+   - Run: `task cardinal:experiment:input-methods`
 6. **Multi-agent validation** - ensure orchestration improves quality over single-agent
+   - Test: `task ai:workflow`
 7. **Mobile-first development** - test on mobile breakpoints first
 8. **TypeScript strict** - resolve all type errors before committing
+   - Check: `task typecheck`
 9. **Test AI integrations** thoroughly - LLMs can be unpredictable
+   - Validate: `task cardinal:itinerary:validate`
+
+### Deployment & QA Tasks
+
+```bash
+# Before deploying:
+task cardinal:cardinal:release     # Complete release prep
+task build:clean                   # Clean build
+
+# After deploying:
+task cardinal:deploy:verify        # Verify deployment health
+task cardinal:deploy:smoke         # Run smoke tests
+
+# Performance checks:
+task cardinal:perf:measure         # Measure KPIs
+task cardinal:perf:lighthouse      # Generate Lighthouse report
+```
 
 ## Current Status - Experimentation Phase
 
@@ -329,3 +414,59 @@ NEXT_TELEMETRY_DISABLED=1
 **Goal**: Test input granularity effects on AI agent performance (constrained vs. specific inputs)
 
 See `Documentation/Cardinal_Engineering_Tasks.md` for full task breakdown and dependencies.
+
+## 📋 Claude Code Instructions - CRITICAL
+
+### ALWAYS Use Taskfile Commands
+
+When working on this project, you MUST use Taskfile commands instead of npm/manual commands:
+
+```bash
+# WRONG ❌
+npm run dev
+npm run lint
+npm run test
+
+# CORRECT ✅
+task dev
+task lint
+task test
+```
+
+### Command Mapping Reference
+
+| If asked to...           | Use this command                           |
+| ------------------------ | ------------------------------------------ |
+| Start development server | `task dev`                                 |
+| Run tests                | `task test` or `task cardinal:cardinal:qa` |
+| Check code quality       | `task code-quality`                        |
+| Fix linting issues       | `task lint:fix`                            |
+| Build the project        | `task build`                               |
+| Check project status     | `task cardinal:cardinal:status`            |
+| Test the demo            | `task cardinal:demo:manual`                |
+| Run complete QA          | `task cardinal:cardinal:qa`                |
+| Deploy/release           | `task cardinal:cardinal:release`           |
+
+### Task Discovery Commands
+
+```bash
+task --list-all                    # See ALL available tasks
+task --list | grep cardinal        # Find Cardinal-specific tasks
+task cardinal:cardinal:status      # Get current project status
+task cardinal:cardinal:agent:visualize  # Understand agent flow
+```
+
+### Development Workflow with Tasks
+
+1. **Starting work**: `task cardinal:cardinal:status`
+2. **Development**: `task dev`
+3. **Testing changes**: `task cardinal:demo:manual`
+4. **Before commits**: `task cardinal:cardinal:qa`
+5. **Quick checks**: `task quick:test`
+
+### Important Notes
+
+- The Taskfile has 50+ specialized commands for this project
+- Using tasks ensures consistency and catches issues early
+- Many tasks combine multiple operations for efficiency
+- Tasks handle environment setup, error checking, and cleanup automatically
