@@ -6,7 +6,6 @@ import { DestinationSuggestions } from '@/components/features/destination-sugges
 import { ItineraryDisplay } from '@/components/features/itinerary-display'
 import { TravelRequirementsForm } from '@/components/travel/travel-requirements-form'
 import type { DestinationRecommendation } from '@/lib/agents/destination-agent'
-
 import type { TTravelRequirements } from '@/lib/schemas/travel-requirements'
 
 type FlowStep = 'requirements' | 'destinations' | 'itinerary'
