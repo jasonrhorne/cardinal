@@ -8,7 +8,7 @@ tasks:
   db:status:
     desc: Check database connection status
     cmds:
-      - echo "🔍 Checking database connection status..."
+      - echo "Checking database connection status..."
       - npm run db:test
     sources:
       - database/test-connection.js
@@ -17,178 +17,122 @@ tasks:
   db:info:
     desc: Show database information
     cmds:
-      - echo "📊 Database Information:"
-      - echo "Project: Cardinal Travel Itinerary Generator"
-      - echo "Database: Supabase/PostgreSQL"
-      - echo ""
-      - echo "Available migrations:"
+      - echo "Database Information"
+      - echo "Project Cardinal Travel Itinerary Generator"
+      - echo "Database Supabase/PostgreSQL"
+      - echo "Available migrations"
       - ls -la database/migrations/
-      - echo ""
-      - echo "Database scripts:"
+      - echo "Database scripts"
       - ls -la database/
 
   # Database Migration Tasks
   db:migrate:status:
     desc: Show migration status
     cmds:
-      - echo "📋 Migration Status:"
+      - echo "Migration Status"
       - echo "This will show which migrations have been applied"
-      - echo "Run 'task db:deploy' to see current status"
+      - echo "Run task db:deploy to see current status"
 
   db:migrate:create:
     desc: Create a new migration file
     cmds:
-      - |
-        if [ -z "{{.CLI_ARGS}}" ]; then
-          echo "Usage: task db:migrate:create 'migration_description'"
-          exit 1
-        fi
-        MIGRATION_DESC="{{.CLI_ARGS}}"
-        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        MIGRATION_NAME="${TIMESTAMP}_${MIGRATION_DESC// /_}"
-        MIGRATION_FILE="database/migrations/${MIGRATION_NAME}.sql"
-        
-        cat > "$MIGRATION_FILE" << 'EOF'
-        -- Migration: $MIGRATION_DESC
-        -- Created: $(date)
-        -- Author: Cardinal Team
-        
-        -- Add your SQL migration here
-        -- Example:
-        -- CREATE TABLE IF NOT EXISTS example_table (
-        --   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        --   name TEXT NOT NULL,
-        --   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-        -- );
-        
-        -- Rollback (if needed):
-        -- DROP TABLE IF EXISTS example_table;
-        EOF
-        
-        echo "✅ Created migration: $MIGRATION_FILE"
-        echo "Edit the file to add your SQL migration"
-    silent: false
+      - echo "Creating new migration file"
+      - echo "Usage task db:migrate:create migration_description"
 
   db:migrate:rollback:
     desc: Rollback last migration (manual process)
     cmds:
-      - echo "⚠️  Manual rollback process:"
+      - echo "Manual rollback process"
       - echo "1. Check database/migrations/ for the last applied migration"
       - echo "2. Manually execute the rollback SQL in your database"
       - echo "3. Update your migration tracking if applicable"
-      - echo ""
-      - echo "For automated rollbacks, consider implementing a migration system"
 
   # Database Schema Tasks
   db:schema:show:
     desc: Show current database schema
     cmds:
-      - echo "🏗️  Current Database Schema:"
-      - echo "Tables:"
+      - echo "Current Database Schema"
+      - echo "Tables"
       - echo "- profiles (user profiles)"
       - echo "- travel_requirements (user travel preferences)"
       - echo "- itineraries (generated travel plans)"
-      - echo ""
-      - echo "Run 'task db:deploy' to apply latest schema changes"
+      - echo "Run task db:deploy to apply latest schema changes"
 
   db:schema:validate:
     desc: Validate database schema
     cmds:
-      - echo "✅ Validating database schema..."
+      - echo "Validating database schema"
       - npm run db:deploy
       - npm run db:test
-      - echo "✅ Schema validation completed"
+      - echo "Schema validation completed"
 
   # Database Development Tasks
   db:dev:reset:
-    desc: Reset development database (⚠️ DESTRUCTIVE)
+    desc: Reset development database (DESTRUCTIVE)
     cmds:
-      - echo "⚠️  WARNING: This will reset your development database!"
-      - echo "This action cannot be undone."
-      - read -p "Are you sure? Type 'yes' to confirm: " confirm
-      - |
-        if [ "$confirm" = "yes" ]; then
-          echo "🗑️  Resetting development database..."
-          npm run db:deploy:dev
-          echo "✅ Development database reset completed"
-        else
-          echo "❌ Database reset cancelled"
-        fi
-    silent: false
+      - echo "WARNING This will reset your development database"
+      - echo "This action cannot be undone"
+      - echo "Run npm run db:deploy:dev to reset"
 
   db:dev:seed:
     desc: Seed development database with sample data
     cmds:
-      - echo "🌱 Seeding development database..."
+      - echo "Seeding development database"
       - echo "This will add sample travel requirements and itineraries"
-      - echo "Run 'task db:deploy:dev' first to ensure schema is up to date"
+      - echo "Run task db:deploy:dev first to ensure schema is up to date"
 
   # Database Backup and Restore
   db:backup:create:
     desc: Create database backup (if supported by your setup)
     cmds:
-      - echo "💾 Database backup functionality:"
-      - echo "For Supabase, backups are typically handled automatically"
+      - echo "Database backup functionality"
+      - echo "For Supabase backups are typically handled automatically"
       - echo "Check your Supabase dashboard for backup options"
-      - echo ""
-      - echo "For local development, consider using pg_dump or similar tools"
 
   db:backup:restore:
     desc: Restore database from backup (if supported by your setup)
     cmds:
-      - echo "📥 Database restore functionality:"
-      - echo "For Supabase, restores are typically handled through the dashboard"
-      - echo "For local development, consider using pg_restore or similar tools"
+      - echo "Database restore functionality"
+      - echo "For Supabase restores are typically handled through the dashboard"
 
   # Database Performance Tasks
   db:performance:analyze:
     desc: Analyze database performance
     cmds:
-      - echo "⚡ Database Performance Analysis:"
-      - echo "This would typically involve:"
+      - echo "Database Performance Analysis"
+      - echo "This would typically involve"
       - echo "1. Query performance analysis"
       - echo "2. Index optimization"
       - echo "3. Connection pooling review"
-      - echo ""
-      - echo "Consider using Supabase's built-in performance monitoring"
+      - echo "Consider using Supabase built-in performance monitoring"
 
   # Database Security Tasks
   db:security:audit:
     desc: Audit database security
     cmds:
-      - echo "🔒 Database Security Audit:"
+      - echo "Database Security Audit"
       - echo "1. Check RLS (Row Level Security) policies"
       - echo "2. Verify API key permissions"
       - echo "3. Review user access controls"
       - echo "4. Check for sensitive data exposure"
-      - echo ""
-      - echo "Run 'task security:audit' for general security checks"
+      - echo "Run task security:audit for general security checks"
 
   # Database Monitoring Tasks
   db:monitor:setup:
     desc: Setup database monitoring
     cmds:
-      - echo "📊 Database Monitoring Setup:"
-      - echo "Supabase provides built-in monitoring:"
+      - echo "Database Monitoring Setup"
+      - echo "Supabase provides built-in monitoring"
       - echo "- Query performance"
       - echo "- Connection usage"
       - echo "- Storage usage"
       - echo "- API usage"
-      - echo ""
       - echo "Check your Supabase dashboard for monitoring options"
-
-  # Complete Database Workflow
-  db:workflow:
-    desc: Complete database development workflow
-    deps: [db:status, db:schema:validate, db:deploy]
-    cmds:
-      - echo "✅ Database workflow completed successfully!"
-      - echo "Your database is ready for development"
 
   # Database Health Check
   db:health:
     desc: Comprehensive database health check
     deps: [db:status, db:schema:validate, db:security:audit]
     cmds:
-      - echo "🏥 Database health check completed!"
+      - echo "Database health check completed"
       - echo "All systems are operational"
