@@ -7,6 +7,7 @@ import { BaseAgent } from './base-agent'
 import type {
   AgentResponse,
   AgentContext,
+  AgentType,
   TaskSpecification,
   TTravelRequirements,
 } from './types'
@@ -45,7 +46,7 @@ export class DestinationAgent extends BaseAgent {
     })
   }
 
-  buildPrompt(task: TaskSpecification, context: AgentContext): string {
+  buildPrompt(_task: TaskSpecification, context: AgentContext): string {
     const requirements = context.userRequirements
     const hasChildren = requirements.numberOfChildren > 0
     const interests = requirements.interests || []
@@ -68,7 +69,7 @@ Suggest 3-7 destinations that match these requirements.
   }
 
   async execute(
-    task: TaskSpecification,
+    _task: TaskSpecification,
     context: AgentContext
   ): Promise<AgentResponse> {
     const startTime = Date.now()
@@ -106,35 +107,7 @@ Suggest 3-7 destinations that match these requirements.
     const interests = requirements.interests || []
 
     // Generate prompt for destination discovery (using buildPrompt method)
-    const prompt = `
-You are a travel destination expert helping someone find the perfect weekend getaway destination.
-
-REQUIREMENTS:
-- Origin: ${requirements.originCity}
-- Travelers: ${requirements.numberOfAdults} adults${hasChildren ? `, ${requirements.numberOfChildren} children (ages: ${requirements.childrenAges.map(c => c.age).join(', ')})` : ''}
-- Interests: ${interests.join(', ')}
-- Travel Methods: ${travelMethods.join(', ')}
-- Maximum Travel Time: ${this.getMaxTravelTime(requirements)}
-- Travel Style: ${context.personaProfile.travelStyle}
-- Activity Level: ${context.personaProfile.activityLevel}
-
-Suggest 3-7 destinations that match these requirements. Focus on places that are:
-1. Within reasonable travel distance/time from the origin
-2. Well-suited to the stated interests
-3. Appropriate for the travel party composition
-4. Offer unique experiences worth traveling for
-
-For each destination, provide:
-- City, State, Country
-- Approximate distance and travel time from origin
-- 3-4 key highlights that make it special
-- A compelling rationale for why this destination matches their preferences
-- 3-5 specific attractions/experiences they shouldn't miss
-- The overall vibe/character of the place
-- Who it's perfect for
-
-Format your response as a JSON array of destinations.
-`
+    // Note: Prompt is now generated in buildPrompt method above
 
     try {
       // In a real implementation, this would call the LLM
@@ -155,28 +128,6 @@ Format your response as a JSON array of destinations.
     }
   }
 
-  private buildTravelPreferences(requirements: TTravelRequirements): string {
-    const parts = []
-
-    if (requirements.interests.includes('food-dining')) {
-      parts.push('culinary experiences')
-    }
-    if (requirements.interests.includes('arts')) {
-      parts.push('art and cultural attractions')
-    }
-    if (requirements.interests.includes('nature-outdoors')) {
-      parts.push('outdoor activities and natural beauty')
-    }
-    if (requirements.interests.includes('history')) {
-      parts.push('historical sites and museums')
-    }
-    if (requirements.numberOfChildren > 0) {
-      parts.push('family-friendly activities')
-    }
-
-    return parts.join(', ')
-  }
-
   private getMaxTravelTime(requirements: TTravelRequirements): string {
     const limits = requirements.travelDurationLimits || {}
     const methods = requirements.preferredTravelMethods || ['drive']
@@ -191,7 +142,7 @@ Format your response as a JSON array of destinations.
 
   private async generateMockDestinations(
     origin: string,
-    interests: string[],
+    _interests: string[],
     hasChildren: boolean
   ): Promise<DestinationRecommendation[]> {
     // Mock destinations based on common origins
@@ -327,7 +278,7 @@ Format your response as a JSON array of destinations.
       destinationMap[origin] || destinationMap['San Francisco']
 
     // Filter based on interests if needed
-    if (hasChildren) {
+    if (hasChildren && destinations) {
       return destinations.filter(
         d =>
           d.perfectFor.includes('Families') ||
@@ -335,7 +286,7 @@ Format your response as a JSON array of destinations.
       )
     }
 
-    return destinations.slice(0, 5) // Return up to 5 destinations
+    return destinations ? destinations.slice(0, 5) : [] // Return up to 5 destinations
   }
 
   private calculateConfidence(output: DestinationResearchOutput): number {

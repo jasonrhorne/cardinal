@@ -96,7 +96,7 @@ export const handler: Handler = async event => {
         body: JSON.stringify({
           status: 'error',
           error: 'Invalid request',
-          details: error.issues || error.errors || error.message,
+          details: error.issues || (error as any).errors || error.message,
         }),
       }
     }

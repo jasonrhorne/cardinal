@@ -1,0 +1,32 @@
+version: '3'
+
+help:
+  desc: Show all available tasks
+  cmds:
+    - task --list-all
+  silent: true
+
+dev:
+  desc: Start development server
+  cmds:
+    - npm run dev
+
+test:
+  desc: Run all tests
+  cmds:
+    - npm run test
+
+build:
+  desc: Build the application
+  cmds:
+    - npm run build
+
+lint:
+  desc: Run ESLint
+  cmds:
+    - npm run lint
+
+format:
+  desc: Format code with Prettier
+  cmds:
+    - npm run format

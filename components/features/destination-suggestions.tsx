@@ -162,7 +162,12 @@ export function DestinationSuggestions({
       {selectedIndex !== null && destinations[selectedIndex] && (
         <div className="flex justify-center mt-8">
           <button
-            onClick={() => onSelect(destinations[selectedIndex])}
+            onClick={() => {
+              const destination = destinations[selectedIndex]
+              if (destination) {
+                onSelect(destination)
+              }
+            }}
             className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors"
           >
             Continue with {destinations[selectedIndex].city}

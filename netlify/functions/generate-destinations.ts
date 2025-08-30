@@ -22,7 +22,7 @@ const requestSchema = z.object({
     childrenAges: z.array(z.object({ age: z.number(), id: z.string() })),
     preferredTravelMethods: z.array(z.enum(['drive', 'rail', 'air'])),
     interests: z.array(z.string()),
-    travelDurationLimits: z.record(z.number()).optional(),
+    travelDurationLimits: z.record(z.string(), z.number()).optional(),
   }),
 })
 
@@ -112,7 +112,7 @@ export const handler: Handler = async event => {
         body: JSON.stringify({
           status: 'error',
           error: 'Invalid request',
-          details: error.issues || error.errors || error.message,
+          details: error.issues || (error as any).errors || error.message,
         }),
       }
     }
