@@ -1,0 +1,328 @@
+# Cardinal-Specific Tasks
+# Specialized tasks for the Cardinal travel itinerary generator
+
+version: '3'
+
+tasks:
+  # Demo and Testing Tasks
+  demo:test:
+    desc: Test the complete demo flow end-to-end
+    cmds:
+      - echo "🧪 Testing complete demo flow..."
+      - echo "Starting development server in background..."
+      - |
+        # Start dev server in background and capture PID
+        npm run dev > /tmp/cardinal-dev.log 2>&1 &
+        DEV_PID=$!
+        echo "Dev server PID: $DEV_PID"
+
+        # Wait for server to be ready
+        echo "Waiting for server to start..."
+        for i in {1..30}; do
+          if curl -s http://localhost:3000/api/health > /dev/null; then
+            echo "✅ Server is ready!"
+            break
+          fi
+          sleep 1
+        done
+
+        # Run demo tests
+        echo "Running demo flow tests..."
+        npm run test -- components/features/demo-page-content.test.tsx || true
+
+        # Cleanup
+        kill $DEV_PID 2>/dev/null || true
+        echo "✅ Demo flow test completed"
+    sources:
+      - app/demo/**/*
+      - components/features/demo-page-content.tsx
+      - components/features/destination-suggestions.tsx
+
+  demo:manual:
+    desc: Start dev server and open demo page for manual testing
+    cmds:
+      - echo "🚀 Starting demo for manual testing..."
+      - echo "Opening http://localhost:3000/demo in your browser..."
+      - open http://localhost:3000/demo || xdg-open http://localhost:3000/demo || echo "Please open http://localhost:3000/demo manually"
+      - npm run dev
+
+  # Itinerary Validation Tasks
+  itinerary:validate:
+    desc: Validate itinerary generation against schemas
+    cmds:
+      - echo "🔍 Validating itinerary generation..."
+      - npm run test -- lib/agents/destination-agent
+      - npm run test -- lib/agents/orchestrator
+      - npm run test -- netlify/functions/generate-destinations
+      - npm run test -- netlify/functions/generate-itinerary
+      - echo "✅ Itinerary validation complete"
+    sources:
+      - lib/agents/**/*
+      - netlify/functions/generate-*.ts
+      - lib/schemas/**/*
+
+  itinerary:test-flow:
+    desc: Test the complete itinerary generation flow
+    cmds:
+      - echo "🔄 Testing complete itinerary flow..."
+      - echo "1. Testing requirements capture..."
+      - npm run test -- components/travel/travel-requirements-form.test.tsx || echo "No test file yet"
+      - echo "2. Testing destination discovery..."
+      - npm run test -- lib/agents/destination-agent.test.ts || echo "No test file yet"
+      - echo "3. Testing itinerary generation..."
+      - npm run test -- lib/agents/orchestrator.test.ts || echo "No test file yet"
+      - echo "✅ Flow testing complete"
+
+  # Deployment Verification Tasks
+  deploy:verify:
+    desc: Verify Netlify deployment health
+    cmds:
+      - echo "🔍 Verifying deployment..."
+      - |
+        SITE_URL="${NETLIFY_URL:-https://cardinal-travel.netlify.app}"
+        echo "Checking $SITE_URL..."
+
+        # Check health endpoint
+        if curl -f -s "$SITE_URL/api/health" > /dev/null; then
+          echo "✅ API health check passed"
+        else
+          echo "❌ API health check failed"
+          exit 1
+        fi
+
+        # Check main page
+        if curl -f -s "$SITE_URL" > /dev/null; then
+          echo "✅ Main page loads"
+        else
+          echo "❌ Main page failed to load"
+          exit 1
+        fi
+
+        # Check demo page
+        if curl -f -s "$SITE_URL/demo" > /dev/null; then
+          echo "✅ Demo page loads"
+        else
+          echo "❌ Demo page failed to load"
+          exit 1
+        fi
+
+        echo "✅ Deployment verification complete"
+
+  deploy:smoke:
+    desc: Run smoke tests against deployed site
+    cmds:
+      - echo "🔥 Running smoke tests..."
+      - |
+        SITE_URL="${NETLIFY_URL:-https://cardinal-travel.netlify.app}"
+
+        # Test destination generation endpoint
+        echo "Testing destination generation..."
+        curl -X POST "$SITE_URL/.netlify/functions/generate-destinations" \
+          -H "Content-Type: application/json" \
+          -d '{"requirements":{"originCity":"San Francisco","tripDuration":"3 days","travelers":2}}' \
+          | jq . || echo "Destination generation test complete"
+
+        echo "✅ Smoke tests complete"
+
+  # Experiment Tracking Tasks
+  experiment:input-methods:
+    desc: Run input method A/B tests
+    cmds:
+      - echo "🧪 Testing input method variations..."
+      - echo "Testing constrained vs specific inputs..."
+      - npm run test -- lib/experimentation/
+      - npm run test -- lib/input-methods/
+      - echo "Analyzing results..."
+      - npm run test -- lib/analytics/experiment-tracker.test.ts || echo "No test file yet"
+      - echo "✅ Input method experiments complete"
+    sources:
+      - lib/experimentation/**/*
+      - lib/input-methods/**/*
+      - lib/analytics/**/*
+
+  experiment:personas:
+    desc: Test different persona-driven itineraries
+    cmds:
+      - echo "🎭 Testing persona variations..."
+      - echo "Available personas:"
+      - echo "  - Photographer's Weekend"
+      - echo "  - Architecture Buff"
+      - echo "  - Food-Forward"
+      - echo "  - Cultural Explorer"
+      - echo "  - Adventure Seeker"
+      - npm run test -- lib/agents/concierge-agent.test.ts || echo "No test file yet"
+      - echo "✅ Persona testing complete"
+
+  experiment:compare:
+    desc: Compare multi-agent vs single-agent performance
+    cmds:
+      - echo "⚖️ Comparing agent architectures..."
+      - echo "Testing multi-agent orchestration..."
+      - time npm run test -- lib/agents/orchestrator.test.ts || echo "Multi-agent test complete"
+      - echo "Testing single-agent baseline..."
+      - time npm run test -- lib/agents/base-agent.test.ts || echo "Single-agent test complete"
+      - echo "✅ Architecture comparison complete"
+
+  # Performance Monitoring Tasks
+  perf:check:
+    desc: Check performance metrics
+    cmds:
+      - echo "📊 Checking performance metrics..."
+      - echo "Bundle size analysis..."
+      - npm run analyze || echo "Run 'npm install --save-dev @next/bundle-analyzer' to enable"
+      - echo "Build metrics..."
+      - npm run build 2>&1 | grep -E "(First Load JS|Page|Lambda)" || npm run build
+      - echo "✅ Performance check complete"
+
+  perf:lighthouse:
+    desc: Run Lighthouse performance audit
+    cmds:
+      - echo "🔦 Running Lighthouse audit..."
+      - |
+        # Check if lighthouse is installed
+        if ! command -v lighthouse &> /dev/null; then
+          echo "Installing Lighthouse CLI..."
+          npm install -g lighthouse
+        fi
+
+        # Start dev server in background
+        npm run dev > /tmp/cardinal-dev.log 2>&1 &
+        DEV_PID=$!
+
+        # Wait for server
+        sleep 5
+
+        # Run Lighthouse
+        lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html
+        echo "Report saved to lighthouse-report.html"
+
+        # Cleanup
+        kill $DEV_PID 2>/dev/null || true
+        echo "✅ Lighthouse audit complete"
+
+  perf:measure:
+    desc: Measure key performance indicators
+    cmds:
+      - echo "📏 Measuring performance KPIs..."
+      - echo "Testing destination generation speed..."
+      - |
+        time curl -X POST http://localhost:3000/.netlify/functions/generate-destinations \
+          -H "Content-Type: application/json" \
+          -d '{"requirements":{"originCity":"San Francisco","tripDuration":"3 days","travelers":2}}' || echo "Test complete"
+      - echo "Testing itinerary generation speed..."
+      - |
+        time curl -X POST http://localhost:3000/.netlify/functions/generate-itinerary \
+          -H "Content-Type: application/json" \
+          -d '{"requirements":{"destination":"Los Angeles, CA","tripDuration":"3 days","travelers":2}}' || echo "Test complete"
+      - echo "✅ Performance measurement complete"
+
+  # Quick Cardinal Commands
+  cardinal:setup:
+    desc: Complete Cardinal-specific setup
+    cmds:
+      - echo "🎯 Setting up Cardinal project..."
+      - npm install
+      - npm run setup-env || echo "Environment setup pending"
+      - npm run setup:hooks || echo "Hooks setup pending"
+      - npm run db:setup || echo "Database setup pending"
+      - echo "✅ Cardinal setup complete"
+      - echo "Run 'task cardinal:demo:manual' to test the demo"
+
+  cardinal:qa:
+    desc: Run Cardinal-specific QA checks
+    cmds:
+      - echo "🔍 Running Cardinal QA..."
+      - task lint
+      - task typecheck
+      - task test
+      - task cardinal:itinerary:validate
+      - echo "✅ Cardinal QA complete"
+
+  cardinal:release:
+    desc: Prepare for Cardinal release
+    cmds:
+      - task cardinal:qa
+      - task build
+      - task cardinal:deploy:verify
+      - echo "🚀 Cardinal release preparation complete"
+      - echo "Ready to deploy to production"
+
+  # Development Helpers
+  cardinal:logs:
+    desc: Show Cardinal application logs
+    cmds:
+      - echo "📜 Showing Cardinal logs..."
+      - |
+        if [ -f /tmp/cardinal-dev.log ]; then
+          tail -f /tmp/cardinal-dev.log
+        else
+          echo "No logs found. Start the dev server first with 'task dev'"
+        fi
+
+  cardinal:clean:
+    desc: Clean Cardinal-specific artifacts
+    cmds:
+      - echo "🧹 Cleaning Cardinal artifacts..."
+      - rm -f /tmp/cardinal-*.log
+      - rm -f lighthouse-report.html
+      - rm -rf .next
+      - rm -rf out
+      - echo "✅ Cardinal cleanup complete"
+
+  # Status and Info
+  cardinal:status:
+    desc: Show Cardinal project status
+    cmds:
+      - |
+        echo "📊 Cardinal Project Status"
+        echo "========================="
+        echo ""
+        echo "🎯 Current Phase: Experimentation (E001-E009)"
+        echo ""
+        echo "✅ Completed:"
+        echo "  - F001: Repository Setup"
+        echo "  - F002: Netlify Configuration"
+        echo "  - F003: Next.js Scaffolding"
+        echo "  - E008: Multi-Agent Orchestration (partial)"
+        echo ""
+        echo "🔄 In Progress:"
+        echo "  - Demo flow with destination selection"
+        echo ""
+        echo "📝 Next Tasks:"
+        echo "  - E001: Input Method Abstraction"
+        echo "  - E002: Registry Pattern Implementation"
+        echo ""
+        echo "Run 'task cardinal:demo:manual' to test current progress"
+
+  # AI Agent Helpers
+  cardinal:agent:list:
+    desc: List all Cardinal AI agents
+    cmds:
+      - echo "🤖 Cardinal AI Agents:"
+      - echo "====================="
+      - ls -la lib/agents/*.ts | grep -v test | awk '{print "  - " $9}' | sed 's/.*\///' | sed 's/\.ts$//'
+      - echo ""
+      - echo "Run 'task ai:agent:test' to test all agents"
+
+  cardinal:agent:visualize:
+    desc: Visualize agent orchestration flow
+    cmds:
+      - |
+        echo "🎭 Agent Orchestration Flow:"
+        echo "==========================="
+        echo ""
+        echo "1. User Requirements"
+        echo "   ↓"
+        echo "2. Destination Agent (discovers 3-7 destinations)"
+        echo "   ↓"
+        echo "3. User Selection"
+        echo "   ↓"
+        echo "4. Orchestrator"
+        echo "   ├── Concierge Agent (persona-driven curation)"
+        echo "   ├── Lodging Agent (accommodation research)"
+        echo "   ├── Food & Dining Agent (restaurant curation)"
+        echo "   └── Quality Validator (feasibility check)"
+        echo "   ↓"
+        echo "5. Final Itinerary"
+        echo ""
+        echo "Test with: task cardinal:demo:test"

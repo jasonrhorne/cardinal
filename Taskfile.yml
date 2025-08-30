@@ -6,6 +6,7 @@ version: '3'
 includes:
   ai: .taskfiles/ai-development.yml
   db: .taskfiles/database.yml
+  cardinal: .taskfiles/cardinal-specific.yml
 
 vars:
   NODE_ENV: development
