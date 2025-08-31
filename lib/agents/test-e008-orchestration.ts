@@ -18,7 +18,7 @@ export async function testOrchestration(): Promise<void> {
     numberOfChildren: 0,
     childrenAges: [],
     preferredTravelMethods: ['drive'],
-    interests: ['food-dining', 'arts-culture', 'nature-outdoors'],
+    interests: ['food-dining', 'arts', 'nature-outdoors'],
     budget: 'moderate',
     pace: 'moderate',
   }
@@ -33,7 +33,7 @@ export async function testOrchestration(): Promise<void> {
 
     console.log(`⏱️  Total orchestration time: ${totalTime}ms`)
 
-    if (result.success) {
+    if (result.success && result.itinerary) {
       console.log('✅ Orchestration successful!')
       console.log(`📍 Destination: ${result.itinerary.destination}`)
       console.log(`📅 Duration: ${result.itinerary.duration}`)
@@ -43,15 +43,17 @@ export async function testOrchestration(): Promise<void> {
       // Show first day preview
       if (result.itinerary.days.length > 0) {
         const firstDay = result.itinerary.days[0]
-        console.log(`\n📋 Day 1 Preview:`)
-        console.log(`  Theme: ${firstDay.theme || 'Exploration'}`)
-        console.log(`  Activities: ${firstDay.activities?.length || 0}`)
-        console.log(`  Meals: ${firstDay.meals?.length || 0}`)
+        if (firstDay) {
+          console.log(`\n📋 Day 1 Preview:`)
+          console.log(`  Theme: ${firstDay.theme || 'Exploration'}`)
+          console.log(`  Activities: ${firstDay.activities?.length || 0}`)
+          console.log(`  Meals: ${firstDay.meals?.length || 0}`)
+        }
       }
 
       console.log(`\n📊 Performance:`)
       console.log(`  - Total execution: ${result.totalExecutionTime}ms`)
-      console.log(`  - Messages: ${result.conversationLog.length}`)
+      console.log(`  - Messages: ${result.conversationLog?.length || 0}`)
       console.log(`  - Validations: ${result.validationReport?.length || 0}`)
     } else {
       console.log('❌ Orchestration failed')
