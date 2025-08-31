@@ -12,14 +12,14 @@ export async function testOrchestration(): Promise<void> {
 
   const testRequirements: TTravelRequirements = {
     originCity: 'San Francisco, CA',
-    duration: '3 days',
     numberOfAdults: 2,
     numberOfChildren: 0,
     childrenAges: [],
     preferredTravelMethods: ['drive'],
     interests: ['food-dining', 'arts', 'nature-outdoors'],
-    budget: 'moderate',
-    pace: 'moderate',
+    travelDurationLimits: {
+      drive: 4,
+    },
   }
 
   try {
@@ -30,6 +30,7 @@ export async function testOrchestration(): Promise<void> {
     const result = await orchestrator.generateItinerary({
       ...testRequirements,
       destination: 'Portland, OR',
+      duration: '3 days',
     } as any)
     const totalTime = Date.now() - startTime
 
