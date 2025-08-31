@@ -3,13 +3,13 @@
  * Comprehensive test of the performance metrics collection system
  */
 
+import { AgentOrchestrator } from './orchestrator'
 import {
   AgentPerformanceCollector,
   MemoryMetricsStorage,
 } from './performance-collector'
-import { AgentOrchestrator } from './orchestrator'
-import type { TTravelRequirements } from './types'
 import type { MetricsCollectionConfig } from './performance-metrics'
+import type { TTravelRequirements } from './types'
 
 export async function testE009PerformanceMetrics(): Promise<void> {
   console.log('🧪 Testing E009: Agent Performance Metrics System...')

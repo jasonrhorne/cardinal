@@ -7,6 +7,7 @@ import { Anthropic } from '@anthropic-ai/sdk'
 
 import { getServerEnv } from '@/lib/config/env'
 
+import { getMetricsCollector } from './performance-collector'
 import type {
   AgentConfig,
   AgentContext,
@@ -15,7 +16,6 @@ import type {
   AgentType,
   TaskSpecification,
 } from './types'
-import { getMetricsCollector } from './performance-collector'
 
 export abstract class BaseAgent {
   protected config: AgentConfig

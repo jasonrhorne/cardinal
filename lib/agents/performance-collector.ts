@@ -49,10 +49,14 @@ export class AgentPerformanceCollector {
    * Collect performance metrics for an agent execution
    */
   async collectMetrics(metrics: AgentPerformanceMetrics): Promise<void> {
-    if (!this.config.enableCollection) return
+    if (!this.config.enableCollection) {
+      return
+    }
 
     // Sample based on configured rate
-    if (Math.random() > this.config.sampleRate) return
+    if (Math.random() > this.config.sampleRate) {
+      return
+    }
 
     // Add to buffer
     this.metricsBuffer.push({
@@ -251,7 +255,9 @@ export class AgentPerformanceCollector {
    * Flush buffered metrics to storage
    */
   private async flush(): Promise<void> {
-    if (this.metricsBuffer.length === 0) return
+    if (this.metricsBuffer.length === 0) {
+      return
+    }
 
     try {
       // Store each metric
@@ -417,8 +423,12 @@ export class MemoryMetricsStorage implements MetricsStorage {
     severity?: PerformanceAlert['severity']
   ): Promise<PerformanceAlert[]> {
     return this.alerts.filter(alert => {
-      if (agentType && alert.agentType !== agentType) return false
-      if (severity && alert.severity !== severity) return false
+      if (agentType && alert.agentType !== agentType) {
+        return false
+      }
+      if (severity && alert.severity !== severity) {
+        return false
+      }
       return !alert.resolved
     })
   }
@@ -433,7 +443,9 @@ export class MemoryMetricsStorage implements MetricsStorage {
   ): string[] {
     const recommendations: string[] = []
 
-    if (metrics.length === 0) return recommendations
+    if (metrics.length === 0) {
+      return recommendations
+    }
 
     const avgExecutionTime =
       metrics.reduce((sum, m) => sum + m.executionTime, 0) / metrics.length

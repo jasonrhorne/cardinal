@@ -165,7 +165,9 @@ export const DEFAULT_PERFORMANCE_THRESHOLDS: Record<
 // Utility functions for metrics calculation
 export class MetricsCalculator {
   static calculateSuccessRate(totalRequests: number, failures: number): number {
-    if (totalRequests === 0) return 0
+    if (totalRequests === 0) {
+      return 0
+    }
     return Math.max(
       0,
       Math.min(100, ((totalRequests - failures) / totalRequests) * 100)
@@ -173,7 +175,9 @@ export class MetricsCalculator {
   }
 
   static calculateAverageResponseTime(executionTimes: number[]): number {
-    if (executionTimes.length === 0) return 0
+    if (executionTimes.length === 0) {
+      return 0
+    }
     return (
       executionTimes.reduce((sum, time) => sum + time, 0) /
       executionTimes.length
@@ -183,12 +187,16 @@ export class MetricsCalculator {
   static calculateTrend(
     values: number[]
   ): 'improving' | 'stable' | 'degrading' {
-    if (values.length < 2) return 'stable'
+    if (values.length < 2) {
+      return 'stable'
+    }
 
     const recent = values.slice(-5) // Last 5 values
     const older = values.slice(-10, -5) // Previous 5 values
 
-    if (recent.length === 0 || older.length === 0) return 'stable'
+    if (recent.length === 0 || older.length === 0) {
+      return 'stable'
+    }
 
     const recentAvg = recent.reduce((sum, val) => sum + val, 0) / recent.length
     const olderAvg = older.reduce((sum, val) => sum + val, 0) / older.length
@@ -196,7 +204,9 @@ export class MetricsCalculator {
     const changeThreshold = 0.05 // 5% change threshold
     const percentChange = Math.abs(recentAvg - olderAvg) / olderAvg
 
-    if (percentChange < changeThreshold) return 'stable'
+    if (percentChange < changeThreshold) {
+      return 'stable'
+    }
 
     // For execution time, lower is better
     // For confidence, higher is better

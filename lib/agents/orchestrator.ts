@@ -7,8 +7,8 @@
 import { ConciergeAgent } from './concierge-agent'
 import { FoodDiningAgent } from './food-dining-agent'
 import { LodgingAgent } from './lodging-agent'
-import { QualityValidatorAgent } from './quality-validator-agent'
 import { getMetricsCollector } from './performance-collector'
+import { QualityValidatorAgent } from './quality-validator-agent'
 import type {
   AgentContext,
   AgentType,
@@ -531,7 +531,9 @@ export class AgentOrchestrator {
    * Calculate overall confidence from validation results
    */
   private calculateOverallConfidence(validations: QualityValidation[]): number {
-    if (validations.length === 0) return 0.7 // Default confidence
+    if (validations.length === 0) {
+      return 0.7 // Default confidence
+    }
 
     const totalConfidence = validations.reduce(
       (sum, validation) => sum + validation.confidence,

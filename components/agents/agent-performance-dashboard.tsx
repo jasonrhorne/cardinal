@@ -5,10 +5,11 @@
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+
+import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
-import { Badge } from '@/components/ui/badge'
 import type {
   AgentBenchmark,
   PerformanceAlert,
@@ -37,11 +38,7 @@ export function AgentPerformanceDashboard({
     'day'
   )
 
-  useEffect(() => {
-    loadPerformanceData()
-  }, [agentTypes, selectedPeriod])
-
-  const loadPerformanceData = async () => {
+  const loadPerformanceData = useCallback(async () => {
     setLoading(true)
     setError(null)
 
@@ -126,10 +123,16 @@ export function AgentPerformanceDashboard({
     } finally {
       setLoading(false)
     }
-  }
+  }, [agentTypes, selectedPeriod])
+
+  useEffect(() => {
+    loadPerformanceData()
+  }, [loadPerformanceData])
 
   const formatExecutionTime = (ms: number): string => {
-    if (ms < 1000) return `${Math.round(ms)}ms`
+    if (ms < 1000) {
+      return `${Math.round(ms)}ms`
+    }
     return `${(ms / 1000).toFixed(1)}s`
   }
 
