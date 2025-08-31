@@ -12,7 +12,6 @@ export async function testOrchestration(): Promise<void> {
 
   const testRequirements: TTravelRequirements = {
     originCity: 'San Francisco, CA',
-    destination: 'Portland, OR',
     duration: '3 days',
     numberOfAdults: 2,
     numberOfChildren: 0,
@@ -28,7 +27,10 @@ export async function testOrchestration(): Promise<void> {
     console.log('📋 Starting orchestration for Portland, OR trip...')
 
     const startTime = Date.now()
-    const result = await orchestrator.generateItinerary(testRequirements as any)
+    const result = await orchestrator.generateItinerary({
+      ...testRequirements,
+      destination: 'Portland, OR',
+    } as any)
     const totalTime = Date.now() - startTime
 
     console.log(`⏱️  Total orchestration time: ${totalTime}ms`)
