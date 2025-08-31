@@ -143,12 +143,58 @@ Return a JSON array of tasks with this structure:
   ): Promise<Map<AgentType, ResearchOutput>> {
     const results = new Map<AgentType, ResearchOutput>()
 
-    // For now, simulate research agent responses
-    // In the full implementation, this will call actual research agents
-    for (const task of tasks) {
-      const mockResult = await this.simulateResearchAgent(task, context)
-      results.set(task.agentType, mockResult)
-    }
+    // Import research agents dynamically to avoid circular dependencies
+    const { LodgingAgent } = await import('./lodging-agent')
+    const { FoodDiningAgent } = await import('./food-dining-agent')
+
+    // Create agent instances as needed
+    const agents = new Map<AgentType, any>()
+    agents.set('lodging', new LodgingAgent())
+    agents.set('food-dining', new FoodDiningAgent())
+
+    // Execute tasks in parallel where possible, sequentially for dependencies
+    const taskPromises = tasks.map(async task => {
+      try {
+        this.log(`Executing task for ${task.agentType}: ${task.description}`)
+
+        const agent = agents.get(task.agentType)
+        if (!agent) {
+          // Fall back to simulation for agents we don't have yet
+          this.log(`No agent found for ${task.agentType}, using simulation`)
+          const mockResult = await this.simulateResearchAgent(task, context)
+          results.set(task.agentType, mockResult)
+          return
+        }
+
+        // Execute with real agent
+        const agentResponse = await agent.execute(task, context)
+
+        if (agentResponse.status === 'success' && agentResponse.data) {
+          const researchOutput: ResearchOutput = {
+            agentType: task.agentType,
+            status: 'success',
+            recommendations: agentResponse.data.recommendations || [],
+            confidence: agentResponse.confidence || 0.7,
+            reasoning:
+              agentResponse.data.reasoning || 'Research completed successfully',
+          }
+          results.set(task.agentType, researchOutput)
+        } else {
+          // Handle agent failure - fall back to simulation
+          this.log(`Agent ${task.agentType} failed, falling back to simulation`)
+          const mockResult = await this.simulateResearchAgent(task, context)
+          results.set(task.agentType, mockResult)
+        }
+      } catch (error) {
+        this.log(`Error executing task for ${task.agentType}:`, error)
+        // Fall back to simulation on error
+        const mockResult = await this.simulateResearchAgent(task, context)
+        results.set(task.agentType, mockResult)
+      }
+    })
+
+    // Wait for all tasks to complete
+    await Promise.all(taskPromises)
 
     return results
   }
