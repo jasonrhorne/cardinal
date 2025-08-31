@@ -3,8 +3,9 @@
  * Quick test to verify that real agents work together properly
  */
 
-import { AgentOrchestrator } from './orchestrator'
 import type { TTravelRequirements } from '../schemas/travel-requirements'
+
+import { AgentOrchestrator } from './orchestrator'
 
 export async function testOrchestration(): Promise<void> {
   console.log('🧪 Testing E008 Multi-Agent Orchestration...')
