@@ -8,6 +8,7 @@ import { ConciergeAgent } from './concierge-agent'
 import { FoodDiningAgent } from './food-dining-agent'
 import { LodgingAgent } from './lodging-agent'
 import { QualityValidatorAgent } from './quality-validator-agent'
+import { getMetricsCollector } from './performance-collector'
 import type {
   AgentContext,
   AgentType,
@@ -50,6 +51,8 @@ export class AgentOrchestrator {
     constraints?: TravelConstraints
   ): Promise<OrchestrationResult> {
     const startTime = Date.now()
+    const sessionId = `orchestration_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const requestId = `gen_itinerary_${Date.now()}`
 
     try {
       // Build context for agents
@@ -86,6 +89,18 @@ export class AgentOrchestrator {
 
       const totalTime = Date.now() - startTime
 
+      // Track orchestration performance metrics
+      await this.trackOrchestrationMetrics({
+        sessionId,
+        requestId,
+        totalTime,
+        success: true,
+        tasksCompleted: tasks.length,
+        confidence: this.calculateOverallConfidence(
+          validatedResults.validations
+        ),
+      })
+
       return {
         success: true,
         itinerary,
@@ -102,9 +117,21 @@ export class AgentOrchestrator {
     } catch (error) {
       console.error('Orchestration failed:', error)
 
+      const totalTime = Date.now() - startTime
+
+      // Track failed orchestration metrics
+      await this.trackOrchestrationMetrics({
+        sessionId,
+        requestId,
+        totalTime,
+        success: false,
+        tasksCompleted: 0,
+        confidence: 0,
+      })
+
       return {
         success: false,
-        totalExecutionTime: Date.now() - startTime,
+        totalExecutionTime: totalTime,
         conversationLog: this.messages,
       }
     }
@@ -455,6 +482,63 @@ export class AgentOrchestrator {
     const tokens = this.estimateTokenUsage()
     const costPer1kTokens = 0.003 // Haiku pricing
     return Math.round((tokens / 1000) * costPer1kTokens * 100) / 100
+  }
+
+  /**
+   * Track orchestration performance metrics
+   */
+  private async trackOrchestrationMetrics({
+    sessionId,
+    requestId,
+    totalTime,
+    success,
+    tasksCompleted,
+    confidence,
+  }: {
+    sessionId: string
+    requestId: string
+    totalTime: number
+    success: boolean
+    tasksCompleted: number
+    confidence: number
+  }): Promise<void> {
+    try {
+      const collector = getMetricsCollector()
+      const tokenUsage = {
+        prompt: this.estimateTokenUsage(),
+        completion: Math.floor(this.estimateTokenUsage() * 0.3), // Estimated completion tokens
+        total: Math.floor(this.estimateTokenUsage() * 1.3),
+      }
+
+      const metrics = collector.createMetrics({
+        agentType: 'orchestrator',
+        executionTime: totalTime,
+        confidence,
+        success,
+        tokenUsage,
+        requestId,
+        sessionId,
+        tasksCompleted,
+      })
+
+      await collector.collectMetrics(metrics)
+    } catch (error) {
+      console.warn('Failed to track orchestration metrics:', error)
+    }
+  }
+
+  /**
+   * Calculate overall confidence from validation results
+   */
+  private calculateOverallConfidence(validations: QualityValidation[]): number {
+    if (validations.length === 0) return 0.7 // Default confidence
+
+    const totalConfidence = validations.reduce(
+      (sum, validation) => sum + validation.confidence,
+      0
+    )
+
+    return Math.min(0.95, totalConfidence / validations.length)
   }
 }
 

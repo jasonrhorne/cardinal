@@ -18,6 +18,25 @@ export {
   pittsburghTestCases,
 } from './test-orchestration'
 
+// E008 & E009 Test exports
+export { testOrchestration as testE008Orchestration } from './test-e008-orchestration'
+export { testE009PerformanceMetrics } from './test-e009-performance-metrics'
+
+// E009: Performance Metrics System
+export {
+  AgentPerformanceCollector,
+  MemoryMetricsStorage,
+  getMetricsCollector,
+} from './performance-collector'
+export type {
+  AgentPerformanceMetrics,
+  AgentBenchmark,
+  PerformanceAlert,
+  AgentPerformanceReport,
+  MetricsCollectionConfig,
+  MetricsStorage,
+} from './performance-metrics'
+
 // Export all types
 export type {
   AgentType,

@@ -15,6 +15,7 @@ import type {
   AgentType,
   TaskSpecification,
 } from './types'
+import { getMetricsCollector } from './performance-collector'
 
 export abstract class BaseAgent {
   protected config: AgentConfig
@@ -63,11 +64,14 @@ export abstract class BaseAgent {
     return this.messages
   }
 
-  // Call LLM with prompt
+  // Call LLM with prompt and track performance metrics
   protected async callLLM(
     prompt: string,
     systemPrompt?: string
   ): Promise<string> {
+    const startTime = Date.now()
+    const requestId = `${this.config.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
     try {
       const response = await this.anthropic.messages.create({
         model: this.config.model || 'claude-3-haiku-20240307',
@@ -82,6 +86,25 @@ export abstract class BaseAgent {
         ],
       })
 
+      const executionTime = Date.now() - startTime
+
+      // Track successful LLM call metrics
+      const tokenUsage = response.usage
+        ? {
+            prompt: response.usage.input_tokens,
+            completion: response.usage.output_tokens,
+            total: response.usage.input_tokens + response.usage.output_tokens,
+          }
+        : undefined
+
+      await this.trackPerformanceMetrics({
+        executionTime,
+        success: true,
+        tokenUsage: tokenUsage || undefined,
+        requestId,
+        confidence: 0.8, // Base confidence for successful LLM calls
+      })
+
       const content = response.content[0]
       if (content && content.type === 'text') {
         return content.text
@@ -89,6 +112,17 @@ export abstract class BaseAgent {
 
       throw new Error('Unexpected response type from LLM')
     } catch (error) {
+      const executionTime = Date.now() - startTime
+
+      // Track failed LLM call metrics
+      await this.trackPerformanceMetrics({
+        executionTime,
+        success: false,
+        tokenUsage: undefined,
+        requestId,
+        confidence: 0.0,
+      })
+
       console.error(`LLM call failed for ${this.config.name}:`, error)
       throw error
     }
@@ -234,5 +268,75 @@ Be creative but realistic, and prioritize quality over quantity in your suggesti
   // Log agent activity
   protected log(message: string, data?: any): void {
     console.log(`[${this.config.name}] ${message}`, data || '')
+  }
+
+  // Track performance metrics for agent operations
+  protected async trackPerformanceMetrics({
+    executionTime,
+    success,
+    tokenUsage,
+    requestId,
+    confidence,
+    tasksCompleted = 1,
+    sessionId,
+  }: {
+    executionTime: number
+    success: boolean
+    tokenUsage?:
+      | { prompt: number; completion: number; total: number }
+      | undefined
+    requestId: string
+    confidence: number
+    tasksCompleted?: number
+    sessionId?: string
+  }): Promise<void> {
+    try {
+      const collector = getMetricsCollector()
+      const metrics = collector.createMetrics({
+        agentType: this.config.type,
+        executionTime,
+        confidence,
+        success,
+        tokenUsage,
+        requestId,
+        sessionId: sessionId || 'default',
+        tasksCompleted,
+      })
+
+      await collector.collectMetrics(metrics)
+    } catch (error) {
+      // Don't let metrics collection errors break agent operations
+      console.warn(`Failed to collect metrics for ${this.config.name}:`, error)
+    }
+  }
+
+  // Get performance report for this agent type
+  async getPerformanceReport(days: number = 7) {
+    try {
+      const collector = getMetricsCollector()
+      return await collector.generateReport(this.config.type, days)
+    } catch (error) {
+      console.warn(
+        `Failed to generate performance report for ${this.config.name}:`,
+        error
+      )
+      return null
+    }
+  }
+
+  // Get performance benchmark for this agent type
+  async getPerformanceBenchmark(
+    period: 'hour' | 'day' | 'week' | 'month' = 'day'
+  ) {
+    try {
+      const collector = getMetricsCollector()
+      return await collector.getBenchmark(this.config.type, period)
+    } catch (error) {
+      console.warn(
+        `Failed to get performance benchmark for ${this.config.name}:`,
+        error
+      )
+      return null
+    }
   }
 }
