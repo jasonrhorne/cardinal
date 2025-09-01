@@ -1,6 +1,7 @@
 'use client'
 
 import dynamicImport from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 import type { InputMethodMetadata } from '@/lib/input-methods/types'
 import type { TTravelRequirements } from '@/lib/schemas/travel-requirements'
@@ -29,21 +30,25 @@ const InputMethodContainer = dynamicImport(
 )
 
 export default function NewTripPage() {
+  const router = useRouter()
+
   const handleComplete = async (
     requirements: TTravelRequirements,
     metadata: InputMethodMetadata
   ) => {
     try {
-      // TODO: Send to API endpoint for processing
       console.log('Travel requirements submitted:', requirements)
       console.log('Input method metadata:', metadata)
 
-      // For now, just simulate processing
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Store requirements in session storage for the flow
+      sessionStorage.setItem(
+        'cardinal_travel_requirements',
+        JSON.stringify(requirements)
+      )
 
-      // TODO: Navigate to destination suggestions page
-      alert(
-        `Requirements collected via ${metadata.methodType}! (This will redirect to destination suggestions)`
+      // Navigate to destination suggestions
+      router.push(
+        `/dashboard/destinations?requirements=${encodeURIComponent(JSON.stringify(requirements))}`
       )
     } catch (error) {
       console.error('Error submitting travel requirements:', error)
@@ -52,11 +57,10 @@ export default function NewTripPage() {
   }
 
   const handleCancel = () => {
-    // TODO: Navigate back to dashboard or show confirmation dialog
     if (
       confirm('Are you sure you want to cancel? Any progress will be lost.')
     ) {
-      window.history.back()
+      router.push('/dashboard')
     }
   }
 

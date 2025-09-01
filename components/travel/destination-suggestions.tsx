@@ -170,7 +170,7 @@ export function DestinationSuggestions({
             }}
             className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors"
           >
-            Continue with {destinations[selectedIndex]?.city || ''}
+            Continue with {destinations[selectedIndex]?.city}
           </button>
         </div>
       )}
